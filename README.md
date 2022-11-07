@@ -1,2 +1,3 @@
-# pdssp-crawler
-PDSSP Crawler
+# PDSSP Crawler
+
+Crawler component of the PDSSP Platform.
