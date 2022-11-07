@@ -1,0 +1,69 @@
+# Book settings
+# Learn more at https://jupyterbook.org/customize/config.html
+
+title: ""
+author: Nicolas Manaud, Jérôme Gasperi, Jean-Christophe Malapert
+logo: images/pdssp_logo.png
+
+# Sphinx extension
+sphinx:
+  extra_extensions:
+   - 'sphinx.ext.autodoc'
+   - 'sphinx.ext.napoleon'
+   - 'sphinx.ext.viewcode'
+   - 'sphinx.ext.intersphinx'
+   - 'sphinxcontrib.autodoc_pydantic'
+   - 'sphinx_click'
+#  config:
+#    bibtex_reference_style: author_year
+
+# Force re-execution of notebooks on each build.
+# See https://jupyterbook.org/content/execute.html
+execute:
+  execute_notebooks: force
+
+# Define the name of the latex output file for PDF builds
+latex:
+  latex_documents:
+    targetname: book.tex
+
+# Add a bibtex file so that we can create citations
+#bibtex_bibfiles:
+#  - references.bib
+
+# Information about where the book exists on the web
+repository:
+  url: https://github.com/pdssp/pdssp-crawler  # Online location of your book
+  path_to_book: docs  # Optional path to your book, relative to the repository root
+  branch: master  # Which branch of the repository should be used when creating links (optional)
+
+# Add GitHub buttons to your book
+# See https://jupyterbook.org/customize/config.html#add-a-link-to-your-repository
+html:
+  favicon: images/favicon.png
+  use_issues_button: true
+  use_repository_button: true
+  home_page_in_navbar: false
+
+parse:
+  myst_substitutions:
+    external_link: '{octicon}`link-external;1em;sd-text-secondary`'
+    # Statuses
+    no_status: ''
+    indev_status: '{bdg-warning-line}`in development`'
+    # PDSSP Web Interface
+    pdss_web_status: '{{ no_status }}'
+    pdssp_web_link: '[https://pdssp.ias.universite-paris-saclay.fr](https://pdssp.ias.universite-paris-saclay.fr) {octicon}`link-external;1em;sd-text-secondary` {{ pdss_web_status }}'
+    pdssp_web_nlink: '[PDSSP Web Interface](https://pdssp.ias.universite-paris-saclay.fr) {octicon}`link-external;1em;sd-text-secondary` {{ pdss_web_status }}'
+    # PDSSP JupyterHub
+    pdss_jhub_status: '{{ indev_status }}'
+    pdssp_jhub_link: '[https://pdssp.ias.universite-paris-saclay.fr/jupyterhub](https://pdssp.ias.universite-paris-saclay.fr/jupyterhub) {octicon}`link-external;1em;sd-text-secondary` {{ pdss_jhub_status }}'
+    pdssp_jhub_nlink: '[PDSSP JupyterHub](https://pdssp.ias.universite-paris-saclay.fr/jupyterhub) {octicon}`link-external;1em;sd-text-secondary` {{ pdss_jhub_status }}'
+    # PDSSP Crawler
+    pdss_crawler_status: '{{ indev_status }}'
+    pdssp_crawler_link: '[https://pdssp.ias.universite-paris-saclay.fr/crawler](https://pdssp.ias.universite-paris-saclay.fr/crawler) {octicon}`link-external;1em;sd-text-secondary` {{ pdss_crawler_status }}'
+    pdssp_crawler_nlink: '[PDSSP Crawler](https://pdssp.ias.universite-paris-saclay.fr/crawler) {octicon}`link-external;1em;sd-text-secondary` {{ pdss_crawler_status }}'
+    # PDSSP Registry
+    pdss_registry_status: '{{ indev_status }}'
+    pdssp_registry_link: '[https://github.com/pdssp/registry](https://github.com/pdssp/registry) {octicon}`link-external;1em;sd-text-secondary` {{ pdss_registry_status }}'
+    pdssp_registry_nlink: '[PDSSP Registry](https://github.com/pdssp/registry) {octicon}`link-external;1em;sd-text-secondary` {{ pdss_registry_status }}'

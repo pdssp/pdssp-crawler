@@ -7,7 +7,6 @@ import json
 from pathlib import Path
 
 from .store import DataStore
-from .product import SourceProduct
 
 def Extractor(collection_definition):
     """Extractor function serving as Extractor objects factory.
@@ -53,9 +52,6 @@ class AbstractExtractor:
         self.product_iter += 1
 
         # if the end of the current extracted file has been reached, move to the next one.
-
-
-        self.r
         return self.products[self.product_iter-1]  # a SourceProduct object
 
     def extract(self):

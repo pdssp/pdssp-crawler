@@ -5,11 +5,6 @@ from pydantic import BaseModel
 
 from crawler.schemas import create_schema_object  # create_metadata_object ?
 
-SOURCE_TRANSFORMERS = {
-    'PDSODE': PDSODE_STAC,
-    'EPNTAP': EPNTAP_STAC},
-    'MARSSI': MARSSI_STAC}
-}
 
 def Transformer(source_schema, destination_schema='PDSSP_STAC'):
     """Transformer function serving as Transformer objects factory.
@@ -89,3 +84,9 @@ class EPNTAP_STAC(AbstractTransformer):
 class MARSSI_STAC(AbstractTransformer):
     def __init__(self, source_schema, destination_schema='PDSSP_STAC'):
         super().__init__(source_schema, destination_schema=destination_schema)
+
+SOURCE_TRANSFORMERS = {
+    'PDSODE': PDSODE_STAC,
+    'EPNTAP': EPNTAP_STAC,
+    'MARSSI': MARSSI_STAC
+}

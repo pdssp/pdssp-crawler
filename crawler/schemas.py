@@ -1,6 +1,7 @@
 """Schemas module.
 
 Definition and retrieval of schema/metadata dict for:
+
 - PDSSP STAC objects (Catalog, Collection, Item, Asset, Link) -> PDSSP_STAC_Catalog, PDSSP_STAC_Collection,  PDSSP_STAC_Item, ...
 - PDS ODE API Result objects (Product, Product_file) -> PDSODE_Product, PDSODE_Product_file
 - MarsSI WFS Feature object -> MARSSI_WFS_Layer, MARSSI_WFS_Feature
