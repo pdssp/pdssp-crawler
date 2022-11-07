@@ -1,0 +1,7 @@
+catalog:
+  id: 'pdssp-ode-mars-catalog'
+  title: 'PDS ODE Mars Catalog'
+  description: 'PDS ODE Mars Data Collections Catalog'
+  collections:
+    - 'ode_mars_mro_hirise_rdrv11.yaml'
+    - 'ode_mars_mex_omega_edr.yaml'

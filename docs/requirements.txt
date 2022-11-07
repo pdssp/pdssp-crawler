@@ -1,0 +1,6 @@
+Sphinx>=4.0
+sphinx-book-theme
+sphinx-click
+sphinxcontrib-programoutput
+myst-nb
+autodoc_pydantic

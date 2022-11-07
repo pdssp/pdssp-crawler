@@ -1,0 +1,15 @@
+collection:
+  id: 'lpg_titan_vims_cubes_stac'
+  title: 'LPG/Nantes Titan VIMS Data Cubes (via STAC)'
+  description: 'Collection of LPG/Nantes Titan VIMS Data Cubes (via a static STAC hosted by LPG)).'
+  extensions:
+    - ssys
+    - datacube
+  source:
+    service:
+      type: 'STAC'
+      url: ''
+      params: {}
+    metadata_schema: 'STAC'
+    file_format: 'STAC JSON'
+

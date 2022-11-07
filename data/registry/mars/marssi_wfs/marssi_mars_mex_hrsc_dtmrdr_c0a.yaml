@@ -1,0 +1,15 @@
+collection:
+  id: 'marssi_data mars_mex_hrsc_dtmrdr_c0a'
+  title: 'MarsSI MEX HRSC DTM data products collection'
+  description: 'Collection of MEX HRSC DTM data products available from the MarsSI WFS service.'
+  extensions:
+    - ssys
+    - proj
+  source:
+    service:
+      type: 'WFS'
+      url: 'https://marssi.univ-lyon1.fr/mapserver/mars'
+      params:
+        typename: 'mars_mex_hrsc_dtmrdr_c0a'
+    metadata_schema: 'MarsSI'
+    file_format: 'GML'

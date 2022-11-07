@@ -1,0 +1,7 @@
+catalog:
+  id: 'pdssp-mars-catalog'
+  title: 'PDSSP Mars Catalog'
+  description: 'PDSSP Mars Catalog.'
+  catalogs:
+    - pds-ode-mars/catalog.yaml
+    - marssi_wfs/catalog.yaml

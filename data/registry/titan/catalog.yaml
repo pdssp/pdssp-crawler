@@ -1,0 +1,8 @@
+catalog:
+  id: 'pdssp-titan-catalog'
+  title: 'PDSSP Titan Catalog'
+  description: 'PDSSP Titan Catalog'
+  collections:
+    - 'lpg_titan_vims_cubes_epntap.yaml'
+    - 'lpg_titan_global_maps.yaml'
+    - 'lpg_titan_vims_cubes_stac.yaml'

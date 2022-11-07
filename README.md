@@ -1,3 +1,9 @@
-# PDSSP Crawler
+# pdssp-crawler
+PDSSP Crawler Component
 
-Crawler component of the PDSSP Platform.
+
+### Test
+
+```
+pytest --cov=crawler
+```

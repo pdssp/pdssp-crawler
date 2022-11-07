@@ -1,0 +1,18 @@
+collection:
+  id: 'lpg_titan_vims_cubes_epntap'
+  title: 'LPG/Nantes Titan VIMS Data Cubes (via EPN-TAP)'
+  description: 'Collection of LPG/Nantes Titan VIMS Data Cubes (via EPN-TAP).'
+  extensions:
+    - ssys
+    - datacube
+  source:
+    service:
+      type: 'EPN-TAP'
+      url: 'http://voparis-tap-planeto.obspm.fr/tap/sync'
+      params:
+        LANG: 'ADQL'
+        QUERY: 'SELECT+%2A+FROM+vims_satellites.epn_core'
+        REQUEST: 'doQuery'
+        MAXREC: 1000000000
+    metadata_schema: 'EPNTAP'
+    file_format: 'VOTable'

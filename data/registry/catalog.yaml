@@ -1,0 +1,9 @@
+catalog:
+  id: 'pdssp-metacatalog'
+  title: 'PDSSP Metacatalog'
+  description: 'PDSSP metacatalog containing the complete STAC collections of planetary surface data products curated by French research laboratories.'
+  extensions:
+    - ssys
+  catalogs:
+    - mars/catalog.yaml
+    - titan/catalog.yaml

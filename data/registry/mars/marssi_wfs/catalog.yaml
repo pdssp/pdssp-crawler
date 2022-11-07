@@ -1,0 +1,6 @@
+catalog:
+  id: 'pdssp-marssi-catalog'
+  title: 'PDSSP MarsSI WFS data collections catalog.'
+  description: 'PDSSP MarsSI WFS data collections catalog.'
+  collections:
+    - 'marssi_mars_mex_hrsc_dtmrdr_c0a.yaml'
