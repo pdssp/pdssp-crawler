@@ -4,9 +4,10 @@
 format: jb-book
 root: index
 parts:
-- caption:
+- caption: Developer Guides
   chapters:
     - file: design.md
+    - file: documentation.md
 - caption: References
   chapters:
     - file: crawler_api.rst

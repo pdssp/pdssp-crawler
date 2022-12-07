@@ -1,13 +1,18 @@
-"""Schemas module.
+"""Schemas module for the definition and retrieval of ``"collection"`` and ``"item"``-type metadata dictionary
+compliant to the following schemas/models:
 
-Definition and retrieval of schema/metadata dict for:
-
-- PDSSP STAC objects (Catalog, Collection, Item, Asset, Link) -> PDSSP_STAC_Catalog, PDSSP_STAC_Collection,  PDSSP_STAC_Item, ...
-- PDS ODE API Result objects (Product, Product_file) -> PDSODE_Product, PDSODE_Product_file
-- MarsSI WFS Feature object -> MARSSI_WFS_Layer, MARSSI_WFS_Feature
-- EPN-TAP Granule object ("parameters") -> EPNTAP_Collection, EPNTAP_Granule
+==============  ===============================================  ============================================
+Schema          Collection metadata                              Item metadata
+==============  ===============================================  ============================================
+``PDSSP_STAC``  :class:`crawler.schemas.PDSSP_STAC_Collection`   :class:`crawler.schemas.PDSSP_STAC_Item`
+``PDSSP_WFS``   :class:`crawler.schemas.PDSSP_WFS_Layer`         :class:`crawler.schemas.PDSSP_WFS_Feature`
+``PDSODE``      :class:`crawler.schemas.PDSODE_IIPTSet`          :class:`crawler.schemas.PDSODE_Product`
+``EPNTAP``      :class:`crawler.schemas.EPNTAP_Collection`       :class:`crawler.schemas.EPNTAP_Granule`
+``MARSSI_WFS``  :class:`crawler.schemas.MARSSI_WFS_Layer`        :class:`crawler.schemas.MARSSI_WFS_Feature`
+==============  ===============================================  ============================================
 
 References/examples:
+
 - https://github.com/radiantearth/stac-spec/blob/master/item-spec
 - https://github.com/radiantearth/stac-spec/blob/master/collection-spec/collection-spec.md
 - https://github.com/ivoa-std/EPNTAP/blob/master/example-record.xml
@@ -106,8 +111,17 @@ class PDSSP_STAC_Item(BaseModel):
     assets: dict  ## Map<string, PDSSP_STAC_Asset>: dictionary of asset objects that can be downloaded, each with a unique key.
     collection: Optional[str]
 
+class PDSSP_WFS_Layer(BaseModel):
+    pass
+
+class PDSSP_WFS_Feature(BaseModel):
+    pass
+
 # PDS ODE Metadata Schemas
 #
+class PDSODE_IIPTSet(BaseModel):
+    pass
+
 class PDSODE_Product_file(BaseModel):
     Description: str  # eg" 'MAP PROJECTION FILE'",'
     FileName: str  # "DSMAP.CAT",
@@ -236,9 +250,10 @@ class PDSODE_Product(BaseModel):
     # "UTC_stop_time": "2009-04-04T07:13:49.333",
     # "Westernmost_longitude": "239.988"
 
-# EPNTAP Metadata Schemas
-# 'EPNTAP': {'item': EPNTAP_Granule},
-#
+
+class EPNTAP_Collection(BaseModel):
+    pass
+
 class EPNTAP_Granule(BaseModel):
     granule_uid: str
     granule_gid: str
@@ -292,9 +307,10 @@ class EPNTAP_Granule(BaseModel):
     file_name: str
     publisher: str
 
-# MARSSI Metadata Schemas
-#'MARSSI': {'item': MARSSI_WFS_Feature}
-#
+
+class MARSSI_WFS_Layer(BaseModel):
+    pass
+
 class MARSSI_WFS_Feature(BaseModel):
     pass
 
@@ -341,7 +357,9 @@ def create_schema_object(metadata: dict, name: str, object_type: str) -> Optiona
 
 METADATA_SCHEMAS = {
     'PDSSP_STAC': {'collection': PDSSP_STAC_Collection, 'item': PDSSP_STAC_Item},
+    'PDSSP_WFS': {'item': PDSSP_WFS_Feature},
     'PDSODE': {'item': PDSODE_Product},
     'EPNTAP': {'item': EPNTAP_Granule},
-    'MARSSI': {'item': MARSSI_WFS_Feature}
+    'MARSSI_WFS': {'item': MARSSI_WFS_Feature}
 }
+"""Metadata schemas and their corresponding ``"collection"`` and ``"item"``-type classes."""
