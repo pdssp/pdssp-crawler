@@ -276,16 +276,21 @@ title="Open an issue"
               <div>
                 
   <h1>Source code for crawler.schemas</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Schemas module.</span>
+<span></span><span class="sd">&quot;&quot;&quot;Schemas module for the definition and retrieval of ``&quot;collection&quot;`` and ``&quot;item&quot;``-type metadata dictionary</span>
+<span class="sd">compliant to the following schemas/models:</span>
 
-<span class="sd">Definition and retrieval of schema/metadata dict for:</span>
-
-<span class="sd">- PDSSP STAC objects (Catalog, Collection, Item, Asset, Link) -&gt; PDSSP_STAC_Catalog, PDSSP_STAC_Collection,  PDSSP_STAC_Item, ...</span>
-<span class="sd">- PDS ODE API Result objects (Product, Product_file) -&gt; PDSODE_Product, PDSODE_Product_file</span>
-<span class="sd">- MarsSI WFS Feature object -&gt; MARSSI_WFS_Layer, MARSSI_WFS_Feature</span>
-<span class="sd">- EPN-TAP Granule object (&quot;parameters&quot;) -&gt; EPNTAP_Collection, EPNTAP_Granule</span>
+<span class="sd">==============  ===============================================  ============================================</span>
+<span class="sd">Schema          Collection metadata                              Item metadata</span>
+<span class="sd">==============  ===============================================  ============================================</span>
+<span class="sd">``PDSSP_STAC``  :class:`crawler.schemas.PDSSP_STAC_Collection`   :class:`crawler.schemas.PDSSP_STAC_Item`</span>
+<span class="sd">``PDSSP_WFS``   :class:`crawler.schemas.PDSSP_WFS_Layer`         :class:`crawler.schemas.PDSSP_WFS_Feature`</span>
+<span class="sd">``PDSODE``      :class:`crawler.schemas.PDSODE_IIPTSet`          :class:`crawler.schemas.PDSODE_Product`</span>
+<span class="sd">``EPNTAP``      :class:`crawler.schemas.EPNTAP_Collection`       :class:`crawler.schemas.EPNTAP_Granule`</span>
+<span class="sd">``MARSSI_WFS``  :class:`crawler.schemas.MARSSI_WFS_Layer`        :class:`crawler.schemas.MARSSI_WFS_Feature`</span>
+<span class="sd">==============  ===============================================  ============================================</span>
 
 <span class="sd">References/examples:</span>
+
 <span class="sd">- https://github.com/radiantearth/stac-spec/blob/master/item-spec</span>
 <span class="sd">- https://github.com/radiantearth/stac-spec/blob/master/collection-spec/collection-spec.md</span>
 <span class="sd">- https://github.com/ivoa-std/EPNTAP/blob/master/example-record.xml</span>
@@ -384,8 +389,17 @@ title="Open an issue"
     <span class="n">assets</span><span class="p">:</span> <span class="nb">dict</span>  <span class="c1">## Map&lt;string, PDSSP_STAC_Asset&gt;: dictionary of asset objects that can be downloaded, each with a unique key.</span>
     <span class="n">collection</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></div>
 
+<div class="viewcode-block" id="PDSSP_WFS_Layer"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.PDSSP_WFS_Layer">[docs]</a><span class="k">class</span> <span class="nc">PDSSP_WFS_Layer</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="PDSSP_WFS_Feature"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.PDSSP_WFS_Feature">[docs]</a><span class="k">class</span> <span class="nc">PDSSP_WFS_Feature</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
 <span class="c1"># PDS ODE Metadata Schemas</span>
 <span class="c1">#</span>
+<div class="viewcode-block" id="PDSODE_IIPTSet"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.PDSODE_IIPTSet">[docs]</a><span class="k">class</span> <span class="nc">PDSODE_IIPTSet</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
 <div class="viewcode-block" id="PDSODE_Product_file"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.PDSODE_Product_file">[docs]</a><span class="k">class</span> <span class="nc">PDSODE_Product_file</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="n">Description</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># eg&quot; &#39;MAP PROJECTION FILE&#39;&quot;,&#39;</span>
     <span class="n">FileName</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># &quot;DSMAP.CAT&quot;,</span>
@@ -514,9 +528,10 @@ title="Open an issue"
     <span class="c1"># &quot;UTC_stop_time&quot;: &quot;2009-04-04T07:13:49.333&quot;,</span>
     <span class="c1"># &quot;Westernmost_longitude&quot;: &quot;239.988&quot;</span>
 
-<span class="c1"># EPNTAP Metadata Schemas</span>
-<span class="c1"># &#39;EPNTAP&#39;: {&#39;item&#39;: EPNTAP_Granule},</span>
-<span class="c1">#</span>
+
+<div class="viewcode-block" id="EPNTAP_Collection"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.EPNTAP_Collection">[docs]</a><span class="k">class</span> <span class="nc">EPNTAP_Collection</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
 <div class="viewcode-block" id="EPNTAP_Granule"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.EPNTAP_Granule">[docs]</a><span class="k">class</span> <span class="nc">EPNTAP_Granule</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="n">granule_uid</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">granule_gid</span><span class="p">:</span> <span class="nb">str</span>
@@ -570,9 +585,10 @@ title="Open an issue"
     <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">publisher</span><span class="p">:</span> <span class="nb">str</span></div>
 
-<span class="c1"># MARSSI Metadata Schemas</span>
-<span class="c1">#&#39;MARSSI&#39;: {&#39;item&#39;: MARSSI_WFS_Feature}</span>
-<span class="c1">#</span>
+
+<div class="viewcode-block" id="MARSSI_WFS_Layer"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.MARSSI_WFS_Layer">[docs]</a><span class="k">class</span> <span class="nc">MARSSI_WFS_Layer</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
 <div class="viewcode-block" id="MARSSI_WFS_Feature"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.MARSSI_WFS_Feature">[docs]</a><span class="k">class</span> <span class="nc">MARSSI_WFS_Feature</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
@@ -619,10 +635,12 @@ title="Open an issue"
 
 <span class="n">METADATA_SCHEMAS</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;PDSSP_STAC&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;collection&#39;</span><span class="p">:</span> <span class="n">PDSSP_STAC_Collection</span><span class="p">,</span> <span class="s1">&#39;item&#39;</span><span class="p">:</span> <span class="n">PDSSP_STAC_Item</span><span class="p">},</span>
+    <span class="s1">&#39;PDSSP_WFS&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;item&#39;</span><span class="p">:</span> <span class="n">PDSSP_WFS_Feature</span><span class="p">},</span>
     <span class="s1">&#39;PDSODE&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;item&#39;</span><span class="p">:</span> <span class="n">PDSODE_Product</span><span class="p">},</span>
     <span class="s1">&#39;EPNTAP&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;item&#39;</span><span class="p">:</span> <span class="n">EPNTAP_Granule</span><span class="p">},</span>
-    <span class="s1">&#39;MARSSI&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;item&#39;</span><span class="p">:</span> <span class="n">MARSSI_WFS_Feature</span><span class="p">}</span>
+    <span class="s1">&#39;MARSSI_WFS&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;item&#39;</span><span class="p">:</span> <span class="n">MARSSI_WFS_Feature</span><span class="p">}</span>
 <span class="p">}</span>
+<span class="sd">&quot;&quot;&quot;Metadata schemas and their corresponding ``&quot;collection&quot;`` and ``&quot;item&quot;``-type classes.&quot;&quot;&quot;</span>
 </pre></div>
 
               </div>

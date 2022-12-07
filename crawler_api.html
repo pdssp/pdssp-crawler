@@ -1055,18 +1055,63 @@ title="Print to PDF"
 </section>
 <section id="module-crawler.schemas">
 <span id="schemas-module"></span><h2><code class="docutils literal notranslate"><span class="pre">schemas</span></code> module<a class="headerlink" href="#module-crawler.schemas" title="Permalink to this headline">#</a></h2>
-<p>Schemas module.</p>
-<p>Definition and retrieval of schema/metadata dict for:</p>
+<p>Schemas module for the definition and retrieval of <code class="docutils literal notranslate"><span class="pre">&quot;collection&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;item&quot;</span></code>-type metadata dictionary
+compliant to the following schemas/models:</p>
+<table class="table">
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 45%" />
+<col style="width: 42%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Schema</p></th>
+<th class="head"><p>Collection metadata</p></th>
+<th class="head"><p>Item metadata</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PDSSP_STAC</span></code></p></td>
+<td><p><a class="reference internal" href="#crawler.schemas.PDSSP_STAC_Collection" title="crawler.schemas.PDSSP_STAC_Collection"><code class="xref py py-class docutils literal notranslate"><span class="pre">crawler.schemas.PDSSP_STAC_Collection</span></code></a></p></td>
+<td><p><a class="reference internal" href="#crawler.schemas.PDSSP_STAC_Item" title="crawler.schemas.PDSSP_STAC_Item"><code class="xref py py-class docutils literal notranslate"><span class="pre">crawler.schemas.PDSSP_STAC_Item</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">PDSSP_WFS</span></code></p></td>
+<td><p><a class="reference internal" href="#crawler.schemas.PDSSP_WFS_Layer" title="crawler.schemas.PDSSP_WFS_Layer"><code class="xref py py-class docutils literal notranslate"><span class="pre">crawler.schemas.PDSSP_WFS_Layer</span></code></a></p></td>
+<td><p><a class="reference internal" href="#crawler.schemas.PDSSP_WFS_Feature" title="crawler.schemas.PDSSP_WFS_Feature"><code class="xref py py-class docutils literal notranslate"><span class="pre">crawler.schemas.PDSSP_WFS_Feature</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PDSODE</span></code></p></td>
+<td><p><a class="reference internal" href="#crawler.schemas.PDSODE_IIPTSet" title="crawler.schemas.PDSODE_IIPTSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">crawler.schemas.PDSODE_IIPTSet</span></code></a></p></td>
+<td><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product" title="crawler.schemas.PDSODE_Product"><code class="xref py py-class docutils literal notranslate"><span class="pre">crawler.schemas.PDSODE_Product</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">EPNTAP</span></code></p></td>
+<td><p><a class="reference internal" href="#crawler.schemas.EPNTAP_Collection" title="crawler.schemas.EPNTAP_Collection"><code class="xref py py-class docutils literal notranslate"><span class="pre">crawler.schemas.EPNTAP_Collection</span></code></a></p></td>
+<td><p><a class="reference internal" href="#crawler.schemas.EPNTAP_Granule" title="crawler.schemas.EPNTAP_Granule"><code class="xref py py-class docutils literal notranslate"><span class="pre">crawler.schemas.EPNTAP_Granule</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">MARSSI_WFS</span></code></p></td>
+<td><p><a class="reference internal" href="#crawler.schemas.MARSSI_WFS_Layer" title="crawler.schemas.MARSSI_WFS_Layer"><code class="xref py py-class docutils literal notranslate"><span class="pre">crawler.schemas.MARSSI_WFS_Layer</span></code></a></p></td>
+<td><p><a class="reference internal" href="#crawler.schemas.MARSSI_WFS_Feature" title="crawler.schemas.MARSSI_WFS_Feature"><code class="xref py py-class docutils literal notranslate"><span class="pre">crawler.schemas.MARSSI_WFS_Feature</span></code></a></p></td>
+</tr>
+</tbody>
+</table>
+<p>References/examples:</p>
 <ul class="simple">
-<li><p>PDSSP STAC objects (Catalog, Collection, Item, Asset, Link) -&gt; PDSSP_STAC_Catalog, PDSSP_STAC_Collection,  PDSSP_STAC_Item, …</p></li>
-<li><p>PDS ODE API Result objects (Product, Product_file) -&gt; PDSODE_Product, PDSODE_Product_file</p></li>
-<li><p>MarsSI WFS Feature object -&gt; MARSSI_WFS_Layer, MARSSI_WFS_Feature</p></li>
-<li><p>EPN-TAP Granule object (“parameters”) -&gt; EPNTAP_Collection, EPNTAP_Granule</p></li>
+<li><p><a class="reference external" href="https://github.com/radiantearth/stac-spec/blob/master/item-spec">https://github.com/radiantearth/stac-spec/blob/master/item-spec</a></p></li>
+<li><p><a class="reference external" href="https://github.com/radiantearth/stac-spec/blob/master/collection-spec/collection-spec.md">https://github.com/radiantearth/stac-spec/blob/master/collection-spec/collection-spec.md</a></p></li>
+<li><p><a class="reference external" href="https://github.com/ivoa-std/EPNTAP/blob/master/example-record.xml">https://github.com/ivoa-std/EPNTAP/blob/master/example-record.xml</a></p></li>
 </ul>
-<p>References/examples:
-- <a class="reference external" href="https://github.com/radiantearth/stac-spec/blob/master/item-spec">https://github.com/radiantearth/stac-spec/blob/master/item-spec</a>
-- <a class="reference external" href="https://github.com/radiantearth/stac-spec/blob/master/collection-spec/collection-spec.md">https://github.com/radiantearth/stac-spec/blob/master/collection-spec/collection-spec.md</a>
-- <a class="reference external" href="https://github.com/ivoa-std/EPNTAP/blob/master/example-record.xml">https://github.com/ivoa-std/EPNTAP/blob/master/example-record.xml</a></p>
+<dl class="py class pydantic_model">
+<dt class="sig sig-object py" id="crawler.schemas.EPNTAP_Collection">
+<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">crawler.schemas.</span></span><span class="sig-name descname"><span class="pre">EPNTAP_Collection</span></span><a class="reference internal" href="_modules/crawler/schemas.html#EPNTAP_Collection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.schemas.EPNTAP_Collection" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p><details  class="autodoc_pydantic_collapsable_json">
+<summary>Show JSON schema</summary><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;EPNTAP_Collection&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</details></p></dd></dl>
+
 <dl class="py class pydantic_model">
 <dt class="sig sig-object py" id="crawler.schemas.EPNTAP_Granule">
 <em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">crawler.schemas.</span></span><span class="sig-name descname"><span class="pre">EPNTAP_Granule</span></span><a class="reference internal" href="_modules/crawler/schemas.html#EPNTAP_Granule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.schemas.EPNTAP_Granule" title="Permalink to this definition">#</a></dt>
@@ -1658,6 +1703,40 @@ title="Print to PDF"
 <p><details  class="autodoc_pydantic_collapsable_json">
 <summary>Show JSON schema</summary><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
 <span class="w">   </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MARSSI_WFS_Feature&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</details></p></dd></dl>
+
+<dl class="py class pydantic_model">
+<dt class="sig sig-object py" id="crawler.schemas.MARSSI_WFS_Layer">
+<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">crawler.schemas.</span></span><span class="sig-name descname"><span class="pre">MARSSI_WFS_Layer</span></span><a class="reference internal" href="_modules/crawler/schemas.html#MARSSI_WFS_Layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.schemas.MARSSI_WFS_Layer" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p><details  class="autodoc_pydantic_collapsable_json">
+<summary>Show JSON schema</summary><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MARSSI_WFS_Layer&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</details></p></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="crawler.schemas.METADATA_SCHEMAS">
+<span class="sig-prename descclassname"><span class="pre">crawler.schemas.</span></span><span class="sig-name descname"><span class="pre">METADATA_SCHEMAS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'EPNTAP':</span> <span class="pre">{'item':</span> <span class="pre">&lt;class</span> <span class="pre">'crawler.schemas.EPNTAP_Granule'&gt;},</span> <span class="pre">'MARSSI_WFS':</span> <span class="pre">{'item':</span> <span class="pre">&lt;class</span> <span class="pre">'crawler.schemas.MARSSI_WFS_Feature'&gt;},</span> <span class="pre">'PDSODE':</span> <span class="pre">{'item':</span> <span class="pre">&lt;class</span> <span class="pre">'crawler.schemas.PDSODE_Product'&gt;},</span> <span class="pre">'PDSSP_STAC':</span> <span class="pre">{'collection':</span> <span class="pre">&lt;class</span> <span class="pre">'crawler.schemas.PDSSP_STAC_Collection'&gt;,</span> <span class="pre">'item':</span> <span class="pre">&lt;class</span> <span class="pre">'crawler.schemas.PDSSP_STAC_Item'&gt;},</span> <span class="pre">'PDSSP_WFS':</span> <span class="pre">{'item':</span> <span class="pre">&lt;class</span> <span class="pre">'crawler.schemas.PDSSP_WFS_Feature'&gt;}}</span></em><a class="headerlink" href="#crawler.schemas.METADATA_SCHEMAS" title="Permalink to this definition">#</a></dt>
+<dd><p>Metadata schemas and their corresponding <code class="docutils literal notranslate"><span class="pre">&quot;collection&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;item&quot;</span></code>-type classes.</p>
+</dd></dl>
+
+<dl class="py class pydantic_model">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_IIPTSet">
+<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">crawler.schemas.</span></span><span class="sig-name descname"><span class="pre">PDSODE_IIPTSet</span></span><a class="reference internal" href="_modules/crawler/schemas.html#PDSODE_IIPTSet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.schemas.PDSODE_IIPTSet" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p><details  class="autodoc_pydantic_collapsable_json">
+<summary>Show JSON schema</summary><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PDSODE_IIPTSet&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
@@ -3058,6 +3137,34 @@ rich text representation.</p>
 </dd></dl>
 
 </dd></dl>
+
+<dl class="py class pydantic_model">
+<dt class="sig sig-object py" id="crawler.schemas.PDSSP_WFS_Feature">
+<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">crawler.schemas.</span></span><span class="sig-name descname"><span class="pre">PDSSP_WFS_Feature</span></span><a class="reference internal" href="_modules/crawler/schemas.html#PDSSP_WFS_Feature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.schemas.PDSSP_WFS_Feature" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p><details  class="autodoc_pydantic_collapsable_json">
+<summary>Show JSON schema</summary><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PDSSP_WFS_Feature&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</details></p></dd></dl>
+
+<dl class="py class pydantic_model">
+<dt class="sig sig-object py" id="crawler.schemas.PDSSP_WFS_Layer">
+<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">crawler.schemas.</span></span><span class="sig-name descname"><span class="pre">PDSSP_WFS_Layer</span></span><a class="reference internal" href="_modules/crawler/schemas.html#PDSSP_WFS_Layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.schemas.PDSSP_WFS_Layer" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p><details  class="autodoc_pydantic_collapsable_json">
+<summary>Show JSON schema</summary><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PDSSP_WFS_Layer&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</details></p></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="crawler.schemas.create_schema_object">
