@@ -102,7 +102,14 @@ const thebe_selector_output = ".output, .cell_output"
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <p aria-level="2" class="caption" role="heading">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../design.html">
+   Design
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   References
  </span>
@@ -110,12 +117,19 @@ const thebe_selector_output = ".output, .cell_output"
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="../../crawler_api.html">
-   Crawler API
+   Crawler Python API
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../crawler_cli.html">
    Crawler CLI
+  </a>
+ </li>
+</ul>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference external" href="https://pdssp.github.io/pdssp-docs/">
+   PDSSP Platform Documentation
   </a>
  </li>
 </ul>
@@ -252,294 +266,122 @@ title="Open an issue"
               <div>
                 
   <h1>Source code for crawler.registry</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;PDSSP Crawler registry module.&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
-<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
-<span class="kn">import</span> <span class="nn">yaml</span>
+<span></span><span class="sd">&quot;&quot;&quot;PDSSP Crawler RegistryInterface module.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
+
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">closing</span>
+
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">json</span>
 
-<span class="c1"># Registry Models</span>
+<div class="viewcode-block" id="ProviderRole"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.ProviderRole">[docs]</a><span class="k">class</span> <span class="nc">ProviderRole</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">producer</span> <span class="o">=</span> <span class="s1">&#39;producer&#39;</span>
+    <span class="n">licensor</span> <span class="o">=</span> <span class="s1">&#39;licensor&#39;</span>
+    <span class="n">processor</span> <span class="o">=</span> <span class="s1">&#39;processor&#39;</span>
+    <span class="n">host</span> <span class="o">=</span> <span class="s1">&#39;host&#39;</span></div>
 
-<div class="viewcode-block" id="ServiceDefinition"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.ServiceDefinition">[docs]</a><span class="k">class</span> <span class="nc">ServiceDefinition</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span>
+
+<div class="viewcode-block" id="ServiceProvider"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.ServiceProvider">[docs]</a><span class="k">class</span> <span class="nc">ServiceProvider</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Organization name&#39;</span><span class="p">)</span>
+    <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Organization description&#39;</span><span class="p">)</span>
+    <span class="n">roles</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">ProviderRole</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Organization roles&#39;</span><span class="p">)</span>
+    <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Organization homepage&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ServiceType"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.ServiceType">[docs]</a><span class="k">class</span> <span class="nc">ServiceType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">STAC</span> <span class="o">=</span> <span class="s1">&#39;STAC&#39;</span>
+    <span class="n">WFS</span> <span class="o">=</span> <span class="s1">&#39;WFS&#39;</span>
+    <span class="n">WMS</span> <span class="o">=</span> <span class="s1">&#39;WMS&#39;</span>
+    <span class="n">WMTS</span> <span class="o">=</span> <span class="s1">&#39;WMTS&#39;</span>
+    <span class="n">XYZ</span> <span class="o">=</span> <span class="s1">&#39;XYZ&#39;</span></div>
+
+
+<div class="viewcode-block" id="ExternalServiceType"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.ExternalServiceType">[docs]</a><span class="k">class</span> <span class="nc">ExternalServiceType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">WFS</span> <span class="o">=</span> <span class="s1">&#39;WFS&#39;</span>
+    <span class="n">PDSODE</span> <span class="o">=</span> <span class="s1">&#39;PDSODE&#39;</span>
+    <span class="n">EPNTAP</span> <span class="o">=</span> <span class="s1">&#39;EPNTAP&#39;</span></div>
+
+
+<div class="viewcode-block" id="Service"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.Service">[docs]</a><span class="k">class</span> <span class="nc">Service</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">providers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ServiceProvider</span><span class="p">]</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">ServiceType</span>
     <span class="n">url</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span></div>
+    <span class="n">ping_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">ssys_targets</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;ssys:targets&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="SourceDefinition"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.SourceDefinition">[docs]</a><span class="k">class</span> <span class="nc">SourceDefinition</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="n">service</span><span class="p">:</span> <span class="n">ServiceDefinition</span>
-    <span class="n">metadata_schema</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">file_format</span><span class="p">:</span> <span class="nb">str</span></div>
+<div class="viewcode-block" id="ExternalService"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.ExternalService">[docs]</a><span class="k">class</span> <span class="nc">ExternalService</span><span class="p">(</span><span class="n">Service</span><span class="p">):</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">ExternalServiceType</span>
+    <span class="n">extra_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="CollectionDefinition"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.CollectionDefinition">[docs]</a><span class="k">class</span> <span class="nc">CollectionDefinition</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">extensions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>  <span class="c1"># eg: [&#39;ssys&#39;, &#39;proj&#39;]</span>
-    <span class="n">source</span><span class="p">:</span> <span class="n">SourceDefinition</span>
-    <span class="n">path</span><span class="p">:</span> <span class="nb">str</span></div>
-
-<div class="viewcode-block" id="CatalogDefinition"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.CatalogDefinition">[docs]</a><span class="k">class</span> <span class="nc">CatalogDefinition</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">extensions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-
-    <span class="n">catalogs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="sd">&quot;&quot;&quot;List of catalog ids.&quot;&quot;&quot;</span>
-
-    <span class="n">collections</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="sd">&quot;&quot;&quot;List of collection ids.&quot;&quot;&quot;</span>
-
-    <span class="n">path</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="sd">&quot;&quot;&quot;Catalog path relative to root catalog.&quot;&quot;&quot;</span></div>
-
-
-<div class="viewcode-block" id="AbstractRegistry"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.AbstractRegistry">[docs]</a><span class="k">class</span> <span class="nc">AbstractRegistry</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;AbstractRegistry class defining an common interface/methods for any types of registry.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
-        <span class="c1"># assign registry interface type</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-        <span class="k">for</span> <span class="nb">type</span> <span class="ow">in</span> <span class="n">REGISTRY_TYPES</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="n">REGISTRY_TYPES</span><span class="p">[</span><span class="nb">type</span><span class="p">]</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">type</span>
-        <span class="c1"># set path</span>
+<div class="viewcode-block" id="RegistryInterface"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.RegistryInterface">[docs]</a><span class="k">class</span> <span class="nc">RegistryInterface</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Abstract registry class that defines a common interface for the children HealthcheckrRegistry and Local RegistryInterface classes.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">services</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&gt; &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Type: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2"> | &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Path: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span>
+<div class="viewcode-block" id="RegistryInterface.get_services"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.RegistryInterface.get_services">[docs]</a>    <span class="k">def</span> <span class="nf">get_services</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Service</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">services</span></div></div>
 
-<div class="viewcode-block" id="AbstractRegistry.get_collections_ids"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.AbstractRegistry.get_collections_ids">[docs]</a>    <span class="k">def</span> <span class="nf">get_collections_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">[]</span></div>
+<div class="viewcode-block" id="HealthcheckrRegistry"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.HealthcheckrRegistry">[docs]</a><span class="k">class</span> <span class="nc">HealthcheckrRegistry</span><span class="p">(</span><span class="n">RegistryInterface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class that represents a PDSSP Services RegistryInterface.</span>
 
-<div class="viewcode-block" id="AbstractRegistry.get_collections"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.AbstractRegistry.get_collections">[docs]</a>    <span class="k">def</span> <span class="nf">get_collections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">CollectionDefinition</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">[]</span></div>
-
-<div class="viewcode-block" id="AbstractRegistry.get_collection"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.AbstractRegistry.get_collection">[docs]</a>    <span class="k">def</span> <span class="nf">get_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CollectionDefinition</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span></div>
-
-<div class="viewcode-block" id="AbstractRegistry.get_catalog_ids"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.AbstractRegistry.get_catalog_ids">[docs]</a>    <span class="k">def</span> <span class="nf">get_catalog_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">[]</span></div>
-
-<div class="viewcode-block" id="AbstractRegistry.get_catalogs"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.AbstractRegistry.get_catalogs">[docs]</a>    <span class="k">def</span> <span class="nf">get_catalogs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">CatalogDefinition</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="kc">None</span></div>
-
-<div class="viewcode-block" id="AbstractRegistry.get_catalog"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.AbstractRegistry.get_catalog">[docs]</a>    <span class="k">def</span> <span class="nf">get_catalog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CatalogDefinition</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span></div></div>
-
-<div class="viewcode-block" id="Registry"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.Registry">[docs]</a><span class="k">def</span> <span class="nf">Registry</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AbstractRegistry</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Function serving as Registry objects factory.</span>
-
-<span class="sd">    Example:</span>
-<span class="sd">        registry = Registry(&#39;YAML&#39;, path=&#39;/path/to/stac_catalog/model/catalog.yaml&#39;)</span>
+<span class="sd">    End-point: https://pdssp.ias.universite-paris-saclay.fr/registry/services</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">type</span> <span class="ow">in</span> <span class="n">REGISTRY_TYPES</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="n">RegistryClass</span> <span class="o">=</span> <span class="n">REGISTRY_TYPES</span><span class="p">[</span><span class="nb">type</span><span class="p">]</span>
-        <span class="n">registry</span> <span class="o">=</span> <span class="n">RegistryClass</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">registry</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown registry type: </span><span class="si">{</span><span class="nb">type</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="kc">None</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">)</span>
 
-    <span class="c1">#</span>
-    <span class="c1"># def __init__(self, parameters, geoevt=None, silent=None):</span>
-    <span class="c1">#     super().__init__(parameters, geoevt=geoevt, silent=silent)</span>
-    <span class="c1">#</span>
+<div class="viewcode-block" id="HealthcheckrRegistry.get_services"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.HealthcheckrRegistry.get_services">[docs]</a>    <span class="k">def</span> <span class="nf">get_services</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">closing</span><span class="p">(</span><span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">))</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unable to retrieve data services registered at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="YAMLInvalidDefinition"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.YAMLInvalidDefinition">[docs]</a><span class="k">class</span> <span class="nc">YAMLInvalidDefinition</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Invalid YAML Registry definition.&quot;&quot;&quot;</span></div>
+        <span class="k">if</span> <span class="s1">&#39;services&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Response not conform to expected model.&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="YAMLRegistry"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.YAMLRegistry">[docs]</a><span class="k">class</span> <span class="nc">YAMLRegistry</span><span class="p">(</span><span class="n">AbstractRegistry</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;YAMLRegistry class</span>
+        <span class="n">services_dicts</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;services&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">services_dicts</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Response not conform to expected model.&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">service_dict</span> <span class="ow">in</span> <span class="n">services_dicts</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">services</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Service</span><span class="p">(</span><span class="o">**</span><span class="n">service_dict</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">services</span></div></div>
+
+
+<div class="viewcode-block" id="LocalRegistry"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.LocalRegistry">[docs]</a><span class="k">class</span> <span class="nc">LocalRegistry</span><span class="p">(</span><span class="n">RegistryInterface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class that represents a local registry defining external services, not compliant to the PDSSP data model.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>  <span class="c1"># path=&#39;pdssp-crawler/data/services&#39;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">catalogs</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># : list[CatalogDefinition]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">collections</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1">#: list[CollectionDefinition]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">services</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># : list[ServiceDefinition]</span>
 
-        <span class="c1"># TODO: check that registry YAML file exists</span>
+<div class="viewcode-block" id="LocalRegistry.get_services"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.LocalRegistry.get_services">[docs]</a>    <span class="k">def</span> <span class="nf">get_services</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># check that local registry directory exists</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Input `</span><span class="si">{path}</span><span class="s1">` path does not exist or not a directory&#39;</span><span class="p">)</span>
 
-        <span class="c1"># parse YAML registry (root) catalog file</span>
-        <span class="n">yaml_catalog_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_yaml_catalog_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_catalog</span><span class="p">(</span><span class="n">yaml_catalog_dict</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">catalogs</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">collections</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+        <span class="c1"># list all JSON files in local registry directory</span>
+        <span class="n">service_json_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">+</span><span class="s1">&#39;/*.json&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="YAMLRegistry.add_catalog"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.YAMLRegistry.add_catalog">[docs]</a>    <span class="k">def</span> <span class="nf">add_catalog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yaml_catalog_dict</span><span class="p">,</span> <span class="n">relpath</span><span class="p">):</span>
-        <span class="c1">#print(f&#39;catalog_relpath = {relpath}&#39;)</span>
-        <span class="c1"># raise exception if required YAML `catalog` attributes are missing</span>
-        <span class="k">for</span> <span class="n">yaml_attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">]:</span>
-            <span class="k">if</span> <span class="n">yaml_attr</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">yaml_catalog_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Missing YAML catalog `</span><span class="si">{</span><span class="n">yaml_attr</span><span class="si">}</span><span class="s1">` attribute: </span><span class="si">{</span><span class="n">yaml_catalog_dict</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="c1"># add service corresponding to each service JSON file</span>
+        <span class="k">for</span> <span class="n">service_json_file</span> <span class="ow">in</span> <span class="n">service_json_files</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">service_json_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">service_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">services</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ExternalService</span><span class="p">(</span><span class="o">**</span><span class="n">service_dict</span><span class="p">))</span>
 
-        <span class="c1"># set default YAML `extensions` attribute value to empty list if missing</span>
-        <span class="n">extensions</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="s1">&#39;extensions&#39;</span> <span class="ow">in</span> <span class="n">yaml_catalog_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">extensions</span> <span class="o">=</span> <span class="n">yaml_catalog_dict</span><span class="p">[</span><span class="s1">&#39;extensions&#39;</span><span class="p">]</span>
-
-        <span class="c1"># set default YAML `catalogs` attribute value to empty list if missing</span>
-        <span class="n">catalogs_relpaths</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">catalogs_ids</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="s1">&#39;catalogs&#39;</span> <span class="ow">in</span> <span class="n">yaml_catalog_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">catalogs_relpaths</span> <span class="o">=</span> <span class="n">yaml_catalog_dict</span><span class="p">[</span><span class="s1">&#39;catalogs&#39;</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">catalogs_relpath</span> <span class="ow">in</span> <span class="n">catalogs_relpaths</span><span class="p">:</span>
-                <span class="n">catalog_relpath</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">relpath</span><span class="p">,</span> <span class="n">catalogs_relpath</span><span class="p">)</span>
-                <span class="n">abspath</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">catalog_relpath</span><span class="p">))</span>
-                <span class="n">catalog_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_yaml_catalog_file</span><span class="p">(</span><span class="n">abspath</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">add_catalog</span><span class="p">(</span><span class="n">catalog_dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">catalog_relpath</span><span class="o">.</span><span class="n">parent</span><span class="p">))</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_added_catalog_id</span><span class="p">():</span>
-                    <span class="n">catalogs_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_added_catalog_id</span><span class="p">())</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">YAMLInvalidDefinition</span><span class="p">(</span><span class="s1">&#39;Invalid YAML collection catalog: </span><span class="si">{catalog_dict}</span><span class="s1">&#39;</span><span class="p">)</span>
-
-        <span class="c1"># set default YAML `collections` attribute value to empty list if missing</span>
-        <span class="n">collections_relpaths</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">collections_ids</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="s1">&#39;collections&#39;</span> <span class="ow">in</span> <span class="n">yaml_catalog_dict</span><span class="p">:</span>
-            <span class="n">collections_relpaths</span> <span class="o">=</span> <span class="n">yaml_catalog_dict</span><span class="p">[</span><span class="s1">&#39;collections&#39;</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">collections_relpath</span> <span class="ow">in</span> <span class="n">collections_relpaths</span><span class="p">:</span>
-                <span class="n">collections_relpath</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">relpath</span><span class="p">,</span> <span class="n">collections_relpath</span><span class="p">)</span>
-                <span class="n">abspath</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">collections_relpath</span><span class="p">))</span>
-                <span class="n">yaml_collection_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_yaml_collection_file</span><span class="p">(</span><span class="n">abspath</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">add_collection</span><span class="p">(</span><span class="n">yaml_collection_dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">collections_relpath</span><span class="o">.</span><span class="n">parent</span><span class="p">))</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_added_collection_id</span><span class="p">():</span>
-                    <span class="n">collections_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_added_collection_id</span><span class="p">())</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">YAMLInvalidDefinition</span><span class="p">(</span><span class="s1">&#39;Invalid YAML collection definition: </span><span class="si">{collection_dict}</span><span class="s1">&#39;</span><span class="p">)</span>
-
-        <span class="c1"># create and add catalog</span>
-        <span class="n">catalog</span> <span class="o">=</span> <span class="n">CatalogDefinition</span><span class="p">(</span>
-            <span class="nb">id</span><span class="o">=</span><span class="n">yaml_catalog_dict</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span>
-            <span class="n">title</span><span class="o">=</span><span class="n">yaml_catalog_dict</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">],</span>
-            <span class="n">description</span><span class="o">=</span><span class="n">yaml_catalog_dict</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">],</span>
-            <span class="n">extensions</span><span class="o">=</span><span class="n">extensions</span><span class="p">,</span>
-            <span class="n">catalogs</span><span class="o">=</span><span class="n">catalogs_ids</span><span class="p">,</span>
-            <span class="n">collections</span><span class="o">=</span><span class="n">collections_ids</span><span class="p">,</span>
-            <span class="n">path</span><span class="o">=</span><span class="n">relpath</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">catalogs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">catalog</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="YAMLRegistry.add_collection"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.YAMLRegistry.add_collection">[docs]</a>    <span class="k">def</span> <span class="nf">add_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yaml_collection_dict</span><span class="p">,</span> <span class="n">relpath</span><span class="p">):</span>
-        <span class="c1">#print(f&#39;collection_relpath = {relpath}&#39;)</span>
-        <span class="c1"># raise exception if required YAML `collection` attributes are missing</span>
-        <span class="k">for</span> <span class="n">yaml_attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="s1">&#39;source&#39;</span><span class="p">]:</span>
-            <span class="k">if</span> <span class="n">yaml_attr</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">yaml_collection_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Missing YAML collection `</span><span class="si">{</span><span class="n">yaml_attr</span><span class="si">}</span><span class="s1">` attribute in: </span><span class="si">{</span><span class="n">yaml_collection_dict</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-
-        <span class="c1"># set default YAML `extensions` attribute value to empty list if missing</span>
-        <span class="n">extensions</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="s1">&#39;extensions&#39;</span> <span class="ow">in</span> <span class="n">yaml_collection_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">extensions</span> <span class="o">=</span> <span class="n">yaml_collection_dict</span><span class="p">[</span><span class="s1">&#39;extensions&#39;</span><span class="p">]</span>
-
-        <span class="n">yaml_source_dict</span> <span class="o">=</span> <span class="n">yaml_collection_dict</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">]</span>
-        <span class="n">service</span> <span class="o">=</span> <span class="n">ServiceDefinition</span><span class="p">(</span><span class="o">**</span><span class="n">yaml_source_dict</span><span class="p">[</span><span class="s1">&#39;service&#39;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_service</span><span class="p">(</span><span class="n">service</span><span class="p">)</span>
-
-        <span class="n">metadata_schema</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-        <span class="k">if</span> <span class="s1">&#39;metadata_schema&#39;</span> <span class="ow">in</span> <span class="n">yaml_source_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">metadata_schema</span> <span class="o">=</span> <span class="n">yaml_source_dict</span><span class="p">[</span><span class="s1">&#39;metadata_schema&#39;</span><span class="p">]</span>
-
-        <span class="n">file_format</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-        <span class="k">if</span> <span class="s1">&#39;file_format&#39;</span> <span class="ow">in</span> <span class="n">yaml_source_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">file_format</span> <span class="o">=</span> <span class="n">yaml_source_dict</span><span class="p">[</span><span class="s1">&#39;file_format&#39;</span><span class="p">]</span>
-
-        <span class="n">source</span> <span class="o">=</span> <span class="n">SourceDefinition</span><span class="p">(</span><span class="n">service</span><span class="o">=</span><span class="n">service</span><span class="p">,</span> <span class="n">metadata_schema</span><span class="o">=</span><span class="n">metadata_schema</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="n">file_format</span><span class="p">)</span>
-
-        <span class="c1"># create and add catalog to registry</span>
-        <span class="n">collection</span> <span class="o">=</span> <span class="n">CollectionDefinition</span><span class="p">(</span>
-            <span class="nb">id</span><span class="o">=</span><span class="n">yaml_collection_dict</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span>
-            <span class="n">title</span><span class="o">=</span><span class="n">yaml_collection_dict</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">],</span>
-            <span class="n">description</span><span class="o">=</span><span class="n">yaml_collection_dict</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">],</span>
-            <span class="n">extensions</span><span class="o">=</span><span class="n">extensions</span><span class="p">,</span>
-            <span class="n">source</span><span class="o">=</span><span class="n">source</span><span class="p">,</span>
-            <span class="n">path</span><span class="o">=</span><span class="n">relpath</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">collections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="YAMLRegistry.add_service"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.YAMLRegistry.add_service">[docs]</a>    <span class="k">def</span> <span class="nf">add_service</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="p">:</span> <span class="n">ServiceDefinition</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">services</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">service</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="YAMLRegistry.parse_yaml_catalog_file"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.YAMLRegistry.parse_yaml_catalog_file">[docs]</a>    <span class="k">def</span> <span class="nf">parse_yaml_catalog_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yaml_catalog_relpath</span><span class="p">):</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">yaml_catalog_relpath</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-            <span class="n">yaml_catalog_dict</span> <span class="o">=</span> <span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="p">))</span>
-        <span class="n">catalog_dict</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="s1">&#39;catalog&#39;</span> <span class="ow">in</span> <span class="n">yaml_catalog_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">catalog_dict</span> <span class="o">=</span> <span class="n">yaml_catalog_dict</span><span class="p">[</span><span class="s1">&#39;catalog&#39;</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">catalog_dict</span></div>
-
-<div class="viewcode-block" id="YAMLRegistry.parse_yaml_collection_file"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.YAMLRegistry.parse_yaml_collection_file">[docs]</a>    <span class="k">def</span> <span class="nf">parse_yaml_collection_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yaml_collection_relpath</span><span class="p">):</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">yaml_collection_relpath</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-            <span class="n">yaml_collection_dict</span> <span class="o">=</span> <span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="p">))</span>
-        <span class="n">collection_dict</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="s1">&#39;collection&#39;</span> <span class="ow">in</span> <span class="n">yaml_collection_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">collection_dict</span> <span class="o">=</span> <span class="n">yaml_collection_dict</span><span class="p">[</span><span class="s1">&#39;collection&#39;</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">collection_dict</span></div>
-
-<div class="viewcode-block" id="YAMLRegistry.last_added_catalog_id"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.YAMLRegistry.last_added_catalog_id">[docs]</a>    <span class="k">def</span> <span class="nf">last_added_catalog_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">catalogs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">id</span></div>
-
-<div class="viewcode-block" id="YAMLRegistry.last_added_collection_id"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.YAMLRegistry.last_added_collection_id">[docs]</a>    <span class="k">def</span> <span class="nf">last_added_collection_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">collections</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">id</span></div>
-
-<div class="viewcode-block" id="YAMLRegistry.get_collections_ids"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.YAMLRegistry.get_collections_ids">[docs]</a>    <span class="k">def</span> <span class="nf">get_collections_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="n">collections_ids</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">collection</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">collections</span><span class="p">:</span>
-            <span class="k">if</span> <span class="p">(</span><span class="nb">id</span> <span class="ow">in</span> <span class="n">collection</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">path</span> <span class="ow">in</span> <span class="n">collection</span><span class="o">.</span><span class="n">path</span><span class="p">):</span>
-                <span class="n">collections_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">collection</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">collections_ids</span></div>
-
-<div class="viewcode-block" id="YAMLRegistry.get_collections"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.YAMLRegistry.get_collections">[docs]</a>    <span class="k">def</span> <span class="nf">get_collections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">CollectionDefinition</span><span class="p">]:</span>
-        <span class="n">matching_collections</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">collection</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">collections</span><span class="p">:</span>
-            <span class="k">if</span> <span class="p">(</span><span class="nb">id</span> <span class="ow">in</span> <span class="n">collection</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">path</span> <span class="ow">in</span> <span class="n">collection</span><span class="o">.</span><span class="n">path</span><span class="p">):</span>
-                <span class="n">matching_collections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">matching_collections</span></div>
-
-<div class="viewcode-block" id="YAMLRegistry.get_collection"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.YAMLRegistry.get_collection">[docs]</a>    <span class="k">def</span> <span class="nf">get_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CollectionDefinition</span><span class="p">]:</span>
-        <span class="k">for</span> <span class="n">collection</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">collections</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">collection</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="nb">id</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">collection</span>
-        <span class="k">return</span> <span class="kc">None</span></div>
-
-<div class="viewcode-block" id="YAMLRegistry.get_catalogs_ids"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.YAMLRegistry.get_catalogs_ids">[docs]</a>    <span class="k">def</span> <span class="nf">get_catalogs_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="n">catalogs_ids</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">catalog</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">catalogs</span><span class="p">:</span>
-            <span class="k">if</span> <span class="p">(</span><span class="nb">id</span> <span class="ow">in</span> <span class="n">catalog</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">path</span> <span class="ow">in</span> <span class="n">catalog</span><span class="o">.</span><span class="n">path</span><span class="p">):</span>
-                <span class="n">catalogs_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">catalog</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">catalogs_ids</span></div>
-
-<div class="viewcode-block" id="YAMLRegistry.get_catalogs"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.YAMLRegistry.get_catalogs">[docs]</a>    <span class="k">def</span> <span class="nf">get_catalogs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">CatalogDefinition</span><span class="p">]:</span>
-        <span class="n">matching_catalogs</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">catalog</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">catalogs</span><span class="p">:</span>
-            <span class="k">if</span> <span class="p">(</span><span class="nb">id</span> <span class="ow">in</span> <span class="n">catalog</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">path</span> <span class="ow">in</span> <span class="n">catalog</span><span class="o">.</span><span class="n">path</span><span class="p">):</span>
-                <span class="n">matching_catalogs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">catalog</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">matching_catalogs</span></div>
-
-<div class="viewcode-block" id="YAMLRegistry.get_catalog"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.YAMLRegistry.get_catalog">[docs]</a>    <span class="k">def</span> <span class="nf">get_catalog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CatalogDefinition</span><span class="p">]:</span>
-        <span class="k">for</span> <span class="n">catalog</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">catalogs</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">catalog</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="nb">id</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">catalog</span>
-        <span class="k">return</span> <span class="kc">None</span></div></div>
-
-<div class="viewcode-block" id="RESTOAPIRegistry"><a class="viewcode-back" href="../../crawler_api.html#crawler.registry.RESTOAPIRegistry">[docs]</a><span class="k">class</span> <span class="nc">RESTOAPIRegistry</span><span class="p">(</span><span class="n">AbstractRegistry</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;RESTOAPIRegistry class.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">definition</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not implemented yet.&#39;</span><span class="p">)</span></div>
-
-
-<span class="n">REGISTRY_TYPES</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;YAML&#39;</span><span class="p">:</span> <span class="n">YAMLRegistry</span><span class="p">,</span>
-    <span class="s1">&#39;RESTO_REGISTRY_API&#39;</span><span class="p">:</span> <span class="n">RESTOAPIRegistry</span>  <span class="c1"># doesn&#39;t exists yet</span>
-<span class="p">}</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">services</span></div></div>
 </pre></div>
 
               </div>

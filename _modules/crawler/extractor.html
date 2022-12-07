@@ -102,7 +102,14 @@ const thebe_selector_output = ".output, .cell_output"
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <p aria-level="2" class="caption" role="heading">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../design.html">
+   Design
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   References
  </span>
@@ -110,12 +117,19 @@ const thebe_selector_output = ".output, .cell_output"
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="../../crawler_api.html">
-   Crawler API
+   Crawler Python API
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../crawler_cli.html">
    Crawler CLI
+  </a>
+ </li>
+</ul>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference external" href="https://pdssp.github.io/pdssp-docs/">
+   PDSSP Platform Documentation
   </a>
  </li>
 </ul>
@@ -252,7 +266,24 @@ title="Open an issue"
               <div>
                 
   <h1>Source code for crawler.extractor</h1><div class="highlight"><pre>
-<span></span><span class="s2">&quot;PDSSP Crawler extractor module (extract and read).&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;PDSSP Crawler extractor module (extract and read).</span>
+
+<span class="sd">To add an Extractor handling a new service type::</span>
+
+<span class="sd">    class NEW_Extractor(AbstractExtractor):</span>
+<span class="sd">        def __init__(self, service=None):</span>
+<span class="sd">            super().__init__(service=service)</span>
+<span class="sd">            pass</span>
+
+
+<span class="sd">    EXTRACTORS = {</span>
+<span class="sd">        ExternalServiceType.EPNTAP: EPNTAP_Extractor,</span>
+<span class="sd">        ExternalServiceType.PDSODE: PDSODE_Extractor,</span>
+<span class="sd">        ExternalServiceType.WFS: WFS_Extractor,</span>
+<span class="sd">        ExternalServiceType.NEW: NEW_Extractor</span>
+<span class="sd">    }</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># from .collection import SourceProduct</span>
 <span class="kn">import</span> <span class="nn">requests</span>
@@ -260,53 +291,66 @@ title="Open an issue"
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">from</span> <span class="nn">.store</span> <span class="kn">import</span> <span class="n">DataStore</span>
+<span class="kn">from</span> <span class="nn">.datastore</span> <span class="kn">import</span> <span class="n">DataStore</span><span class="p">,</span> <span class="n">SourceCollectionModel</span>
+<span class="kn">from</span> <span class="nn">.registry</span> <span class="kn">import</span> <span class="n">ExternalServiceType</span><span class="p">,</span> <span class="n">Service</span>
+<span class="kn">from</span> <span class="nn">.schemas</span> <span class="kn">import</span> <span class="n">create_schema_object</span><span class="p">,</span> <span class="n">PDSODE_Product</span>
 
-<div class="viewcode-block" id="Extractor"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.Extractor">[docs]</a><span class="k">def</span> <span class="nf">Extractor</span><span class="p">(</span><span class="n">collection_definition</span><span class="p">):</span>
+<div class="viewcode-block" id="Extractor"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.Extractor">[docs]</a><span class="k">def</span> <span class="nf">Extractor</span><span class="p">(</span><span class="n">service_type</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span> <span class="c1"># source_collection_model as input !!!!!!</span>
     <span class="sd">&quot;&quot;&quot;Extractor function serving as Extractor objects factory.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">SERVICES_TYPES</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;EPNTAP_API&#39;</span><span class="p">:</span> <span class="n">EPNTAP_Extractor</span><span class="p">,</span>
-        <span class="s1">&#39;PDSODE_API&#39;</span><span class="p">:</span> <span class="n">PDSODE_Extractor</span><span class="p">,</span>
-        <span class="s1">&#39;WFS_API&#39;</span><span class="p">:</span> <span class="n">WFS_Extractor</span>
-    <span class="p">}</span>
-    <span class="n">service_type</span> <span class="o">=</span> <span class="n">collection_definition</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">type</span>
-    <span class="k">if</span> <span class="n">service_type</span> <span class="ow">in</span> <span class="n">SERVICES_TYPES</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="n">ExtractorClass</span> <span class="o">=</span> <span class="n">SERVICES_TYPES</span><span class="p">[</span><span class="n">service_type</span><span class="p">]</span>
-        <span class="n">extractor</span> <span class="o">=</span> <span class="n">ExtractorClass</span><span class="p">(</span><span class="n">collection_definition</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">service</span><span class="p">:</span>
+        <span class="n">service_type_enum</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">type</span>
+    <span class="k">elif</span> <span class="n">service_type</span><span class="p">:</span>
+        <span class="n">service_type_enum</span> <span class="o">=</span> <span class="n">ExternalServiceType</span><span class="p">[</span><span class="n">service_type</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Either a `service_type` (str) or `service` (Service) keyword argument is required as input.&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">service_type_enum</span> <span class="ow">in</span> <span class="n">EXTRACTORS</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">ExtractorClass</span> <span class="o">=</span> <span class="n">EXTRACTORS</span><span class="p">[</span><span class="n">service_type_enum</span><span class="p">]</span>
+        <span class="n">extractor</span> <span class="o">=</span> <span class="n">ExtractorClass</span><span class="p">(</span><span class="n">service</span><span class="o">=</span><span class="n">service</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">extractor</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown catalog service type: </span><span class="si">{</span><span class="n">service_type</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="kc">None</span></div>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Invalid catalog service type: </span><span class="si">{</span><span class="n">service_type_enum</span><span class="si">}</span><span class="s1">. Allowed types are: </span><span class="si">{</span><span class="n">EXTRACTORS</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="AbstractExtractor"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.AbstractExtractor">[docs]</a><span class="k">class</span> <span class="nc">AbstractExtractor</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Abstract Extractor class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection_definition</span><span class="p">):</span>
-        <span class="c1"># self.source_collection = collection_definition</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">collection_id</span> <span class="o">=</span> <span class="n">collection_definition</span><span class="o">.</span><span class="n">id</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">service_type</span> <span class="o">=</span> <span class="n">collection_definition</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">type</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">service_url</span> <span class="o">=</span> <span class="n">collection_definition</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">url</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">service_params</span> <span class="o">=</span> <span class="n">collection_definition</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">params</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">source_schema</span> <span class="o">=</span> <span class="n">collection_definition</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">metadata_schema</span>  <span class="c1"># Eg: PDSODE, EPNTAP, MarsSI</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">source_format</span> <span class="o">=</span> <span class="n">collection_definition</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">file_format</span>  <span class="c1"># Eg: ODE JSON, GML, VOTable, GeoJSON, Shapefiles</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">extracted_data_dir</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># automatically set extractor service type from inheriting Extractor class.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service_type</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">class_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="k">for</span> <span class="n">service_type</span> <span class="ow">in</span> <span class="n">EXTRACTORS</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">class_name</span> <span class="o">==</span> <span class="n">EXTRACTORS</span><span class="p">[</span><span class="n">service_type</span><span class="p">]</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">service_type</span> <span class="o">=</span> <span class="n">service_type</span>
+        <span class="c1"># print(f&#39;service type = {self.service_type}&#39;)</span>
+
+        <span class="c1"># check that optional input service object matches with the extractor service type.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service_collections</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">service</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_service</span><span class="p">(</span><span class="n">service</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">products</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># self.n_products = 0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_idx</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">product_idx</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">extracted</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_extracted_files</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extracted_files</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">products</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">extracted</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="c1"># self.extracted_data_dir = &#39;&#39;</span>
 
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">file_iter</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">product_iter</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">return</span>
+<div class="viewcode-block" id="AbstractExtractor.set_service"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.AbstractExtractor.set_service">[docs]</a>    <span class="k">def</span> <span class="nf">set_service</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">service</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">service_type</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">service</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">service_collections</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># reset list of service collections</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;`</span><span class="si">{</span><span class="n">service</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s1">` type from input `service` object does not match &#39;</span>
+                             <span class="sa">f</span><span class="s1">&#39;Extractor `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">service_type</span><span class="si">}</span><span class="s1">` service type &#39;</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># returns next product from wihtin the extracted file set.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">product_iter</span> <span class="o">+=</span> <span class="mi">1</span>
-
-        <span class="c1"># if the end of the current extracted file has been reached, move to the next one.</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">products</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">product_iter</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># a SourceProduct object</span>
+<div class="viewcode-block" id="AbstractExtractor.get_service_collections"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.AbstractExtractor.get_service_collections">[docs]</a>    <span class="k">def</span> <span class="nf">get_service_collections</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[]</span></div>
 
 <div class="viewcode-block" id="AbstractExtractor.extract"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.AbstractExtractor.extract">[docs]</a>    <span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span></div></div>
@@ -314,67 +358,245 @@ title="Open an issue"
 <div class="viewcode-block" id="PDSODE_Extractor"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.PDSODE_Extractor">[docs]</a><span class="k">class</span> <span class="nc">PDSODE_Extractor</span><span class="p">(</span><span class="n">AbstractExtractor</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;PDSODE_Extractor class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection_definition</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">collection_definition</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">extracted_files</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">service</span><span class="o">=</span><span class="n">service</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">response</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">retrieve_service_collections</span><span class="p">(</span><span class="n">service</span><span class="o">=</span><span class="n">service</span><span class="p">)</span>
 
-<div class="viewcode-block" id="PDSODE_Extractor.extract"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.PDSODE_Extractor.extract">[docs]</a>    <span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># set ODE API query</span>
+        <span class="k">if</span> <span class="n">extracted_files</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">extracted_files</span> <span class="o">=</span> <span class="n">extracted_files</span>
+
+<div class="viewcode-block" id="PDSODE_Extractor.retrieve_service_collections"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.PDSODE_Extractor.retrieve_service_collections">[docs]</a>    <span class="k">def</span> <span class="nf">retrieve_service_collections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">service</span><span class="p">:</span>  <span class="c1"># set extractor service to input optional service keyword argument</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_service</span><span class="p">(</span><span class="n">service</span><span class="p">)</span>
+
+        <span class="c1"># form query to retrieve all</span>
         <span class="n">query</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
-            <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service_params</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">],</span>
-            <span class="n">query</span><span class="o">=</span><span class="s1">&#39;product&#39;</span><span class="p">,</span>
-            <span class="n">results</span><span class="o">=</span><span class="s1">&#39;copmf&#39;</span><span class="p">,</span>  <span class="c1"># warning: this impacts the results metadata</span>
+            <span class="n">query</span><span class="o">=</span><span class="s1">&#39;iipy&#39;</span><span class="p">,</span>
             <span class="n">output</span><span class="o">=</span><span class="s1">&#39;JSON&#39;</span><span class="p">,</span>
-            <span class="n">ihid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service_params</span><span class="p">[</span><span class="s1">&#39;ihid&#39;</span><span class="p">],</span>
-            <span class="n">iid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service_params</span><span class="p">[</span><span class="s1">&#39;iid&#39;</span><span class="p">],</span>
-            <span class="n">pt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service_params</span><span class="p">[</span><span class="s1">&#39;pt&#39;</span><span class="p">]</span>
+            <span class="c1"># odemetadb=&#39;mars&#39;</span>
         <span class="p">)</span>
 
         <span class="c1"># execute query</span>
-        <span class="k">with</span> <span class="n">closing</span><span class="p">(</span><span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">service_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">query</span><span class="p">))</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Querying PDS ODE REST API service...&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">closing</span><span class="p">(</span><span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">query</span><span class="p">))</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
                 <span class="n">response</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;PDSODE_Extractor error with query at url: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">service_url</span><span class="si">}</span><span class="s1"> with code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;PDS ODE REST API query </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1"> error: url=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">, query=</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># parse response into the list of SourceCollectionModel objects, `self.service_collections`.</span>
+        <span class="n">iiptset_dicts</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;ODEResults&#39;</span><span class="p">][</span><span class="s1">&#39;IIPTSets&#39;</span><span class="p">][</span><span class="s1">&#39;IIPTSet&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">iiptset_dict</span> <span class="ow">in</span> <span class="n">iiptset_dicts</span><span class="p">:</span>
+            <span class="c1"># do not add collection if products have no valid footprints</span>
+            <span class="k">if</span> <span class="s1">&#39;ValidFootprints&#39;</span> <span class="ow">in</span> <span class="n">iiptset_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">iiptset_dict</span><span class="p">[</span><span class="s1">&#39;ValidFootprints&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+            <span class="c1"># set source collection ID</span>
+            <span class="n">collection_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">iiptset_dict</span><span class="p">[</span><span class="s2">&quot;IHID&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">iiptset_dict</span><span class="p">[</span><span class="s2">&quot;IID&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">iiptset_dict</span><span class="p">[</span><span class="s2">&quot;PT&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
+
+            <span class="c1"># set number of products</span>
+            <span class="k">if</span> <span class="s1">&#39;NumberProducts&#39;</span> <span class="ow">in</span> <span class="n">iiptset_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">n_products</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">iiptset_dict</span><span class="p">[</span><span class="s1">&#39;NumberProducts&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Missing `NumberProducts` for </span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1"> IIPTSet: not added to service collections.&#39;</span><span class="p">)</span>
+                <span class="n">n_products</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># TODO: valid target before adding to targets list (schema for targets, instrument hosts, instruments, product types?).</span>
+            <span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="n">iiptset_dict</span><span class="p">[</span><span class="s1">&#39;ODEMetaDB&#39;</span><span class="p">]]</span>  <span class="c1"># at least the target related to the ODEMetaDB</span>
+            <span class="k">if</span> <span class="s1">&#39;ValidTargets&#39;</span> <span class="ow">in</span> <span class="n">iiptset_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="s1">&#39;ValidTarget&#39;</span> <span class="ow">in</span> <span class="n">iiptset_dict</span><span class="p">[</span><span class="s1">&#39;ValidTargets&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">iiptset_valid_target</span> <span class="o">=</span> <span class="n">iiptset_dict</span><span class="p">[</span><span class="s1">&#39;ValidTargets&#39;</span><span class="p">][</span><span class="s1">&#39;ValidTarget&#39;</span><span class="p">]</span>
+                    <span class="c1"># print(iiptset_valid_target)</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iiptset_valid_target</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                        <span class="n">targets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">iiptset_valid_target</span><span class="p">)</span>  <span class="c1"># only one target is defined, as a string</span>
+                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iiptset_valid_target</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>  <span class="c1"># more than one target defined, as a list of string</span>
+                        <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">iiptset_valid_target</span><span class="p">:</span>
+                            <span class="n">targets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">source_collection</span> <span class="o">=</span> <span class="n">SourceCollectionModel</span><span class="p">(</span><span class="n">collection_id</span><span class="o">=</span><span class="n">collection_id</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="p">,</span>
+                                                          <span class="n">n_products</span><span class="o">=</span><span class="n">n_products</span><span class="p">,</span> <span class="n">targets</span><span class="o">=</span><span class="n">targets</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">source_collection</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="k">if</span> <span class="n">source_collection</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">service_collections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">source_collection</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PDSODE_Extractor.get_service_collections"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.PDSODE_Extractor.get_service_collections">[docs]</a>    <span class="k">def</span> <span class="nf">get_service_collections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">targets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">valid_footprint</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="c1"># TODO: Implement fitering, possibly based on generic keywords: targets, valid_footprint, instrument_host_ids, instrument_ids, product_types.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">service_collections</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">retrieve_service_collections</span><span class="p">(</span><span class="n">service</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">service_collections</span></div>
+
+    <span class="c1">#</span>
+    <span class="c1"># def extract_collection_metadata(self, collection_id, service=None):</span>
+    <span class="c1">#     &quot;&quot;&quot;Extract collection metadata into source collection file.&quot;&quot;&quot;</span>
+    <span class="c1">#     pass</span>
+
+<div class="viewcode-block" id="PDSODE_Extractor.get_collection_metadata"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.PDSODE_Extractor.get_collection_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">get_collection_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection_id</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SourceCollectionModel</span><span class="p">:</span>
+        <span class="c1"># if service:  # set extractor service to input optional service keyword argument</span>
+        <span class="c1">#     self.set_service(service)</span>
+        <span class="k">for</span> <span class="n">service_collection</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">service_collections</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">service_collection</span><span class="o">.</span><span class="n">collection_id</span> <span class="o">==</span> <span class="n">collection_id</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">service_collection</span></div>
+
+<div class="viewcode-block" id="PDSODE_Extractor.read_collection_metadata"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.PDSODE_Extractor.read_collection_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">read_collection_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection_metadata_file_path</span><span class="p">):</span> <span class="c1"># -&gt; SourceCollectionMetadata:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">collection_metadata_file_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="PDSODE_Extractor.reset_reader_iterator"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.PDSODE_Extractor.reset_reader_iterator">[docs]</a>    <span class="k">def</span> <span class="nf">reset_reader_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_idx</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">products</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">product_idx</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="PDSODE_Extractor.read_next_product_metadata"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.PDSODE_Extractor.read_next_product_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">read_next_product_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Iterator reader returning the next product metadata from extracted collection files.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">products</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_idx</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_extracted_files</span><span class="p">:</span>
+                <span class="n">file_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extracted_files</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">file_idx</span><span class="p">]</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+                <span class="c1"># store source products metadata in the list of SourceProduct.</span>
+                <span class="k">for</span> <span class="n">metadata_dict</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;ODEResults&#39;</span><span class="p">][</span><span class="s1">&#39;Products&#39;</span><span class="p">][</span><span class="s1">&#39;Product&#39;</span><span class="p">]:</span>
+                    <span class="n">product_metadata</span> <span class="o">=</span> <span class="n">PDSODE_Product</span><span class="p">(</span><span class="o">**</span><span class="n">metadata_dict</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">products</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">product_metadata</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;No more product metadata to read.&#39;</span><span class="p">)</span>
+
+        <span class="n">next_product</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">products</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">product_idx</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">product_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">product_idx</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">products</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">product_idx</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">products</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">file_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">next_product</span></div>
 
 
-        <span class="n">extracted_file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">DataStore</span><span class="p">()</span><span class="o">.</span><span class="n">source_data_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">collection_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">collection_id</span><span class="o">+</span><span class="s1">&#39;_001.json&#39;</span><span class="p">)</span>
-        <span class="n">Path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">extracted_file_path</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="PDSODE_Extractor.extract"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.PDSODE_Extractor.extract">[docs]</a>    <span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection_id</span><span class="p">,</span> <span class="n">output_dir_path</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Extract collection files required to retrieve collection and product metadata.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">service</span><span class="p">:</span>  <span class="c1"># set extractor service to input optional service keyword argument</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_service</span><span class="p">(</span><span class="n">service</span><span class="p">)</span>
 
-        <span class="c1"># write extracted file</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">extracted_file_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+        <span class="c1"># set `query_limit` parameters</span>
+        <span class="n">query_limit</span> <span class="o">=</span> <span class="mi">100</span>
+        <span class="n">extract_limit</span> <span class="o">=</span> <span class="mi">300</span>  <span class="c1"># temporary for testing purpose</span>
+
+        <span class="c1"># Extract and save collection meta.</span>
+        <span class="c1">#</span>
+        <span class="n">collection_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_collection_metadata</span><span class="p">(</span><span class="n">collection_id</span><span class="p">)</span>
+
+        <span class="n">collection_file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_dir_path</span><span class="p">,</span> <span class="n">collection_id</span><span class="p">,</span> <span class="n">collection_id</span><span class="o">+</span><span class="s1">&#39;.json&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">Path</span><span class="o">.</span><span class="n">is_file</span><span class="p">(</span><span class="n">collection_file_path</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Extracted </span><span class="si">{</span><span class="n">collection_file_path</span><span class="si">}</span><span class="s1"> file already exists. Use `overwrite=True` to overwrite existing files.&#39;</span><span class="p">)</span>
+                <span class="k">return</span>
+
+        <span class="n">Path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">collection_file_path</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">collection_file_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">collection_metadata</span><span class="o">.</span><span class="n">json</span><span class="p">(),</span> <span class="n">file</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_extracted_files</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extracted_files</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">collection_file_path</span><span class="p">)]</span>
+
+        <span class="c1"># # more sophisticated, but useful?...</span>
+        <span class="c1"># self.extracted_files = {&#39;collection_metadata_file&#39;: collection_file_path,</span>
+        <span class="c1">#                         &#39;products_metadata_files&#39;: [str(collection_file_path)]}</span>
+
+        <span class="c1"># Extract and save collection products metadata.</span>
+        <span class="c1">#</span>
+        <span class="c1"># derive (ihid, iid, pt) IIPTSet query parameters from collection ID</span>
+        <span class="n">iiptset</span> <span class="o">=</span> <span class="n">collection_id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+
+        <span class="c1"># set `target` query parameter</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">collection_metadata</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="c1"># set default ODE API query</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span>
+            <span class="n">query</span><span class="o">=</span><span class="s1">&#39;product&#39;</span><span class="p">,</span>
+            <span class="n">results</span><span class="o">=</span><span class="s1">&#39;copmf&#39;</span><span class="p">,</span>  <span class="c1"># warning: this impacts the results metadata</span>
+            <span class="n">output</span><span class="o">=</span><span class="s1">&#39;JSON&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">limit</span><span class="o">=</span><span class="n">query_limit</span><span class="p">,</span>
+            <span class="n">ihid</span><span class="o">=</span><span class="n">iiptset</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">iid</span><span class="o">=</span><span class="n">iiptset</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">pt</span><span class="o">=</span><span class="n">iiptset</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">n_products</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">collection_metadata</span><span class="o">.</span><span class="n">n_products</span><span class="p">,</span> <span class="n">extract_limit</span><span class="p">)</span>  <span class="c1"># temporary for testing purpose</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Extracting </span><span class="si">{</span><span class="n">n_products</span><span class="si">}</span><span class="s1"> products metadata...&#39;</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">offset</span> <span class="o">&lt;</span> <span class="n">n_products</span><span class="p">:</span>
+            <span class="c1"># update query `offset` parameter</span>
+            <span class="n">query</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">offset</span>
+
+            <span class="c1"># execute query</span>
+            <span class="k">with</span> <span class="n">closing</span><span class="p">(</span><span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">query</span><span class="p">))</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+                    <span class="n">response</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;PDSODE_Extractor query error: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="c1"># write output file</span>
+            <span class="n">extracted_file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_dir_path</span><span class="p">,</span> <span class="n">collection_id</span><span class="p">,</span> <span class="n">collection_id</span><span class="o">+</span><span class="sa">f</span><span class="s1">&#39;_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_extracted_files</span><span class="si">:</span><span class="s1">03</span><span class="si">}</span><span class="s1">.json&#39;</span><span class="p">)</span>
+
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">extracted_file_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="n">extracted_file_path</span><span class="p">)</span>
+
+            <span class="n">offset</span> <span class="o">+=</span> <span class="n">query_limit</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">extracted_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">extracted_file_path</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">n_extracted_files</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">extracted</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">extracted_files</span><span class="si">}</span><span class="s1"> extracted files in </span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">output_dir_path</span><span class="p">,</span> <span class="n">collection_id</span><span class="p">)</span><span class="si">}</span><span class="s1"> directory.&#39;</span><span class="p">)</span></div></div>
 
         <span class="c1">#self.products = response[&#39;ODEResults&#39;][&#39;Products&#39;][&#39;Product&#39;]   Optional, when only one extracted file is required</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_extracted_files</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">extracted_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">extracted_file_path</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="PDSODE_Extractor.read_next"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.PDSODE_Extractor.read_next">[docs]</a>    <span class="k">def</span> <span class="nf">read_next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">file_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extracted_files</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">file_iter</span><span class="p">]</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-
-        <span class="c1"># store source products metadata in the list of SourceProduct.</span>
-        <span class="k">for</span> <span class="n">metadata_dict</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;ODEResults&#39;</span><span class="p">][</span><span class="s1">&#39;Products&#39;</span><span class="p">][</span><span class="s1">&#39;Product&#39;</span><span class="p">]:</span>
-            <span class="n">source_product</span> <span class="o">=</span> <span class="n">SourceProduct</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source_schema</span><span class="p">,</span> <span class="n">metadata_dict</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">products</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">source_product</span><span class="p">)</span></div></div>
+    <span class="c1"># def read_next(self):</span>
+    <span class="c1">#     file_path = self.extracted_files[self.file_idx]</span>
+    <span class="c1">#     with open(file_path, &#39;r&#39;) as f:</span>
+    <span class="c1">#         data = json.load(f)</span>
+    <span class="c1">#</span>
+    <span class="c1">#     # store source products metadata in the list of SourceProduct.</span>
+    <span class="c1">#     for metadata_dict in data[&#39;ODEResults&#39;][&#39;Products&#39;][&#39;Product&#39;]:</span>
+    <span class="c1">#         source_product = SourceProduct(self.source_schema, metadata_dict)</span>
+    <span class="c1">#         self.products.append(source_product)</span>
 
 
 <div class="viewcode-block" id="WFS_Extractor"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.WFS_Extractor">[docs]</a><span class="k">class</span> <span class="nc">WFS_Extractor</span><span class="p">(</span><span class="n">AbstractExtractor</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;WFS_Extractor class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">service</span><span class="o">=</span><span class="n">service</span><span class="p">)</span>
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="EPNTAP_Extractor"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.EPNTAP_Extractor">[docs]</a><span class="k">class</span> <span class="nc">EPNTAP_Extractor</span><span class="p">(</span><span class="n">AbstractExtractor</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;EPNTAP_Extractor class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">service</span><span class="o">=</span><span class="n">service</span><span class="p">)</span>
         <span class="k">pass</span></div>
+
+
+<span class="c1"># define list of available extractors</span>
+<span class="n">EXTRACTORS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">ExternalServiceType</span><span class="o">.</span><span class="n">EPNTAP</span><span class="p">:</span> <span class="n">EPNTAP_Extractor</span><span class="p">,</span>
+    <span class="n">ExternalServiceType</span><span class="o">.</span><span class="n">PDSODE</span><span class="p">:</span> <span class="n">PDSODE_Extractor</span><span class="p">,</span>
+    <span class="n">ExternalServiceType</span><span class="o">.</span><span class="n">WFS</span><span class="p">:</span> <span class="n">WFS_Extractor</span>
+<span class="p">}</span>
+<span class="sd">&quot;&quot;&quot;List of available extractors and their corresponding `ServiceType`.&quot;&quot;&quot;</span>
 </pre></div>
 
               </div>
