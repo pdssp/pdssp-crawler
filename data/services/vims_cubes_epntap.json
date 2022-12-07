@@ -1,0 +1,20 @@
+{
+    "title":"EPN-TAP VIMS cubes collection(s)",
+    "description":"EPN-TAP VIMS cubes collection(s)",
+    "providers":[
+        {
+          "name": "LGP Nantes",
+          "roles": [
+            "producer",
+            "licensor"
+          ],
+          "url": "https://vims.univ-nantes.fr/"
+        }
+    ],
+    "ssys:targets":["Titan", "Enceladus", "Dione", "Rhea"],
+    "type":"EPNTAP",
+    "url":"http://voparis-tap-planeto.obspm.fr/tap",
+    "extra_params": {
+      "tables": ["omega_cubes.epn_core"]
+    }
+}

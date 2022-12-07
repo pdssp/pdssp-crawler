@@ -4,8 +4,8 @@ import click
 import os
 import yaml
 
-from crawler.config import LOCAL_REGISTRY_YAML_FILE
-from crawler.registry import Registry
+from crawler.config import LOCAL_REGISTRY_DIRECTORY
+from crawler.registry import RegistryInterface
 import crawler.schemas
 
 package_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -29,7 +29,7 @@ def cli():
 def registry(get_collections, get_collection, get_catalogs, get_catalog, id, path):
     """Get registry catalogs and collections."""
 
-    registry = Registry('YAML', path=LOCAL_REGISTRY_YAML_FILE)
+    registry = RegistryInterface('YAML', path=LOCAL_REGISTRY_YAML_FILE)
 
     if get_collections:
         # print(id, path)

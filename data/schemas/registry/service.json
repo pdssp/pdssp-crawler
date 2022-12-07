@@ -1,0 +1,72 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+      "title": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "providers": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "name"
+          ],
+          "properties": {
+            "name": {
+              "title": "Organization name",
+              "type": "string"
+            },
+            "description": {
+              "title": "Organization description",
+              "type": "string"
+            },
+            "roles": {
+              "title": "Organization roles",
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "producer",
+                  "licensor",
+                  "processor",
+                  "host"
+                ]
+              }
+            },
+            "url": {
+              "title": "Organization homepage",
+              "type": "string",
+              "format": "iri"
+            }
+          }
+        }
+      },
+      "type": {
+        "type": "string",
+        "enum": ["STAC", "WFS", "WMS", "WMTS", "XYZ"]
+      },
+      "url": {
+        "type": "string"
+      },
+      "ping_url": {
+        "type": "string"
+      },
+      "ssys:targets": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    "required": [
+      "title",
+      "description",
+      "providers",
+      "type",
+      "url"
+    ]
+  }

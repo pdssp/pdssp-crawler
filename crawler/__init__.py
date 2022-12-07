@@ -15,5 +15,7 @@
 
 # from .crawler import EXTRACTED_DATA_DIR
 # from .crawler import extract, transform_collection, load_stac_catalog
-# from .registry import Registry
+# from .registry import RegistryInterface
 # from .collection import SourceCollection
+
+from .crawler import Crawler

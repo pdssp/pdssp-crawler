@@ -1,15 +1,15 @@
 import pytest
 
-from crawler.registry import Registry, YAMLRegistry
+from crawler.registry import RegistryInterface, YAMLRegistry
 from crawler.config import LOCAL_REGISTRY_YAML_FILE
 
 @pytest.fixture
 def registry():
     """Return a YAMLRegistry object."""
-    return Registry('YAML', path=LOCAL_REGISTRY_YAML_FILE)
+    return RegistryInterface('YAML', path=LOCAL_REGISTRY_YAML_FILE)
 
 def test_create_yaml_registry():
-    registry = Registry('YAML', path=LOCAL_REGISTRY_YAML_FILE)
+    registry = RegistryInterface('YAML', path=LOCAL_REGISTRY_YAML_FILE)
     print(registry)
     assert isinstance(registry, YAMLRegistry)
 

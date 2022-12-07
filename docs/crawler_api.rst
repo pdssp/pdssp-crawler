@@ -33,14 +33,6 @@ Crawler Python API
    :undoc-members:
    :show-inheritance:
 
-``collection`` module
----------------------
-
-.. automodule:: crawler.collection
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 ``extractor`` module
 ---------------------
 

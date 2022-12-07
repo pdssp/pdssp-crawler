@@ -63,7 +63,7 @@ parse:
     pdss_crawler_status: '{{ indev_status }}'
     pdssp_crawler_link: '[https://pdssp.ias.universite-paris-saclay.fr/crawler](https://pdssp.ias.universite-paris-saclay.fr/crawler) {octicon}`link-external;1em;sd-text-secondary` {{ pdss_crawler_status }}'
     pdssp_crawler_nlink: '[PDSSP Crawler](https://pdssp.ias.universite-paris-saclay.fr/crawler) {octicon}`link-external;1em;sd-text-secondary` {{ pdss_crawler_status }}'
-    # PDSSP Registry
+    # PDSSP RegistryInterface
     pdss_registry_status: '{{ indev_status }}'
     pdssp_registry_link: '[https://github.com/pdssp/registry](https://github.com/pdssp/registry) {octicon}`link-external;1em;sd-text-secondary` {{ pdss_registry_status }}'
-    pdssp_registry_nlink: '[PDSSP Registry](https://github.com/pdssp/registry) {octicon}`link-external;1em;sd-text-secondary` {{ pdss_registry_status }}'
+    pdssp_registry_nlink: '[PDSSP RegistryInterface](https://github.com/pdssp/registry) {octicon}`link-external;1em;sd-text-secondary` {{ pdss_registry_status }}'

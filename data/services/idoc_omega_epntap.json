@@ -1,0 +1,20 @@
+{
+    "title":"IDOC EPN-TAP service for OMEGA data collections",
+    "description":"IDOC EPN-TAP service for OMEGA data collections",
+    "providers":[
+        {
+          "name": "IAS IDOC",
+          "roles": [
+            "producer",
+            "licensor"
+          ],
+          "url": "http://idoc-dachs.ias.u-psud.fr/__system__/tap/run/info"
+        }
+    ],
+    "ssys:targets":["Mars"],
+    "type":"EPNTAP",
+    "url":"http://idoc-dachs.ias.u-psud.fr/__system__/tap/run/tap",
+    "extra_params": {
+      "tables": ["omega_cubes.epn_core", "omega_maps.epn_core"]
+    }
+}

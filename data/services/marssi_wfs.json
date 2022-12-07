@@ -1,0 +1,20 @@
+{
+    "title":"MarsSI current WFS service",
+    "description":"MarsSI current WFS service holding different Mars data products collections",
+    "providers":[
+        {
+          "name": "MarsSI",
+          "roles": [
+            "producer",
+            "licensor"
+          ],
+          "url": "https://marssi.univ-lyon1.fr/MarsSI"
+        }
+    ],
+    "ssys:targets":["Mars"],
+    "type":"WFS",
+    "url":"https://marssi.univ-lyon1.fr/mapserver/mars",
+    "extra_params": {
+      "layers": ["mars_mex_hrsc_dtmrdr_c0a"]
+    }
+}

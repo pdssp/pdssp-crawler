@@ -1,0 +1,18 @@
+{
+    "title":"PDS ODE API",
+    "description":"PDS Orbital Data Explorer (ODE) API collections",
+    "providers":[
+        {
+          "name": "PDS Geosciences Node",
+          "roles": [
+            "producer",
+            "licensor"
+          ],
+          "url": "https://ode.rsl.wustl.edu/"
+        }
+    ],
+    "ssys:targets":["Mars", "Moon", "Mercury", "Venus"],
+    "type":"PDSODE",
+    "url":"https://oderest.rsl.wustl.edu/live2",
+    "extra_params": {}
+}

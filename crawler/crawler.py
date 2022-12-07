@@ -1,85 +1,204 @@
 """Crawler module."""
 
-from typing import Optional
+from typing import List, Optional
+
+from .extractor import Extractor
+from .transformer import Transformer
+from .ingestor import Ingestor
 from .collection import SourceCollection
-from .registry import Registry, CollectionDefinition
-from .store import DataStore, SourceCollectionStatus
+from .registry import HealthcheckrRegistry, LocalRegistry, Service, ServiceType, ExternalServiceType
+from .datastore import DataStore, SourceCollectionModel
 from .config import (
     SOURCE_DATA_DIR,
     STAC_DATA_DIR,
-    LOCAL_REGISTRY_YAML_FILE,
-    REGISTRY_GITHUB_REPOSITORY,
+    PDSSP_REGISTRY_ENDPOINT,
+    LOCAL_REGISTRY_DIRECTORY,
     STAC_GITHUB_REPOSITORY
 )
 
-from .extractor import Extractor
-
 class Crawler:
-    """Crawler class acting as main controller.
+    """Crawler class acting as controller and high-level interface.
+
+    Used by the Crawler CLI and Airflow DAGs.
     """
     def __init__(self):
-       self.registry = Registry('YAML', path=LOCAL_REGISTRY_YAML_FILE)
-       self.data_store = DataStore()
+        self.registry = HealthcheckrRegistry(url=PDSSP_REGISTRY_ENDPOINT)
+        self.local_registry = LocalRegistry(path=LOCAL_REGISTRY_DIRECTORY)
+        self.datastore = DataStore(source_data_dir=SOURCE_DATA_DIR, stac_data_dir=STAC_DATA_DIR)
+        self.registered_services = []
+        self.registered_collections = []
 
-    def get_collection_definition(self, src_collection_id: str) -> Optional[CollectionDefinition]:
-        """Returns the definition of a source collection, given its identifier.
+    def reset_datastore(self):
+        """Reset data store using retrieved collections from internal and external data catalog services.
         """
-        return self.registry.get_collection(src_collection_id)
+        self.retrieve_registered_services()
+        self.retrieve_registered_collections()
+        self.datastore.reset_source_collections(collections=self.registered_collections)
 
-    def get_collection_status(self, src_collection_id: str) -> Optional[SourceCollectionStatus]:
-        """Returns the processing status of a source collection.
+    def retrieve_registered_services(self) -> None:
+        # allowed_types = ['WFS', 'PDSODE', 'EPNTAP'] # only "data service" types allowed
+        allowed_types = ExternalServiceType.__members__.keys()
+
+        self.registered_services = []
+        for registry in [self.registry, self.local_registry]:
+            for service in registry.get_services():
+                if service.type.name in allowed_types:
+                    self.registered_services.append(service)
+                else:
+                    print(f'`{service.title}` service not a data catalog service: not included in Crawler registered services.')
+
+    def get_registered_services(self, retrieve=False) -> List[Service]:
+        if not self.registered_services or retrieve:
+            self.retrieve_registered_services()
+        return self.registered_services
+
+    def retrieve_registered_collections(self) -> None: # TODO: Add filters (eg: `target`)
+        if not self.registered_services:
+            print('No data catalog services are registered. Use Crawler.retrieve_registered_services() method. ')
+
+        for service in self.registered_services:
+            # retrieve list of collections provided by each registered service
+            collections = Extractor(service=service).get_service_collections()   # filters to be added, passed to the get_service_collections() method
+            print(f'{len(collections)} collections found in {service.title} service.')
+            for collection in collections:
+                if collection:
+                    # print(f'{collection.collection_id} added to the registered collections list.')
+                    self.registered_collections.append(collection)
+                else:
+                    print('[WARNING] Not a collection.')
+            print()
+        print(f'{len(self.registered_collections)} collections retrieved from {len(self.registered_services)} registered services.')
+
+    def get_registered_collections(self, retrieve=False) -> List[SourceCollectionModel]:
+        if not self.registered_collections or retrieve:
+            self.retrieve_registered_services()
+        return self.registered_collections
+
+    def save_registered_collections(self, retrieve=False):
+        registered_collections = self.get_registered_collections(retrieve=retrieve)
+        self.datastore.save_collections(registered_collections, basename='registered_collections')
+
+
+    def list_source_collections(self, collection_id='', service_type=None, target=None, extracted=None, transformed=None, ingested=None):
+        """Display all, or a filtered list of source collections indexed in the data store.
         """
-        src_collection = self.data_store.get_source_collection(src_collection_id)
-        if src_collection:
-            return src_collection.get_status()
-        else:
-            return None
+        self.datastore.list_source_collections(collection_id=collection_id, service_type=service_type,
+                                              target=target, extracted=extracted, transformed=transformed, ingested=ingested)
 
-    def extract_collection(self, src_collection_id: str, overwrite=False) -> None:
+    def get_source_collection(self, collection_id) -> SourceCollectionModel:
+        """Returns the source collection of a given identifier."""
+        return self.datastore.get_source_collection(collection_id)
+
+    def get_source_collections(self, collection_id='', service_type=None, target=None, extracted=None, transformed=None, ingested=None) -> [SourceCollectionModel]:
+        """Returns the definition of the source collection matching a set of input filters.
+        """
+        return self.datastore.get_source_collections(collection_id=collection_id, service_type=service_type,
+                                                     target=target, extracted=extracted, transformed=transformed, ingested=ingested)
+
+
+    def extract_collection(self, collection_id: str, overwrite=False) -> None:
         """Extract source collection file(s) from the "data catalog" service associated to a given collection identifier.
         """
+        # get source collection from data store
+        collection = self.get_source_collection(collection_id)
+        if not collection:
+            print(f'Could not retrieve input `{collection_id}` source collection from data store.')
+            return
 
-        # Check if source collection has been already extracted.
-        src_collection = self.data_store.get_source_collection(src_collection_id)
-        if src_collection:
-            if src_collection.extracted:
-                print(f'{src_collection_id} source collection has already between exacted:')
-                print(f'extracted_data_dir = {src_collection.extracted_data_dir}')
-                print(f'n_extracted_files = {src_collection.n_extracted_files}')
-                print(f'extracted_files = {src_collection.extracted_files}')
+        if collection.extracted:
+            print(f'{collection_id} collection already extracted:')
+            print(f'- Source collection file(s): {collection.extracted_files}')  # extracted_data_dir ???
+            print()
+            if not overwrite: # quit unless input overwrite
                 return
-        else:
-            # Get collection definition from the registry
-            src_collec_def = self.registry.get_collection_definition(id=src_collection_id)
-            src_collection = SourceCollection(src_collec_def)
 
-        print(f'Extracting {src_collection_id} source collection...')
-        # Extractor(src_collec_def, output_dir=self.data_store.source_data_dir).extract()
-        src_collection.extract()
+        print(f'Extracting {collection_id} source collection files...')
+        try:
+            extractor = Extractor(service=collection.service)
+            extractor.extract(collection_id, output_dir_path=self.datastore.source_data_dir, overwrite=overwrite)  # .get_collection_metadata_files()
+        except Exception as e:
+            print(f'Could not extract {collection_id} source collection.')
+            print(e)
+            return
 
-        # Report on source collection extraction
-        if src_collection.extracted:
-            print(f'{src_collection_id} source collection has been successfully extracted.')
-            print(f'extracted_data_dir = {src_collection.extracted_data_dir}')
-            print(f'n_extracted_files = {src_collection.n_extracted_files}')
-            print(f'extracted_files = {src_collection.extracted_files}')
+        # Update source collection and data store
+        collection.extracted = extractor.extracted
+        collection.extracted_files = extractor.extracted_files
+        self.datastore.save_source_collections(overwrite=True)
 
-    def transform_collection(self, src_collection_id, overwrite=False):
-        """Transform a single source collection into a STAC collection file."""
+        # report on source collection extraction
+        print(f'{collection_id} source collection successfully extracted:')
+        print(f'- Source collection file(s) = {collection.extracted_files}')
+        print()
 
-        # Get SourceCollection Object from the Crawler DataStore
-        src_collection = self.data_store.get_source_collection(src_collection_id)
-        if src_collection.extracted:
-            src_collection.transform()
-        else:
-            print(f'{src_collection_id} source collection has not been extracted yet.')
 
-        # Report on source collection transformation
-        if src_collection.transformed:
-            print(f'{src_collection_id} source collection has been successfully transformed into a STAC collection.')
-            print(f'stac_collection_path = {src_collection.stac_collection_path}')
-
-    def ingest_collection(self, src_collection_id):
-        """Ingestion a collection into the destination STAC catalog service.
+    def transform_collection(self, collection_id, overwrite=False):
+        """Transform a source collection into a STAC collection file.
         """
-        print(f'Loading your {src_collection_id} STAC collection soon...')
+        # get source collection from data store
+        collection = self.get_source_collection(collection_id)
+        if not collection:
+            print(f'Could not retrieve input `{collection_id}` source collection from data store.')
+            return
+
+        if collection.transformed:
+            print(f'{collection_id} already transformed:')
+            print(f'- STAC collection file: {collection.stac_file}')
+            if not overwrite: # quit unless input overwrite
+                return
+
+        if not collection.extracted:
+            print(f'{collection_id} source collection not extracted to source collection file(s).')
+            self.extract_collection(collection_id)
+
+        if collection.extracted:
+            print(f'Transform {collection_id} STAC catalog or collection...')
+            print(f'- Source collection file(s): {collection.extracted_files}')
+            transformer = Transformer(collection.service.type)
+            transformer.transform(collection_id, output_dir_path=self.datastore.stac_data_dir, overwrite=overwrite)
+            # TODO: implement
+        else:
+            print(f'Could not extract {collection_id} source collection.')
+
+        # report on source collection transformation
+        if collection.transformed:
+            print(f'{collection_id} source collection successfully transformed:.')
+            print(f'- STAC collection file = {collection.stac_file}')
+        else:
+            print(f'Could not transform {collection_id} source collection.')
+
+    def ingest_collection(self, collection_id, update=False):
+        """Ingest a STAC collection into the destination STAC catalog service.
+        """
+        # get source collection from data store
+        collection = self.get_source_collection(collection_id)
+        if not collection:
+            print(f'Could not retrieve input `{collection_id}` source collection from data store.')
+            return
+
+        if collection.ingested:
+            print(f'{collection_id} already ingested:')
+            print(f'- STAC collection file: {collection.stac_file}')
+            print(f'- STAC collection URL: {collection.stac_url}')
+            if not update:  # quit unless input update
+                return
+
+        if not collection.transformed:
+            print(f'{collection_id} source collection not transformed to STAC catalog or collection file.')
+            self.transform_collection(collection_id)
+
+        if collection.transformed:
+            print(f'Ingesting {collection_id} STAC catalog or collection...')
+            print(f'- STAC collection file: {collection.stac_file}')
+            ingestor = Ingestor()
+            ingestor.ingest(collection.stac_file) # stac2resto
+        else:
+            print(f'Could not transform {collection_id} source collection.')
+
+        # report on source collection ingestion
+        if collection.ingested:
+            print(f'{collection_id} successfully ingested:')
+            print(f'- STAC collection file: {collection.stac_file}')
+            print(f'- STAC collection URL: {collection.stac_url}')
+        else:
+            print(f'Could not ingest {collection_id} STAC collection.')

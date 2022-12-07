@@ -6,6 +6,11 @@ Definition and retrieval of schema/metadata dict for:
 - PDS ODE API Result objects (Product, Product_file) -> PDSODE_Product, PDSODE_Product_file
 - MarsSI WFS Feature object -> MARSSI_WFS_Layer, MARSSI_WFS_Feature
 - EPN-TAP Granule object ("parameters") -> EPNTAP_Collection, EPNTAP_Granule
+
+References/examples:
+- https://github.com/radiantearth/stac-spec/blob/master/item-spec
+- https://github.com/radiantearth/stac-spec/blob/master/collection-spec/collection-spec.md
+- https://github.com/ivoa-std/EPNTAP/blob/master/example-record.xml
 """
 
 from pydantic import BaseModel
