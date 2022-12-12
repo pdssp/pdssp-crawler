@@ -95,54 +95,54 @@
       "$comment": "Add your new fields here. Don't require them here, do that above in the item schema.",
       "type": "object",
       "properties": {
-        "proj:epsg": {
-          "title": "EPSG code",
-          "type": [
+        "proj:epsg":{
+          "title":"EPSG code",
+          "type":[
             "integer",
             "null"
           ]
         },
-        "proj:wkt2": {
-          "title": "Coordinate Reference System in WKT2 format",
-          "type": [
+        "proj:wkt2":{
+          "title":"Coordinate Reference System in WKT2 format",
+          "type":[
             "string",
             "null"
           ]
         },
         "proj:projjson": {
-          "title": "Coordinate Reference System in PROJJSON format",
+          "title":"Coordinate Reference System in PROJJSON format",
           "oneOf": [
             {
-              "$ref": "https://proj.org/schemas/v0.4/projjson.schema.json"
+              "$ref": "https://proj.org/schemas/v0.2/projjson.schema.json"
             },
             {
               "type": "null"
             }
           ]
         },
-        "proj:geometry": {
+        "proj:geometry":{
           "$ref": "https://geojson.org/schema/Geometry.json"
         },
-        "proj:bbox": {
-          "title": "Extent",
-          "type": "array",
+        "proj:bbox":{
+          "title":"Extent",
+          "type":"array",
           "oneOf": [
             {
-              "minItems": 4,
-              "maxItems": 4
+              "minItems":4,
+              "maxItems":4
             },
             {
-              "minItems": 6,
-              "maxItems": 6
+              "minItems":6,
+              "maxItems":6
             }
           ],
-          "items": {
-            "type": "number"
+          "items":{
+            "type":"number"
           }
         },
-        "proj:centroid": {
-          "title": "Centroid",
-          "type": "object",
+        "proj:centroid":{
+          "title":"Centroid",
+          "type":"object",
           "required": [
             "lat",
             "lon"
@@ -160,30 +160,30 @@
             }
           }
         },
-        "proj:shape": {
-          "title": "Shape",
-          "type": "array",
-          "minItems": 2,
-          "maxItems": 2,
-          "items": {
-            "type": "integer"
+        "proj:shape":{
+          "title":"Shape",
+          "type":"array",
+          "minItems":2,
+          "maxItems":2,
+          "items":{
+            "type":"integer"
           }
         },
-        "proj:transform": {
-          "title": "Transform",
-          "type": "array",
+        "proj:transform":{
+          "title":"Transform",
+          "type":"array",
           "oneOf": [
             {
-              "minItems": 6,
-              "maxItems": 6
+              "minItems":6,
+              "maxItems":6
             },
             {
-              "minItems": 9,
-              "maxItems": 9
+              "minItems":9,
+              "maxItems":9
             }
           ],
-          "items": {
-            "type": "number"
+          "items":{
+            "type":"number"
           }
         }
       },

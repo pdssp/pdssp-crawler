@@ -143,7 +143,7 @@ class Crawler:
 
         if collection.transformed:
             print(f'{collection_id} already transformed:')
-            print(f'- STAC collection file: {collection.stac_file}')
+            print(f'- STAC collection file: {collection.stac_dir}')
             if not overwrite: # quit unless input overwrite
                 return
 
@@ -154,16 +154,15 @@ class Crawler:
         if collection.extracted:
             print(f'Transform {collection_id} STAC catalog or collection...')
             print(f'- Source collection file(s): {collection.extracted_files}')
-            transformer = Transformer(collection.service.type)
-            transformer.transform(collection_id, output_dir_path=self.datastore.stac_data_dir, overwrite=overwrite)
-            # TODO: implement
+            transformer = Transformer(collection)
+            transformer.transform(output_dir_path=self.datastore.stac_data_dir, overwrite=overwrite)
         else:
             print(f'Could not extract {collection_id} source collection.')
 
         # report on source collection transformation
         if collection.transformed:
             print(f'{collection_id} source collection successfully transformed:.')
-            print(f'- STAC collection file = {collection.stac_file}')
+            print(f'- STAC collection file = {collection.stac_dir}')
         else:
             print(f'Could not transform {collection_id} source collection.')
 
@@ -178,7 +177,7 @@ class Crawler:
 
         if collection.ingested:
             print(f'{collection_id} already ingested:')
-            print(f'- STAC collection file: {collection.stac_file}')
+            print(f'- STAC collection file: {collection.stac_dir}')
             print(f'- STAC collection URL: {collection.stac_url}')
             if not update:  # quit unless input update
                 return
@@ -189,16 +188,16 @@ class Crawler:
 
         if collection.transformed:
             print(f'Ingesting {collection_id} STAC catalog or collection...')
-            print(f'- STAC collection file: {collection.stac_file}')
+            print(f'- STAC collection file: {collection.stac_dir}')
             ingestor = Ingestor()
-            ingestor.ingest(collection.stac_file) # stac2resto
+            ingestor.ingest(collection.stac_dir) # stac2resto
         else:
             print(f'Could not transform {collection_id} source collection.')
 
         # report on source collection ingestion
         if collection.ingested:
             print(f'{collection_id} successfully ingested:')
-            print(f'- STAC collection file: {collection.stac_file}')
+            print(f'- STAC collection file: {collection.stac_dir}')
             print(f'- STAC collection URL: {collection.stac_url}')
         else:
             print(f'Could not ingest {collection_id} STAC collection.')

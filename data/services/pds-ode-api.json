@@ -14,5 +14,7 @@
     "ssys:targets":["Mars", "Moon", "Mercury", "Venus"],
     "type":"PDSODE",
     "url":"https://oderest.rsl.wustl.edu/live2",
-    "extra_params": {}
+    "extra_params": {
+      "source_schema": "PDSODE"
+    }
 }

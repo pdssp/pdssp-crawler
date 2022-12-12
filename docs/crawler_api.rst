@@ -28,7 +28,7 @@ Crawler Python API
 ``store`` module
 ----------------
 
-.. automodule:: crawler.store
+.. automodule:: crawler.datastore
    :members:
    :undoc-members:
    :show-inheritance:

@@ -17,12 +17,13 @@ COLLECTIONS_JSON_TYPE = 'SourceCollections'
 class SourceCollectionModel(BaseModel):
     collection_id: str
     service: Optional[Union[Service, ExternalService]]
+    source_schema: Optional[str]
     targets: Optional[List[str]]
     n_products: Optional[int]
     extracted: Optional[bool] = False
     extracted_files: Optional[list] = []
     transformed: Optional[bool] = False
-    stac_file: Optional[str] = ''
+    stac_dir: Optional[str] = ''
     ingested: Optional[bool] = False
     stac_url: Optional[str] = ''
 
@@ -73,15 +74,16 @@ class DataStore:
 
         print(f'{len(collections)} collections matching input filters:')
         print()
-        print(f'{"ID":<40}  {"service type":<12}  {"extracted":<12}  {"transformed":<12}  {"ingested":<12}  {"targets":<50}')
+        print(f'{"ID":<40}  {"service type":<12}  {"source schema":<13} {"extracted":<12}  {"transformed":<12}  {"ingested":<12}  {"targets":<50}')
         # {"metadata schema":<18}  {"stac extensions":<20}')
-        print(f'{"-" * 40}  {"-" * 12}  {"-" * 12}  {"-" * 12}  {"-" * 12}  {"-" * 50}')
+        print(f'{"-" * 40}  {"-" * 12}  {"-" * 13}  {"-" * 12}  {"-" * 12}  {"-" * 12}  {"-" * 50}')
         for collection in collections:
             extracted_str = 'Y' if collection.extracted else 'N'
             transformed_str = 'Y' if collection.transformed else 'N'
             ingested_str = 'Y' if collection.ingested else 'N'
             targets_str = ', '.join(collection.targets)
-            print(f'{collection.collection_id:<40}  {collection.service.type.name:<12}  '
+            source_schema_str = collection.source_schema if collection.source_schema else 'UNDEFINED'
+            print(f'{collection.collection_id:<40}  {collection.service.type.name:<12}  {source_schema_str:<13}  '
                   f'{extracted_str:<12}  {transformed_str:<12}  {ingested_str:<12}  {targets_str:<50}')
         print()
 

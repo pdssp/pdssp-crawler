@@ -18,12 +18,14 @@ References/examples:
 - https://github.com/ivoa-std/EPNTAP/blob/master/example-record.xml
 """
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 
 # PDSSP STAC Metadata Schemas
 # 'PDSSP_STAC': {'collection': PDSSP_STAC_Collection, 'item': PDSSP_STAC_Item},
 #
+
+STAC_VERSION = '1.0.0'
 
 class PDSSP_STAC_SpatialExtent(BaseModel):
     bbox: list[list[float]]
@@ -61,13 +63,13 @@ class PDSSP_STAC_Link(BaseModel):
 
 class PDSSP_STAC_Collection(BaseModel):
     type: str
-    stac_version: str = '1.0.0'
+    stac_version: str = STAC_VERSION
     stac_extensions: Optional[list[str]]
     id: str
     title: Optional[str]
     description: str
     keywords: Optional[list[str]]
-    licence: Optional[str]
+    licence: str
     providers: Optional[list[PDSSP_STAC_Provider]]
     extent: PDSSP_STAC_Extent
     summaries: Optional[dict]
@@ -95,21 +97,28 @@ class PDSSP_STAC_Properties(BaseModel):
     constellation: Optional[str]
     mission: Optional[str]
     gsd: Optional[float]
-    ssys_targets: Optional[list[str]]
-    ssys_westernmost_longitude: Optional[float]
-    ssys_easternmost_longitude: Optional[float]
+    ssys_targets: Optional[list[str]] = Field(None, alias='ssys:targets')
+    ssys_solar_longitude: Optional[float]
 
 class PDSSP_STAC_Item(BaseModel):
     type: str
-    stac_version: str = '1.0.0'
+    stac_version: str = STAC_VERSION
     stac_extensions: Optional[list[str]]
     id: str
-    geometry: object # GeoJSON Geometry
+    geometry: object  # GeoJSON Geometry
     bbox: list[float]
     properties: PDSSP_STAC_Properties
     links: list[PDSSP_STAC_Link]
     assets: dict  ## Map<string, PDSSP_STAC_Asset>: dictionary of asset objects that can be downloaded, each with a unique key.
     collection: Optional[str]
+
+# class PDSSP_STAC_SSYS_Extension_Properties(PDSSP_STAC_Properties):
+#     ssys_instrument_host_name: Optional[str]
+#     ssys_instrument_name: Optional[str]
+#     ssys_targets: Optional[list[str]] = Field(None, alias='ssys:targets')
+#     ssys_target_class:
+#     ssys_westernmost_longitude: Optional[float]
+#     ssys_easternmost_longitude: Optional[float]
 
 class PDSSP_WFS_Layer(BaseModel):
     pass
@@ -120,7 +129,14 @@ class PDSSP_WFS_Feature(BaseModel):
 # PDS ODE Metadata Schemas
 #
 class PDSODE_IIPTSet(BaseModel):
-    pass
+    ODEMetaDB: str
+    IHID: str
+    IHName: str
+    IID: str
+    IName: str
+    PT: str
+    PTName: str
+    DataSetId: str
 
 class PDSODE_Product_file(BaseModel):
     Description: str  # eg" 'MAP PROJECTION FILE'",'
@@ -128,6 +144,9 @@ class PDSODE_Product_file(BaseModel):
     KBytes: str  # "7",
     Type: str  # "Referenced",
     URL: str # "https://hirise.lpl.arizona.edu/PDS/CATALOG/DSMAP.CAT"
+
+class PDSODE_Product_file_key(BaseModel):
+    Product_file: list[PDSODE_Product_file]
 
 class PDSODE_Product(BaseModel):
     ode_id: str
@@ -148,10 +167,10 @@ class PDSODE_Product(BaseModel):
     Label_Product_Type: Optional[str]
     """Label product type (if it exists in the label and is different from the ODE_Product_Type)."""
 
-    Data_set_id: str
+    Data_Set_Id: str
     """PDS Data Set Id."""
 
-    PDSVolume_id: str
+    PDSVolume_Id: str
     """Volume Id."""
 
     RelativePathtoVol: str
@@ -172,7 +191,7 @@ class PDSODE_Product(BaseModel):
     Observation_id: str
     """Identifies a scientific observation within a data set."""
 
-    Product_files: list[PDSODE_Product_file]
+    Product_files: PDSODE_Product_file_key
     """Associated product files."""
 
     #
@@ -357,9 +376,9 @@ def create_schema_object(metadata: dict, name: str, object_type: str) -> Optiona
 
 METADATA_SCHEMAS = {
     'PDSSP_STAC': {'collection': PDSSP_STAC_Collection, 'item': PDSSP_STAC_Item},
-    'PDSSP_WFS': {'item': PDSSP_WFS_Feature},
-    'PDSODE': {'item': PDSODE_Product},
-    'EPNTAP': {'item': EPNTAP_Granule},
-    'MARSSI_WFS': {'item': MARSSI_WFS_Feature}
+    'PDSSP_WFS': {'collection': PDSSP_WFS_Layer, 'item': PDSSP_WFS_Feature},
+    'PDSODE': {'collection': PDSODE_IIPTSet,'item': PDSODE_Product},
+    'EPNTAP': {'collection': EPNTAP_Collection,'item': EPNTAP_Granule},
+    'MARSSI_WFS': {'collection': MARSSI_WFS_Layer, 'item': MARSSI_WFS_Feature}
 }
 """Metadata schemas and their corresponding ``"collection"`` and ``"item"``-type classes."""
