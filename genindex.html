@@ -425,11 +425,13 @@ title="Open an issue"
 </li>
       <li><a href="crawler_api.html#crawler.schemas.EPNTAP_Granule.access_estsize">access_estsize (crawler.schemas.EPNTAP_Granule attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="crawler_api.html#crawler.schemas.EPNTAP_Granule.access_format">access_format (crawler.schemas.EPNTAP_Granule attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="crawler_api.html#crawler.schemas.EPNTAP_Granule.access_url">access_url (crawler.schemas.EPNTAP_Granule attribute)</a>
+</li>
+      <li><a href="crawler_api.html#crawler.datastore.DataStore.add_source_collections">add_source_collections() (crawler.datastore.DataStore method)</a>
 </li>
       <li><a href="crawler_api.html#crawler.schemas.PDSSP_STAC_Collection.assets">assets (crawler.schemas.PDSSP_STAC_Collection attribute)</a>
 
@@ -480,6 +482,10 @@ title="Open an issue"
       <li><a href="crawler_api.html#crawler.schemas.EPNTAP_Granule.c3min">c3min (crawler.schemas.EPNTAP_Granule attribute)</a>
 </li>
       <li><a href="crawler_api.html#crawler.schemas.PDSSP_STAC_Item.collection">collection (crawler.schemas.PDSSP_STAC_Item attribute)</a>
+</li>
+      <li><a href="crawler_api.html#crawler.datastore.SourceCollectionModel.collection_id">collection_id (crawler.datastore.SourceCollectionModel attribute)</a>
+</li>
+      <li><a href="crawler_api.html#crawler.datastore.COLLECTIONS_JSON_TYPE">COLLECTIONS_JSON_TYPE (in module crawler.datastore)</a>
 </li>
       <li><a href="crawler_api.html#crawler.schemas.PDSSP_STAC_Properties.constellation">constellation (crawler.schemas.PDSSP_STAC_Properties attribute)</a>
 </li>
@@ -540,6 +546,13 @@ title="Open an issue"
 </li>
       </ul></li>
       <li>
+    crawler.datastore
+
+      <ul>
+        <li><a href="crawler_api.html#module-crawler.datastore">module</a>
+</li>
+      </ul></li>
+      <li>
     crawler.extractor
 
       <ul>
@@ -590,7 +603,11 @@ title="Open an issue"
 </li>
       <li><a href="crawler_api.html#crawler.schemas.EPNTAP_Granule.dataproduct_type">dataproduct_type (crawler.schemas.EPNTAP_Granule attribute)</a>
 </li>
+      <li><a href="crawler_api.html#crawler.datastore.DataStore">DataStore (class in crawler.datastore)</a>
+</li>
       <li><a href="crawler_api.html#crawler.schemas.PDSSP_STAC_Properties.datetime">datetime (crawler.schemas.PDSSP_STAC_Properties attribute)</a>
+</li>
+      <li><a href="crawler_api.html#crawler.datastore.DataStore.delete_source_collections">delete_source_collections() (crawler.datastore.DataStore method)</a>
 </li>
       <li><a href="crawler_api.html#crawler.registry.Service.description">description (crawler.registry.Service attribute)</a>
 
@@ -632,10 +649,10 @@ title="Open an issue"
 </li>
       <li><a href="crawler_api.html#crawler.schemas.PDSSP_STAC_Collection.extent">extent (crawler.schemas.PDSSP_STAC_Collection attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="crawler_api.html#crawler.registry.ExternalServiceType">ExternalServiceType (class in crawler.registry)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="crawler_api.html#crawler.registry.ExternalService.extra_params">extra_params (crawler.registry.ExternalService attribute)</a>
 </li>
       <li><a href="crawler_api.html#crawler.extractor.AbstractExtractor.extract">extract() (crawler.extractor.AbstractExtractor method)</a>
@@ -645,6 +662,10 @@ title="Open an issue"
 </li>
       </ul></li>
       <li><a href="crawler_api.html#crawler.crawler.Crawler.extract_collection">extract_collection() (crawler.crawler.Crawler method)</a>
+</li>
+      <li><a href="crawler_api.html#crawler.datastore.SourceCollectionModel.extracted">extracted (crawler.datastore.SourceCollectionModel attribute)</a>
+</li>
+      <li><a href="crawler_api.html#crawler.datastore.SourceCollectionModel.extracted_files">extracted_files (crawler.datastore.SourceCollectionModel attribute)</a>
 </li>
       <li><a href="crawler_api.html#crawler.extractor.Extractor">Extractor() (in module crawler.extractor)</a>
 </li>
@@ -686,8 +707,6 @@ title="Open an issue"
         <li><a href="crawler_api.html#crawler.extractor.PDSODE_Extractor.get_service_collections">(crawler.extractor.PDSODE_Extractor method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="crawler_api.html#crawler.registry.HealthcheckrRegistry.get_services">get_services() (crawler.registry.HealthcheckrRegistry method)</a>
 
       <ul>
@@ -696,10 +715,20 @@ title="Open an issue"
         <li><a href="crawler_api.html#crawler.registry.RegistryInterface.get_services">(crawler.registry.RegistryInterface method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="crawler_api.html#crawler.crawler.Crawler.get_source_collection">get_source_collection() (crawler.crawler.Crawler method)</a>
+
+      <ul>
+        <li><a href="crawler_api.html#crawler.datastore.DataStore.get_source_collection">(crawler.datastore.DataStore method)</a>
 </li>
+      </ul></li>
       <li><a href="crawler_api.html#crawler.crawler.Crawler.get_source_collections">get_source_collections() (crawler.crawler.Crawler method)</a>
+
+      <ul>
+        <li><a href="crawler_api.html#crawler.datastore.DataStore.get_source_collections">(crawler.datastore.DataStore method)</a>
 </li>
+      </ul></li>
       <li><a href="crawler_api.html#crawler.transformer.PDSODE_STAC.get_stac_item_dict">get_stac_item_dict() (crawler.transformer.PDSODE_STAC method)</a>
 </li>
       <li><a href="crawler_api.html#crawler.schemas.EPNTAP_Granule.granule_gid">granule_gid (crawler.schemas.EPNTAP_Granule attribute)</a>
@@ -750,6 +779,8 @@ title="Open an issue"
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="crawler_api.html#crawler.crawler.Crawler.ingest_collection">ingest_collection() (crawler.crawler.Crawler method)</a>
 </li>
+      <li><a href="crawler_api.html#crawler.datastore.SourceCollectionModel.ingested">ingested (crawler.datastore.SourceCollectionModel attribute)</a>
+</li>
       <li><a href="crawler_api.html#crawler.ingestor.Ingestor">Ingestor (class in crawler.ingestor)</a>
 </li>
       <li><a href="crawler_api.html#crawler.schemas.EPNTAP_Granule.instrument_host_name">instrument_host_name (crawler.schemas.EPNTAP_Granule attribute)</a>
@@ -786,10 +817,10 @@ title="Open an issue"
 </li>
       <li><a href="crawler_api.html#crawler.schemas.PDSSP_STAC_Properties.license">license (crawler.schemas.PDSSP_STAC_Properties attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="crawler_api.html#crawler.registry.ProviderRole.licensor">licensor (crawler.registry.ProviderRole attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="crawler_api.html#crawler.schemas.PDSSP_STAC_Collection.links">links (crawler.schemas.PDSSP_STAC_Collection attribute)</a>
 
       <ul>
@@ -797,6 +828,12 @@ title="Open an issue"
 </li>
       </ul></li>
       <li><a href="crawler_api.html#crawler.crawler.Crawler.list_source_collections">list_source_collections() (crawler.crawler.Crawler method)</a>
+
+      <ul>
+        <li><a href="crawler_api.html#crawler.datastore.DataStore.list_source_collections">(crawler.datastore.DataStore method)</a>
+</li>
+      </ul></li>
+      <li><a href="crawler_api.html#crawler.datastore.DataStore.load_collections">load_collections() (crawler.datastore.DataStore method)</a>
 </li>
       <li><a href="crawler_api.html#crawler.registry.LocalRegistry">LocalRegistry (class in crawler.registry)</a>
 </li>
@@ -822,6 +859,8 @@ title="Open an issue"
       <ul>
         <li><a href="crawler_api.html#module-crawler.crawler">crawler.crawler</a>
 </li>
+        <li><a href="crawler_api.html#module-crawler.datastore">crawler.datastore</a>
+</li>
         <li><a href="crawler_api.html#module-crawler.extractor">crawler.extractor</a>
 </li>
         <li><a href="crawler_api.html#module-crawler.ingestor">crawler.ingestor</a>
@@ -838,6 +877,10 @@ title="Open an issue"
 
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="crawler_api.html#crawler.datastore.SourceCollectionModel.n_products">n_products (crawler.datastore.SourceCollectionModel attribute)</a>
+</li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="crawler_api.html#crawler.registry.ServiceProvider.name">name (crawler.registry.ServiceProvider attribute)</a>
 
@@ -919,7 +962,7 @@ title="Open an issue"
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="crawler_api.html#crawler.extractor.PDSODE_Extractor.read_collection_metadata">read_collection_metadata() (crawler.extractor.PDSODE_Extractor method)</a>
 </li>
-      <li><a href="crawler_api.html#crawler.extractor.PDSODE_Extractor.read_next_product_metadata">read_next_product_metadata() (crawler.extractor.PDSODE_Extractor method)</a>
+      <li><a href="crawler_api.html#crawler.extractor.PDSODE_Extractor.read_next_product_metadata">read_product_metadata() (crawler.extractor.PDSODE_Extractor method)</a>
 </li>
       <li><a href="crawler_api.html#crawler.registry.RegistryInterface">RegistryInterface (class in crawler.registry)</a>
 </li>
@@ -934,6 +977,8 @@ title="Open an issue"
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="crawler_api.html#crawler.extractor.PDSODE_Extractor.reset_reader_iterator">reset_reader_iterator() (crawler.extractor.PDSODE_Extractor method)</a>
+</li>
+      <li><a href="crawler_api.html#crawler.datastore.DataStore.reset_source_collections">reset_source_collections() (crawler.datastore.DataStore method)</a>
 </li>
       <li><a href="crawler_api.html#crawler.crawler.Crawler.retrieve_registered_collections">retrieve_registered_collections() (crawler.crawler.Crawler method)</a>
 </li>
@@ -957,7 +1002,13 @@ title="Open an issue"
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="crawler_api.html#crawler.schemas.EPNTAP_Granule.s_region">s_region (crawler.schemas.EPNTAP_Granule attribute)</a>
 </li>
+      <li><a href="crawler_api.html#crawler.datastore.DataStore.save_collections">save_collections() (crawler.datastore.DataStore method)</a>
+</li>
       <li><a href="crawler_api.html#crawler.crawler.Crawler.save_registered_collections">save_registered_collections() (crawler.crawler.Crawler method)</a>
+</li>
+      <li><a href="crawler_api.html#crawler.datastore.DataStore.save_source_collections">save_source_collections() (crawler.datastore.DataStore method)</a>
+</li>
+      <li><a href="crawler_api.html#crawler.datastore.SourceCollectionModel.service">service (crawler.datastore.SourceCollectionModel attribute)</a>
 </li>
       <li><a href="crawler_api.html#crawler.schemas.EPNTAP_Granule.service_title">service_title (crawler.schemas.EPNTAP_Granule attribute)</a>
 </li>
@@ -977,10 +1028,10 @@ title="Open an issue"
 </li>
       <li><a href="crawler_api.html#crawler.schemas.EPNTAP_Granule.spectral_resolution_min">spectral_resolution_min (crawler.schemas.EPNTAP_Granule attribute)</a>
 </li>
-      <li><a href="crawler_api.html#crawler.schemas.EPNTAP_Granule.spectral_sampling_step_max">spectral_sampling_step_max (crawler.schemas.EPNTAP_Granule attribute)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="crawler_api.html#crawler.schemas.EPNTAP_Granule.spectral_sampling_step_max">spectral_sampling_step_max (crawler.schemas.EPNTAP_Granule attribute)</a>
+</li>
       <li><a href="crawler_api.html#crawler.schemas.EPNTAP_Granule.spectral_sampling_step_min">spectral_sampling_step_min (crawler.schemas.EPNTAP_Granule attribute)</a>
 </li>
       <li><a href="crawler_api.html#crawler.schemas.PDSSP_STAC_Properties.ssys_easternmost_longitude">ssys_easternmost_longitude (crawler.schemas.PDSSP_STAC_Properties attribute)</a>
@@ -1001,6 +1052,10 @@ title="Open an issue"
         <li><a href="crawler_api.html#crawler.schemas.PDSSP_STAC_Item.stac_extensions">(crawler.schemas.PDSSP_STAC_Item attribute)</a>
 </li>
       </ul></li>
+      <li><a href="crawler_api.html#crawler.datastore.SourceCollectionModel.stac_file">stac_file (crawler.datastore.SourceCollectionModel attribute)</a>
+</li>
+      <li><a href="crawler_api.html#crawler.datastore.SourceCollectionModel.stac_url">stac_url (crawler.datastore.SourceCollectionModel attribute)</a>
+</li>
       <li><a href="crawler_api.html#crawler.schemas.PDSSP_STAC_Collection.stac_version">stac_version (crawler.schemas.PDSSP_STAC_Collection attribute)</a>
 
       <ul>
@@ -1022,6 +1077,8 @@ title="Open an issue"
       <li><a href="crawler_api.html#crawler.schemas.EPNTAP_Granule.target_name">target_name (crawler.schemas.EPNTAP_Granule attribute)</a>
 </li>
       <li><a href="crawler_api.html#crawler.schemas.PDSODE_Product.Target_name">Target_name (crawler.schemas.PDSODE_Product attribute)</a>
+</li>
+      <li><a href="crawler_api.html#crawler.datastore.SourceCollectionModel.targets">targets (crawler.datastore.SourceCollectionModel attribute)</a>
 </li>
       <li><a href="crawler_api.html#crawler.schemas.PDSSP_STAC_Extent.temporal">temporal (crawler.schemas.PDSSP_STAC_Extent attribute)</a>
 </li>
@@ -1061,6 +1118,8 @@ title="Open an issue"
         <li><a href="crawler_api.html#crawler.transformer.PDSODE_STAC.transform_source_metadata">(crawler.transformer.PDSODE_STAC method)</a>
 </li>
       </ul></li>
+      <li><a href="crawler_api.html#crawler.datastore.SourceCollectionModel.transformed">transformed (crawler.datastore.SourceCollectionModel attribute)</a>
+</li>
       <li><a href="crawler_api.html#crawler.transformer.Transformer">Transformer() (in module crawler.transformer)</a>
 </li>
       <li><a href="crawler_api.html#crawler.transformer.TransformerSchemaInputError">TransformerSchemaInputError</a>
@@ -1089,16 +1148,18 @@ title="Open an issue"
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="crawler_api.html#crawler.datastore.DataStore.update_source_collections">update_source_collections() (crawler.datastore.DataStore method)</a>
+</li>
       <li><a href="crawler_api.html#crawler.schemas.PDSSP_STAC_Properties.updated">updated (crawler.schemas.PDSSP_STAC_Properties attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="crawler_api.html#crawler.registry.Service.url">url (crawler.registry.Service attribute)</a>
 
       <ul>
         <li><a href="crawler_api.html#crawler.registry.ServiceProvider.url">(crawler.registry.ServiceProvider attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="crawler_api.html#crawler.schemas.PDSODE_Product_file.URL">URL (crawler.schemas.PDSODE_Product_file attribute)</a>
 </li>
   </ul></td>

@@ -353,7 +353,7 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#store-module">
+  <a class="reference internal nav-link" href="#module-crawler.datastore">
    <code class="docutils literal notranslate">
     <span class="pre">
      store
@@ -442,7 +442,7 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#store-module">
+  <a class="reference internal nav-link" href="#module-crawler.datastore">
    <code class="docutils literal notranslate">
     <span class="pre">
      store
@@ -510,7 +510,7 @@ title="Print to PDF"
 
 <dl class="py method">
 <dt class="sig sig-object py" id="crawler.crawler.Crawler.get_registered_collections">
-<span class="sig-name descname"><span class="pre">get_registered_collections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retrieve</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">crawler.datastore.SourceCollectionModel</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/crawler/crawler.html#Crawler.get_registered_collections"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.crawler.Crawler.get_registered_collections" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_registered_collections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retrieve</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#crawler.datastore.SourceCollectionModel" title="crawler.datastore.SourceCollectionModel"><span class="pre">crawler.datastore.SourceCollectionModel</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/crawler/crawler.html#Crawler.get_registered_collections"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.crawler.Crawler.get_registered_collections" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -520,7 +520,7 @@ title="Print to PDF"
 
 <dl class="py method">
 <dt class="sig sig-object py" id="crawler.crawler.Crawler.get_source_collection">
-<span class="sig-name descname"><span class="pre">get_source_collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection_id</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">crawler.datastore.SourceCollectionModel</span></span></span><a class="reference internal" href="_modules/crawler/crawler.html#Crawler.get_source_collection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.crawler.Crawler.get_source_collection" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_source_collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection_id</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#crawler.datastore.SourceCollectionModel" title="crawler.datastore.SourceCollectionModel"><span class="pre">crawler.datastore.SourceCollectionModel</span></a></span></span><a class="reference internal" href="_modules/crawler/crawler.html#Crawler.get_source_collection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.crawler.Crawler.get_source_collection" title="Permalink to this definition">#</a></dt>
 <dd><p>Returns the source collection of a given identifier.</p>
 </dd></dl>
 
@@ -3194,8 +3194,377 @@ rich text representation.</p>
 <dd></dd></dl>
 
 </section>
-<section id="store-module">
-<h2><code class="docutils literal notranslate"><span class="pre">store</span></code> module<a class="headerlink" href="#store-module" title="Permalink to this headline">#</a></h2>
+<section id="module-crawler.datastore">
+<span id="store-module"></span><h2><code class="docutils literal notranslate"><span class="pre">store</span></code> module<a class="headerlink" href="#module-crawler.datastore" title="Permalink to this headline">#</a></h2>
+<p>PDSSP Crawler data store module.</p>
+<dl class="py data">
+<dt class="sig sig-object py" id="crawler.datastore.COLLECTIONS_JSON_TYPE">
+<span class="sig-prename descclassname"><span class="pre">crawler.datastore.</span></span><span class="sig-name descname"><span class="pre">COLLECTIONS_JSON_TYPE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SourceCollections'</span></em><a class="headerlink" href="#crawler.datastore.COLLECTIONS_JSON_TYPE" title="Permalink to this definition">#</a></dt>
+<dd><p>JSON Source Collections file type</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="crawler.datastore.DataStore">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">crawler.datastore.</span></span><span class="sig-name descname"><span class="pre">DataStore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_data_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stac_data_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collections</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crawler/datastore.html#DataStore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.datastore.DataStore" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>DataStore class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="crawler.datastore.DataStore.add_source_collections">
+<span class="sig-name descname"><span class="pre">add_source_collections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">collections:</span> <span class="pre">[&lt;class</span> <span class="pre">'crawler.datastore.SourceCollectionModel'&gt;]</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crawler/datastore.html#DataStore.add_source_collections"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.datastore.DataStore.add_source_collections" title="Permalink to this definition">#</a></dt>
+<dd><p>Add collections to the source collections index table</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="crawler.datastore.DataStore.delete_source_collections">
+<span class="sig-name descname"><span class="pre">delete_source_collections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">collections:</span> <span class="pre">[&lt;class</span> <span class="pre">'crawler.datastore.SourceCollectionModel'&gt;]</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crawler/datastore.html#DataStore.delete_source_collections"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.datastore.DataStore.delete_source_collections" title="Permalink to this definition">#</a></dt>
+<dd><p>Delete collections to the source collections index table</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="crawler.datastore.DataStore.get_source_collection">
+<span class="sig-name descname"><span class="pre">get_source_collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#crawler.datastore.SourceCollectionModel" title="crawler.datastore.SourceCollectionModel"><span class="pre">crawler.datastore.SourceCollectionModel</span></a></span></span><a class="reference internal" href="_modules/crawler/datastore.html#DataStore.get_source_collection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.datastore.DataStore.get_source_collection" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the source collection corresponding to input identifier.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="crawler.datastore.DataStore.get_source_collections">
+<span class="sig-name descname"><span class="pre">get_source_collections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">service_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extracted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transformed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ingested</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">[&lt;class</span> <span class="pre">'crawler.datastore.SourceCollectionModel'&gt;]</span></span></span><a class="reference internal" href="_modules/crawler/datastore.html#DataStore.get_source_collections"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.datastore.DataStore.get_source_collections" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns source collections matching input filters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="crawler.datastore.DataStore.list_source_collections">
+<span class="sig-name descname"><span class="pre">list_source_collections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">service_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extracted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transformed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ingested</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crawler/datastore.html#DataStore.list_source_collections"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.datastore.DataStore.list_source_collections" title="Permalink to this definition">#</a></dt>
+<dd><p>Display all, or a filtered list of source collections indexed in the data store.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="crawler.datastore.DataStore.load_collections">
+<span class="sig-name descname"><span class="pre">load_collections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crawler/datastore.html#DataStore.load_collections"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.datastore.DataStore.load_collections" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="crawler.datastore.DataStore.reset_source_collections">
+<span class="sig-name descname"><span class="pre">reset_source_collections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collections</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crawler/datastore.html#DataStore.reset_source_collections"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.datastore.DataStore.reset_source_collections" title="Permalink to this definition">#</a></dt>
+<dd><p>Reset source collections index to an empty collections or an input collections list.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="crawler.datastore.DataStore.save_collections">
+<span class="sig-name descname"><span class="pre">save_collections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collections</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crawler/datastore.html#DataStore.save_collections"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.datastore.DataStore.save_collections" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="crawler.datastore.DataStore.save_source_collections">
+<span class="sig-name descname"><span class="pre">save_source_collections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crawler/datastore.html#DataStore.save_source_collections"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.datastore.DataStore.save_source_collections" title="Permalink to this definition">#</a></dt>
+<dd><p>Save loaded source collections into the JSON collections index file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="crawler.datastore.DataStore.update_source_collections">
+<span class="sig-name descname"><span class="pre">update_source_collections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">collections:</span> <span class="pre">[&lt;class</span> <span class="pre">'crawler.datastore.SourceCollectionModel'&gt;]</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crawler/datastore.html#DataStore.update_source_collections"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.datastore.DataStore.update_source_collections" title="Permalink to this definition">#</a></dt>
+<dd><p>Update collections in the source collections index table</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class pydantic_model">
+<dt class="sig sig-object py" id="crawler.datastore.SourceCollectionModel">
+<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">crawler.datastore.</span></span><span class="sig-name descname"><span class="pre">SourceCollectionModel</span></span><a class="reference internal" href="_modules/crawler/datastore.html#SourceCollectionModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.datastore.SourceCollectionModel" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p><details  class="autodoc_pydantic_collapsable_json">
+<summary>Show JSON schema</summary><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SourceCollectionModel&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;collection_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Collection Id&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;service&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Service&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;anyOf&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;$ref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#/definitions/Service&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="p">},</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;$ref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#/definitions/ExternalService&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+<span class="w">         </span><span class="p">]</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;targets&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Targets&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;array&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">         </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;n_products&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;N Products&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;integer&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;extracted&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Extracted&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;default&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;boolean&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;extracted_files&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Extracted Files&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;default&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;array&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;transformed&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Transformed&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;default&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;boolean&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;stac_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Stac File&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;default&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;ingested&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ingested&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;default&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;boolean&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;stac_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Stac Url&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;default&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">   </span><span class="p">},</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">      </span><span class="s2">&quot;collection_id&quot;</span><span class="w"></span>
+<span class="w">   </span><span class="p">],</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;definitions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;ProviderRole&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ProviderRole&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;An enumeration.&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;enum&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;producer&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;licensor&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;processor&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;host&quot;</span><span class="w"></span>
+<span class="w">         </span><span class="p">]</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;ServiceProvider&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ServiceProvider&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Organization name&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="p">},</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Organization description&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="p">},</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;roles&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Organization roles&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;array&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">                  </span><span class="nt">&quot;$ref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#/definitions/ProviderRole&quot;</span><span class="w"></span>
+<span class="w">               </span><span class="p">}</span><span class="w"></span>
+<span class="w">            </span><span class="p">},</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Organization homepage&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+<span class="w">         </span><span class="p">},</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;name&quot;</span><span class="w"></span>
+<span class="w">         </span><span class="p">]</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;ServiceType&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ServiceType&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;An enumeration.&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;enum&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;STAC&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;WFS&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;WMS&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;WMTS&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;XYZ&quot;</span><span class="w"></span>
+<span class="w">         </span><span class="p">]</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Service&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Service&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Title&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="p">},</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Description&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="p">},</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;providers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Providers&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;array&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">                  </span><span class="nt">&quot;$ref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#/definitions/ServiceProvider&quot;</span><span class="w"></span>
+<span class="w">               </span><span class="p">}</span><span class="w"></span>
+<span class="w">            </span><span class="p">},</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;$ref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#/definitions/ServiceType&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="p">},</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Url&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="p">},</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;ping_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ping Url&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="p">},</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;ssys:targets&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ssys:Targets&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;array&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">                  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">               </span><span class="p">}</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+<span class="w">         </span><span class="p">},</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;title&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;description&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;providers&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;type&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;url&quot;</span><span class="w"></span>
+<span class="w">         </span><span class="p">]</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;ExternalServiceType&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ExternalServiceType&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;An enumeration.&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;enum&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;WFS&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;PDSODE&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;EPNTAP&quot;</span><span class="w"></span>
+<span class="w">         </span><span class="p">]</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;ExternalService&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ExternalService&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Title&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="p">},</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Description&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="p">},</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;providers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Providers&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;array&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">                  </span><span class="nt">&quot;$ref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#/definitions/ServiceProvider&quot;</span><span class="w"></span>
+<span class="w">               </span><span class="p">}</span><span class="w"></span>
+<span class="w">            </span><span class="p">},</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;$ref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#/definitions/ExternalServiceType&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="p">},</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Url&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="p">},</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;ping_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ping Url&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="p">},</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;ssys:targets&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ssys:Targets&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;array&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">                  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">               </span><span class="p">}</span><span class="w"></span>
+<span class="w">            </span><span class="p">},</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;extra_params&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Extra Params&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">               </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+<span class="w">         </span><span class="p">},</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;title&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;description&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;providers&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;type&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;url&quot;</span><span class="w"></span>
+<span class="w">         </span><span class="p">]</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">   </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</details></p><dl class="field-list simple">
+<dt class="field-odd">Fields</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#crawler.datastore.SourceCollectionModel.collection_id" title="crawler.datastore.SourceCollectionModel.collection_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">collection_id</span> <span class="pre">(str)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.datastore.SourceCollectionModel.extracted" title="crawler.datastore.SourceCollectionModel.extracted"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extracted</span> <span class="pre">(Optional[bool])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.datastore.SourceCollectionModel.extracted_files" title="crawler.datastore.SourceCollectionModel.extracted_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extracted_files</span> <span class="pre">(Optional[list])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.datastore.SourceCollectionModel.ingested" title="crawler.datastore.SourceCollectionModel.ingested"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ingested</span> <span class="pre">(Optional[bool])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.datastore.SourceCollectionModel.n_products" title="crawler.datastore.SourceCollectionModel.n_products"><code class="xref py py-obj docutils literal notranslate"><span class="pre">n_products</span> <span class="pre">(Optional[int])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.datastore.SourceCollectionModel.service" title="crawler.datastore.SourceCollectionModel.service"><code class="xref py py-obj docutils literal notranslate"><span class="pre">service</span> <span class="pre">(Optional[Union[crawler.registry.Service,</span> <span class="pre">crawler.registry.ExternalService]])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.datastore.SourceCollectionModel.stac_file" title="crawler.datastore.SourceCollectionModel.stac_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stac_file</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.datastore.SourceCollectionModel.stac_url" title="crawler.datastore.SourceCollectionModel.stac_url"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stac_url</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.datastore.SourceCollectionModel.targets" title="crawler.datastore.SourceCollectionModel.targets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">targets</span> <span class="pre">(Optional[List[str]])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.datastore.SourceCollectionModel.transformed" title="crawler.datastore.SourceCollectionModel.transformed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transformed</span> <span class="pre">(Optional[bool])</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.datastore.SourceCollectionModel.collection_id">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">collection_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#crawler.datastore.SourceCollectionModel.collection_id" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.datastore.SourceCollectionModel.extracted">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extracted</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#crawler.datastore.SourceCollectionModel.extracted" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.datastore.SourceCollectionModel.extracted_files">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extracted_files</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#crawler.datastore.SourceCollectionModel.extracted_files" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.datastore.SourceCollectionModel.ingested">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ingested</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#crawler.datastore.SourceCollectionModel.ingested" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.datastore.SourceCollectionModel.n_products">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_products</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.datastore.SourceCollectionModel.n_products" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.datastore.SourceCollectionModel.service">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">service</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#crawler.registry.Service" title="crawler.registry.Service"><span class="pre">crawler.registry.Service</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#crawler.registry.ExternalService" title="crawler.registry.ExternalService"><span class="pre">crawler.registry.ExternalService</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.datastore.SourceCollectionModel.service" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.datastore.SourceCollectionModel.stac_file">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stac_file</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#crawler.datastore.SourceCollectionModel.stac_file" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.datastore.SourceCollectionModel.stac_url">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stac_url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#crawler.datastore.SourceCollectionModel.stac_url" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.datastore.SourceCollectionModel.targets">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">targets</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.datastore.SourceCollectionModel.targets" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.datastore.SourceCollectionModel.transformed">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">transformed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#crawler.datastore.SourceCollectionModel.transformed" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="module-crawler.extractor">
 <span id="extractor-module"></span><h2><code class="docutils literal notranslate"><span class="pre">extractor</span></code> module<a class="headerlink" href="#module-crawler.extractor" title="Permalink to this headline">#</a></h2>
@@ -3269,7 +3638,7 @@ rich text representation.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="crawler.extractor.PDSODE_Extractor.get_collection_metadata">
-<span class="sig-name descname"><span class="pre">get_collection_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">service</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">crawler.datastore.SourceCollectionModel</span></span></span><a class="reference internal" href="_modules/crawler/extractor.html#PDSODE_Extractor.get_collection_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.extractor.PDSODE_Extractor.get_collection_metadata" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_collection_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">service</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#crawler.datastore.SourceCollectionModel" title="crawler.datastore.SourceCollectionModel"><span class="pre">crawler.datastore.SourceCollectionModel</span></a></span></span><a class="reference internal" href="_modules/crawler/extractor.html#PDSODE_Extractor.get_collection_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.extractor.PDSODE_Extractor.get_collection_metadata" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -3284,7 +3653,7 @@ rich text representation.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="crawler.extractor.PDSODE_Extractor.read_next_product_metadata">
-<span class="sig-name descname"><span class="pre">read_next_product_metadata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crawler/extractor.html#PDSODE_Extractor.read_next_product_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.extractor.PDSODE_Extractor.read_next_product_metadata" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">read_product_metadata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crawler/extractor.html#PDSODE_Extractor.read_next_product_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.extractor.PDSODE_Extractor.read_next_product_metadata" title="Permalink to this definition">#</a></dt>
 <dd><p>Iterator reader returning the next product metadata from extracted collection files.</p>
 </dd></dl>
 
