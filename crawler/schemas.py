@@ -19,11 +19,8 @@ References/examples:
 """
 
 from pydantic import BaseModel, Field
-from typing import Optional
-
-# PDSSP STAC Metadata Schemas
-# 'PDSSP_STAC': {'collection': PDSSP_STAC_Collection, 'item': PDSSP_STAC_Item},
-#
+from typing import Dict, List, Union, Optional
+# from datetime import datetime
 
 STAC_VERSION = '1.0.0'
 
@@ -32,7 +29,7 @@ class PDSSP_STAC_SpatialExtent(BaseModel):
     """Potential spatial extents covered by the Collection."""
 
 class PDSSP_STAC_TemporalExtent(BaseModel):
-    interval: list[str]
+    interval: list[list[str]]
     """Potential temporal extents covered by the Collection."""
 
 class PDSSP_STAC_Extent(BaseModel):
@@ -73,10 +70,10 @@ class PDSSP_STAC_Collection(BaseModel):
     providers: Optional[list[PDSSP_STAC_Provider]]
     extent: PDSSP_STAC_Extent
     summaries: Optional[dict]
-    links: list[PDSSP_STAC_Link]
+    links: Optional[list[PDSSP_STAC_Link]]  # WARNING: NOT optional following STAC standard -> created automatically by PySTAC.
     assets: Optional[dict]  ## Map<string, PDSSP_STAC_Asset>: dictionary of asset objects that can be downloaded, each with a unique key
 
-class PDSSP_STAC_Assets(BaseModel):
+class PDSSP_STAC_Asset(BaseModel):
     href: str
     title: Optional[str]
     description: Optional[str]
@@ -84,21 +81,22 @@ class PDSSP_STAC_Assets(BaseModel):
     roles: Optional[list[str]]
 
 class PDSSP_STAC_Properties(BaseModel):
-    title: Optional[str]
-    description: Optional[str]
+    title: Optional[str] #
+    description: Optional[str] #
     datetime: str
     created: Optional[str]
     updated: Optional[str]
     start_datetime: Optional[str]
     end_datetime: Optional[str]
     license: Optional[str]
-    platform: Optional[str]
-    instruments: Optional[list[str]]
-    constellation: Optional[str]
-    mission: Optional[str]
+    platform: Optional[str] # PDS instrument_host_id
+    instruments: Optional[list[str]] # PDS instrument_id
+    constellation: Optional[str]  # ?
+    mission: Optional[str]   # PDS mission_id
     gsd: Optional[float]
     ssys_targets: Optional[list[str]] = Field(None, alias='ssys:targets')
     ssys_solar_longitude: Optional[float]
+    # ssys_instrument_host: Optional[str]
 
 class PDSSP_STAC_Item(BaseModel):
     type: str
@@ -108,7 +106,7 @@ class PDSSP_STAC_Item(BaseModel):
     geometry: object  # GeoJSON Geometry
     bbox: list[float]
     properties: PDSSP_STAC_Properties
-    links: list[PDSSP_STAC_Link]
+    links: Optional[list[PDSSP_STAC_Link]]  # WARNING: NOT optional following STAC standard -> created automatically by PySTAC.
     assets: dict  ## Map<string, PDSSP_STAC_Asset>: dictionary of asset objects that can be downloaded, each with a unique key.
     collection: Optional[str]
 
@@ -128,6 +126,9 @@ class PDSSP_WFS_Feature(BaseModel):
 
 # PDS ODE Metadata Schemas
 #
+class PDSODE_ValidTargets(BaseModel):
+    ValidTarget: Union[str, list[str]]
+
 class PDSODE_IIPTSet(BaseModel):
     ODEMetaDB: str
     IHID: str
@@ -137,6 +138,8 @@ class PDSODE_IIPTSet(BaseModel):
     PT: str
     PTName: str
     DataSetId: str
+    ValidTargets: PDSODE_ValidTargets
+    NumberProducts: int
 
 class PDSODE_Product_file(BaseModel):
     Description: str  # eg" 'MAP PROJECTION FILE'",'
@@ -194,6 +197,9 @@ class PDSODE_Product(BaseModel):
     Product_files: PDSODE_Product_file_key
     """Associated product files."""
 
+    Footprint_C0_geometry: str
+    UTC_start_time: str
+    UTC_stop_time: str
     #
     # "BB_georeferenced": "True",
     # "Center_georeferenced": "True",

@@ -15,7 +15,8 @@ setup(
         'pystac',
         'pydantic',
         'pyyaml',
-        'geojson'
+        'geojson',
+        'shapely'
     ],
     entry_points='''
         [console_scripts]

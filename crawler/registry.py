@@ -66,7 +66,7 @@ class RegistryInterface():
         return self.services
 
 class HealthcheckrRegistry(RegistryInterface):
-    """Class that represents a PDSSP Services RegistryInterface.
+    """Class that represents the PDSSP Services Registry.
 
     End-point: https://pdssp.ias.universite-paris-saclay.fr/registry/services
     """

@@ -213,7 +213,7 @@ class PDSODE_Extractor(AbstractExtractor):
         )
 
         # execute query
-        print('Querying PDS ODE REST API service...')
+        print(f'Retrieving `{collection_id}` collection metadata from PDS ODE REST API service...')
         with closing(requests.get(self.service.url, params=query)) as r:
             if r.ok:
                 response = r.json()
@@ -242,10 +242,24 @@ class PDSODE_Extractor(AbstractExtractor):
             if service_collection.collection_id == collection_id:
                 return service_collection
 
-    def read_collection_metadata(self, collection_metadata_file_path): # -> SourceCollectionMetadata:
+    def read_collection_metadata(self, collection_metadata_file_path=''): # -> SourceCollectionMetadata:
+        if not collection_metadata_file_path:
+            if self.extracted_files[0]:
+                collection_metadata_file_path = self.extracted_files[0]
+            else:
+                raise Exception('Could not derive `collection_metadata_file_path`.')
+
         with open(collection_metadata_file_path, 'r') as f:
-            data = json.load(f)
-        return data
+            metadata_dict = json.load(f)
+
+        try:
+            collection_metadata = PDSODE_IIPTSet(**metadata_dict)
+        except Exception as e:
+            print(e)
+            print(metadata_dict)
+            return None
+
+        return collection_metadata
 
     def reset_reader_iterator(self):
         self.file_idx = 1
@@ -300,6 +314,7 @@ class PDSODE_Extractor(AbstractExtractor):
         # Extract and save collection meta.
         #
         collection_metadata = self.retrieve_collection_metadata(collection_id)
+        # collection_metadata = extractor.retrieve_collection_metadata('MRO_HIRISE_RDRV11')
 
         collection_file_path = Path(output_dir_path, collection_id, collection_id+'.json')
         if Path.is_file(collection_file_path):
@@ -309,7 +324,9 @@ class PDSODE_Extractor(AbstractExtractor):
 
         Path.mkdir(collection_file_path.parent, parents=True, exist_ok=overwrite)
         with open(collection_file_path, 'w') as file:
-            json.dump(collection_metadata.json(), file)
+            file.write(collection_metadata.json(indent=3))
+
+        print(collection_file_path)
 
         self.n_extracted_files = 1
         self.extracted_files = [str(collection_file_path)]
@@ -324,7 +341,10 @@ class PDSODE_Extractor(AbstractExtractor):
         iiptset = collection_id.split('_')
 
         # set `target` query parameter
-        target = collection_metadata.targets[0].lower()
+        if isinstance(collection_metadata.ValidTargets.ValidTarget, str):
+            target = collection_metadata.ValidTargets.ValidTarget
+        elif isinstance(collection_metadata.ValidTargets.ValidTarget, list):
+            target = collection_metadata.ValidTargets.ValidTarget[0]
 
         # set default ODE API query
         query = dict(
@@ -340,7 +360,7 @@ class PDSODE_Extractor(AbstractExtractor):
         )
 
         offset = 0
-        n_products = min(collection_metadata.n_products, extract_limit)  # temporary for testing purpose
+        n_products = min(collection_metadata.NumberProducts, extract_limit)  # temporary for testing purpose
         print(f'Extracting metadata of {n_products} products...')
         while offset < n_products:
             # update query `offset` parameter
