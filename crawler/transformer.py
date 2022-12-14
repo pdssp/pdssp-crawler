@@ -120,8 +120,8 @@ class AbstractTransformer:
     def get_stac_version(self) -> str:
         return schemas.STAC_VERSION
 
-    def get_stac_extensions(self, source_metadata: BaseModel, object_type='item') -> list[str]:
-        pass
+    # def get_stac_extensions(self, source_metadata: BaseModel, object_type='item') -> list[str]:
+    #     pass
 
     def get_links(self, source_metadata: BaseModel, object_type='item') -> list[BaseModel]:
         pass
@@ -147,23 +147,58 @@ class AbstractTransformer:
     def get_bbox(self, source_metadata: BaseModel) -> list[float]:
         pass
 
-    def get_summaries(self, source_metadata: BaseModel) -> dict:
-        pass
-
-    def get_properties(self, source_metadata: BaseModel) -> BaseModel:  # PDSSP_STAC_Properties
-        pass
-
     def get_providers(self, source_metadata: BaseModel) -> list[BaseModel]:
         pass
 
     def get_licence(self, source_metadata: BaseModel) -> str:
         return 'Default CC-BY-SA-4.0 license [TBC]'
 
-    def get_stac_collection_dict(self, source_metadata):
-        return {
+    def get_summaries(self, source_metadata: BaseModel) -> dict:
+        pass
+
+    def get_properties(self, source_metadata: BaseModel) -> BaseModel:  # PDSSP_STAC_Properties
+        pass
+
+    def get_extension_properties(self, source_metadata: BaseModel, stac_extension, object_type='item') -> BaseModel:
+        if stac_extension == 'ssys':
+            return self.get_ssys_properties(source_metadata, object_type=object_type)
+        elif stac_extension == 'proj':
+            return self.get_proj_properties(source_metadata, object_type=object_type)
+        else:
+            raise Exception(f'Undefined {stac_extension} STAC extension.')
+
+    def get_extension_fields(self, source_metadata: BaseModel, stac_extension, object_type='item') -> BaseModel:
+        if stac_extension == 'ssys':
+            return self.get_ssys_fields(source_metadata, object_type=object_type)
+        elif stac_extension == 'proj':
+            return self.get_proj_fields(source_metadata, object_type=object_type)
+        else:
+            raise Exception(f'Undefined {stac_extension} STAC extension.')
+
+    def get_ssys_properties(self, source_metadata: BaseModel, object_type='item') -> BaseModel:
+        if object_type == 'item':
+            return {}
+        elif object_type == 'collection':
+            return {}
+        else:
+            raise InvalidModelObjectTypeError(object_type)
+
+    def get_ssys_fields(self, source_metadata: BaseModel, object_type='item') -> dict:
+        return {}
+
+    def get_proj_properties(self, source_metadata: BaseModel, object_type='item') -> BaseModel:
+        if object_type == 'item':
+            pass
+        elif object_type == 'collection':
+            pass
+        else:
+            raise InvalidModelObjectTypeError(object_type)
+
+    def get_stac_collection_dict(self, source_metadata, stac_extensions=['ssys']) -> dict:
+        stac_collection_dict = {
             'type': 'Collection',  # REQUIRED
             'stac_version': self.get_stac_version(),  # REQUIRED
-            'stac_extensions': self.get_stac_extensions(source_metadata, object_type='collection'),
+            'stac_extensions': stac_extensions,  # self.get_stac_extensions(source_metadata, object_type='collection'),
             'id': self.get_id(source_metadata, object_type='collection'),  # REQUIRED
             'title': self.get_title(source_metadata),
             'description': self.get_description(source_metadata),  # REQUIRED
@@ -173,32 +208,46 @@ class AbstractTransformer:
             'extent': self.get_extent(source_metadata),  # REQUIRED
             'summaries': self.get_summaries(source_metadata),  # STRONGLY RECOMMENDED
             'links': self.get_links(source_metadata, object_type='collection'),  # REQUIRED
-            'assets': self.get_assets(source_metadata, object_type='collection')
+            'assets': self.get_assets(source_metadata, object_type='collection'),
+            'extra_fields': {}
         }
+        for stac_extension in stac_extensions:
+            # print(stac_extension)
+            # print(source_metadata)
+            # print(self.get_extension_fields(source_metadata, stac_extension, object_type='collection'))
+            stac_collection_dict['extra_fields'].update(self.get_extension_fields(source_metadata, stac_extension, object_type='collection'))
+            # For example:
+            # { 'ssys_targets': ['Mars'] }
+        return stac_collection_dict
 
-    def get_stac_item_dict(self, source_metadata):
-        return {
+    def get_stac_item_dict(self, source_metadata, stac_extensions=['ssys']) -> dict:
+        stac_item_dict = {
             'type': 'Feature',  # REQUIRED
             'stac_version': self.get_stac_version(),  # REQUIRED
-            'stac_extensions': self.get_stac_extensions(source_metadata, object_type='item'),
+            'stac_extensions': stac_extensions,
             'id': self.get_id(source_metadata, object_type='item'),  # REQUIRED
             'geometry': self.get_geometry(source_metadata),  # REQUIRED
             'bbox': self.get_bbox(source_metadata),  # REQUIRED
-            'properties': self.get_properties(source_metadata),  # REQUIRED
+            'properties': self.get_properties(source_metadata, stac_extensions=stac_extensions),  # REQUIRED
             'links': self.get_links(source_metadata, object_type='item'),  # REQUIRED
             'assets': self.get_assets(source_metadata, object_type='item'),  # REQUIRED
-            'collection': ''
+            'collection': '',
+            'extra_fields': {}
         }
+        # add STAC extensions extra fields
+        for stac_extension in stac_extensions:
+            stac_item_dict['extra_fields'].update(self.get_extension_fields(source_metadata, stac_extension, object_type='item'))
 
-    def transform_source_metadata(self, source_metadata: BaseModel, object_type='item') -> Union[schemas.PDSSP_STAC_Item, schemas.PDSSP_STAC_Collection]:
+        return stac_item_dict
+
+    def transform_source_metadata(self, source_metadata: BaseModel, object_type='item', stac_extensions=['ssys']) -> Union[schemas.PDSSP_STAC_Item, schemas.PDSSP_STAC_Collection]:
         """Transform input source metadata into output PDSSP STAC metadata schema object.
         """
         # TODO: `object_type` should be derived from the `source_metadata` object class.
-        # print('transform_source_metadata', source_metadata)
         if object_type == 'item':
-            stac_dict = self.get_stac_item_dict(source_metadata)
+            stac_dict = self.get_stac_item_dict(source_metadata, stac_extensions=stac_extensions)
         elif object_type == 'collection':
-            stac_dict = self.get_stac_collection_dict(source_metadata)
+            stac_dict = self.get_stac_collection_dict(source_metadata, stac_extensions=stac_extensions)
         else:
             raise InvalidModelObjectTypeError(object_type)
 
@@ -206,10 +255,11 @@ class AbstractTransformer:
         # print(stac_dict)
         stac_metadata = schemas.create_schema_object(stac_dict, self.destination_schema, object_type)
         # print(stac_metadata)
+        # print()
 
         return stac_metadata
 
-    def transform(self, source_collection_file_path='', stac_dir='', overwrite=False) -> None:
+    def transform(self, source_collection_file_path='', stac_dir='', stac_extensions=['ssys'], overwrite=False) -> None:
         """Transform (extracted) source collection files into PDSSP STAC catalog.
         """
         # set extractor
@@ -219,7 +269,7 @@ class AbstractTransformer:
 
         # read and transform source collection metadata, into destination `PDSSP_STAC_Collection` metadata.
         source_collection_metadata = extractor.read_collection_metadata()
-        stac_collection_metadata = self.transform_source_metadata(source_collection_metadata, object_type='collection')
+        stac_collection_metadata = self.transform_source_metadata(source_collection_metadata, object_type='collection', stac_extensions=stac_extensions)
 
         # create destination PySTAC Collection object
         stac_collection_id = stac_collection_metadata.id
@@ -234,11 +284,12 @@ class AbstractTransformer:
         # print()
         stac_collection = pystac.Collection(
             id=stac_collection_id,
-            # stac_extensions=[],
+            stac_extensions=stac_extensions,
             title=stac_collection_metadata.title,
             description=stac_collection_metadata.description,
             extent=stac_extent,
-            license=stac_collection_metadata.licence
+            license=stac_collection_metadata.licence,
+            extra_fields=stac_collection_metadata.extra_fields  # {'ssys:targets': stac_collection_metadata.ssys_targets}
         )
 
         # read and transform source collection products metadata, into destination `PDSSP_STAC_Item` metadata, then
@@ -251,12 +302,13 @@ class AbstractTransformer:
             # create PySTAC Item
             stac_item = pystac.Item(
                 id=stac_item_metadata.id,
-                # stac_extensions=[],
+                stac_extensions=stac_extensions,
                 geometry=stac_item_metadata.geometry,
                 bbox=stac_item_metadata.bbox,
-                datetime=datetime.strptime(stac_item_metadata.properties.datetime, '%Y-%m-%dT%H:%M:%S.%f'),  # datetime.utcnow()
-                properties=stac_item_metadata.properties.dict(exclude_unset=True), # include={'datetime', 'platform', 'start_datetime'}),
+                datetime=datetime.strptime(stac_item_metadata.properties['datetime'], '%Y-%m-%dT%H:%M:%S.%f'),  # datetime.utcnow()
+                properties=stac_item_metadata.properties,  # .dict(exclude_unset=True), # include={'datetime', 'platform', 'start_datetime'}),
                 # assets=stac_assets,
+                extra_fields=stac_item_metadata.extra_fields,  # {'ssys:targets': stac_item_metadata.ssys_targets},
                 collection=stac_collection_id
             )
 
@@ -274,13 +326,9 @@ class AbstractTransformer:
                         roles=asset_metadata.roles
                     )
                 )
-
-            print(stac_item)
             # add item to PySTAC Collection
             stac_collection.add_item(stac_item)
 
-
-        print(stac_collection)
         # update collection extent from items
         stac_collection.update_extent_from_items()
 
@@ -315,8 +363,8 @@ class PDSODE_STAC(AbstractTransformer):
         else:
             raise InvalidModelObjectTypeError(object_type)
 
-    def get_stac_extensions(self, source_metadata: BaseModel, object_type='item') -> list[str]:
-        pass
+    # def get_stac_extensions(self, source_metadata: BaseModel, object_type='item') -> list[str]:
+    #     pass
 
     def get_links(self, source_metadata: BaseModel, object_type='item') -> list[BaseModel]:
         pass
@@ -400,14 +448,32 @@ class PDSODE_STAC(AbstractTransformer):
         footprint_bbox = list(footprint_shape.bounds)
         return footprint_bbox
 
+    def get_providers(self, source_metadata: BaseModel) -> list[BaseModel]:
+        name = f'{source_metadata.IID} team via PDS ODE'
+        providers = [schemas.PDSSP_STAC_Provider(name=name)]
+        return providers
+
+    def get_licence(self, source_metadata: BaseModel) -> str:
+        return 'Default CC-BY-SA-4.0 license for PDS ODE collections [TBC]'
+
     def get_summaries(self, source_metadata: BaseModel) -> dict:
         pass
 
-    def get_extension_properties(self, source_metadata: BaseModel, stac_extension) -> BaseModel:
-        # TODO: to be used by and added to get_properties
-        pass
+    # def get_properties(self, source_metadata: BaseModel) -> schemas.PDSSP_STAC_Properties:
+    #     datetime_format = '%Y-%m-%dT%H:%M:%S.%f'
+    #     properties = schemas.PDSSP_STAC_Properties(
+    #         datetime=datetime.strptime(source_metadata.UTC_start_time, datetime_format).isoformat(),
+    #         created=datetime.strptime(source_metadata.Product_creation_time, datetime_format).isoformat(),
+    #         start_datetime=datetime.strptime(source_metadata.UTC_start_time, datetime_format).isoformat(),
+    #         end_datetime=datetime.strptime(source_metadata.UTC_stop_time, datetime_format).isoformat(),
+    #         platform=source_metadata.ihid,
+    #         instruments=[source_metadata.iid],
+    #         ssys_targets=[source_metadata.Target_name]
+    #     )
+    #
+    #     return properties
 
-    def get_properties(self, source_metadata: BaseModel) -> schemas.PDSSP_STAC_Properties:
+    def get_properties(self, source_metadata: BaseModel, stac_extensions=['ssys']) -> dict:
         datetime_format = '%Y-%m-%dT%H:%M:%S.%f'
         properties = schemas.PDSSP_STAC_Properties(
             datetime=datetime.strptime(source_metadata.UTC_start_time, datetime_format).isoformat(),
@@ -415,23 +481,39 @@ class PDSODE_STAC(AbstractTransformer):
             start_datetime=datetime.strptime(source_metadata.UTC_start_time, datetime_format).isoformat(),
             end_datetime=datetime.strptime(source_metadata.UTC_stop_time, datetime_format).isoformat(),
             platform=source_metadata.ihid,
-            instruments=[source_metadata.iid],
-            ssys_targets=[source_metadata.Target_name]
+            instruments=[source_metadata.iid]
         )
-        # print(type(properties.datetime), properties.datetime)
-        # print(type(properties.created), properties.created)
-        # print(type(properties.start_datetime), properties.start_datetime)
-        # print(type(properties.end_datetime), properties.end_datetime)
-        # print()
-        return properties
+        properties_dict = properties.dict(exclude_unset=True)
+        for stac_extension in stac_extensions:
+            properties_dict.update(self.get_extension_properties(source_metadata, stac_extension, object_type='item'))
 
-    def get_providers(self, source_metadata: BaseModel) -> list[BaseModel]:
-        name = f'{source_metadata.IID} via PDS ODE'
-        providers = [schemas.PDSSP_STAC_Provider(name=name)]
-        return providers
+        return properties_dict
 
-    def get_licence(self, source_metadata: BaseModel) -> str:
-        return 'Default CC-BY-SA-4.0 license for PDS ODE collections [TBC]'
+    def get_ssys_properties(self, source_metadata: BaseModel, object_type='item') -> dict:
+        if object_type == 'item':
+            ssys_properties = schemas.PDSSP_STAC_SSYS_Properties(**{'ssys:targets':[source_metadata.Target_name]})
+        elif object_type == 'collection':
+            ssys_properties = schemas.PDSSP_STAC_SSYS_Properties(**{'ssys:targets':[source_metadata.ODEMetaDB]})
+        else:
+            raise InvalidModelObjectTypeError(object_type)
+        return ssys_properties.dict(by_alias=True)
+
+    def get_ssys_fields(self, source_metadata: BaseModel, object_type='item') -> dict:
+        if object_type == 'item':
+            ssys_fields = {}  # { 'ssys:targets': source_metadata.Target_name }
+        elif object_type == 'collection':
+            ssys_fields = { 'ssys:targets': source_metadata.ODEMetaDB }
+        else:
+            raise InvalidModelObjectTypeError(object_type)
+        return ssys_fields
+
+    def get_proj_properties(self, source_metadata: BaseModel, object_type='item') -> dict:
+        if object_type == 'item':
+            pass
+        elif object_type == 'collection':
+            pass
+        else:
+            raise InvalidModelObjectTypeError(object_type)
 
 
 class EPNTAP_STAC(AbstractTransformer):
@@ -446,8 +528,8 @@ class EPNTAP_STAC(AbstractTransformer):
         else:
             raise InvalidModelObjectTypeError(object_type)
 
-    def get_stac_extensions(self, source_metadata: BaseModel, object_type='item') -> list[str]:
-        pass
+    # def get_stac_extensions(self, source_metadata: BaseModel, object_type='item') -> list[str]:
+    #     pass
 
     def get_links(self, source_metadata: BaseModel, object_type='item') -> list[BaseModel]:
         pass

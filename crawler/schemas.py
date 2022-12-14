@@ -24,6 +24,8 @@ from typing import Dict, List, Union, Optional
 
 STAC_VERSION = '1.0.0'
 
+# PDSSP_STAC -> "proxy" schema to STAC model
+
 class PDSSP_STAC_SpatialExtent(BaseModel):
     bbox: list[list[float]]
     """Potential spatial extents covered by the Collection."""
@@ -72,6 +74,7 @@ class PDSSP_STAC_Collection(BaseModel):
     summaries: Optional[dict]
     links: Optional[list[PDSSP_STAC_Link]]  # WARNING: NOT optional following STAC standard -> created automatically by PySTAC.
     assets: Optional[dict]  ## Map<string, PDSSP_STAC_Asset>: dictionary of asset objects that can be downloaded, each with a unique key
+    extra_fields: Optional[dict]
 
 class PDSSP_STAC_Asset(BaseModel):
     href: str
@@ -80,7 +83,7 @@ class PDSSP_STAC_Asset(BaseModel):
     type: Optional[str]
     roles: Optional[list[str]]
 
-class PDSSP_STAC_Properties(BaseModel):
+class PDSSP_STAC_Properties(BaseModel): # STAC Common Metadata
     title: Optional[str] #
     description: Optional[str] #
     datetime: str
@@ -94,8 +97,8 @@ class PDSSP_STAC_Properties(BaseModel):
     constellation: Optional[str]  # ?
     mission: Optional[str]   # PDS mission_id
     gsd: Optional[float]
-    ssys_targets: Optional[list[str]] = Field(None, alias='ssys:targets')
-    ssys_solar_longitude: Optional[float]
+    # ssys_targets: Optional[list[str]] = Field(None, alias='ssys:targets')
+    # ssys_solar_longitude: Optional[float]
     # ssys_instrument_host: Optional[str]
 
 class PDSSP_STAC_Item(BaseModel):
@@ -105,18 +108,19 @@ class PDSSP_STAC_Item(BaseModel):
     id: str
     geometry: object  # GeoJSON Geometry
     bbox: list[float]
-    properties: PDSSP_STAC_Properties
+    properties: dict  # PDSSP_STAC_Properties
     links: Optional[list[PDSSP_STAC_Link]]  # WARNING: NOT optional following STAC standard -> created automatically by PySTAC.
     assets: dict  ## Map<string, PDSSP_STAC_Asset>: dictionary of asset objects that can be downloaded, each with a unique key.
     collection: Optional[str]
+    extra_fields: Optional[dict]
 
-# class PDSSP_STAC_SSYS_Extension_Properties(PDSSP_STAC_Properties):
-#     ssys_instrument_host_name: Optional[str]
-#     ssys_instrument_name: Optional[str]
-#     ssys_targets: Optional[list[str]] = Field(None, alias='ssys:targets')
+class PDSSP_STAC_SSYS_Properties(BaseModel):
+    ssys_targets: Optional[list[str]] = Field(alias='ssys:targets')
 #     ssys_target_class:
 #     ssys_westernmost_longitude: Optional[float]
 #     ssys_easternmost_longitude: Optional[float]
+#     ssys_instrument_host_name: Optional[str]
+#     ssys_instrument_name: Optional[str]
 
 class PDSSP_WFS_Layer(BaseModel):
     pass
