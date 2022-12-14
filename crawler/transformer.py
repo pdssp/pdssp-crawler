@@ -87,6 +87,7 @@ class AbstractTransformer:
             f"<{self.__class__.__name__}> "
             f"source_schema: {self.source_schema} | "
             f"destination_schema: {self.destination_schema} | "
+            f"transformed: {self.transformed} | "
             f"stac_dir: {self.stac_dir}"
         )
 
@@ -121,14 +122,14 @@ class AbstractTransformer:
     def get_stac_version(self) -> str:
         return schemas.STAC_VERSION
 
-    # def get_stac_extensions(self, source_metadata: BaseModel, object_type='item') -> list[str]:
-    #     pass
-
     def get_links(self, source_metadata: BaseModel, object_type='item') -> list[BaseModel]:
         pass
 
     def get_assets(self, source_metadata: BaseModel, object_type='item') -> Dict[str, schemas.PDSSP_STAC_Asset]:
         return {}
+
+    def get_stac_extensions(self, source_metadata: BaseModel) -> list[str]: # collection only
+        pass
 
     def get_title(self, source_metadata: BaseModel) -> str:
         pass
@@ -344,9 +345,9 @@ class AbstractTransformer:
         if not output_dir_path:
             output_dir_path = self.stac_dir
         stac_catalog_path = Path(output_dir_path, self.collection.collection_id)
-        print(stac_catalog_path)
+        print(f'Writing STAC JSON files in {stac_catalog_path} directory...')
         Path.mkdir(stac_catalog_path, parents=True, exist_ok=overwrite)
-        stac_catalog.normalize_hrefs(self.stac_dir)
+        stac_catalog.normalize_hrefs(str(stac_catalog_path))
         stac_catalog.save(catalog_type=pystac.CatalogType.SELF_CONTAINED)
 
         self.transformed = True
@@ -369,11 +370,9 @@ class PDSODE_STAC(AbstractTransformer):
         else:
             raise InvalidModelObjectTypeError(object_type)
 
-    # def get_stac_extensions(self, source_metadata: BaseModel, object_type='item') -> list[str]:
+    #
+    # def get_links(self, source_metadata: BaseModel, object_type='item') -> list[BaseModel]:
     #     pass
-
-    def get_links(self, source_metadata: BaseModel, object_type='item') -> list[BaseModel]:
-        pass
 
     def get_assets(self, source_metadata: BaseModel, object_type='item') -> Dict[str, schemas.PDSSP_STAC_Asset]:
         if object_type == 'item':
@@ -422,6 +421,10 @@ class PDSODE_STAC(AbstractTransformer):
             return []
         else:
             raise InvalidModelObjectTypeError(object_type)
+
+    def get_stac_extensions(self, source_metadata: BaseModel) -> list[str]: # collection only
+        # source_metadata.
+        pass
 
     def get_title(self, source_metadata: BaseModel) -> str:
         title = f'{source_metadata.IHID}/{source_metadata.IID} {source_metadata.PTName}'
