@@ -71,6 +71,7 @@ class AbstractTransformer:
         # init transformer properties
         self.destination_schema = destination_schema
         self.collection = None
+        self.transformed = False
         self.stac_dir = ''
 
         # set source_schema and collection properties
@@ -259,7 +260,7 @@ class AbstractTransformer:
 
         return stac_metadata
 
-    def transform(self, source_collection_file_path='', stac_dir='', stac_extensions=['ssys'], overwrite=False) -> None:
+    def transform(self, source_collection_file_path='', output_dir_path='', stac_extensions=['ssys'], overwrite=False) -> None:
         """Transform (extracted) source collection files into PDSSP STAC catalog.
         """
         # set extractor
@@ -340,12 +341,17 @@ class AbstractTransformer:
         stac_catalog.add_child(stac_collection)
 
         # save STAC catalog files
-        output_stac_dir = Path(self.stac_dir, self.collection.collection_id)
-        Path.mkdir(output_stac_dir, parents=True, exist_ok=overwrite)
+        if not output_dir_path:
+            output_dir_path = self.stac_dir
+        stac_catalog_path = Path(output_dir_path, self.collection.collection_id)
+        print(stac_catalog_path)
+        Path.mkdir(stac_catalog_path, parents=True, exist_ok=overwrite)
         stac_catalog.normalize_hrefs(self.stac_dir)
         stac_catalog.save(catalog_type=pystac.CatalogType.SELF_CONTAINED)
 
-        print(output_stac_dir)
+        self.transformed = True
+        self.stac_dir = stac_catalog_path
+        # print(f'{self.collection.collection_id} STAC catalog available in {self.stac_dir} directory.')
 
     def _geometry_from_wkt(self, wkt):
         pass

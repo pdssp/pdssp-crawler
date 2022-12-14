@@ -5,7 +5,6 @@ from typing import List, Optional
 from .extractor import Extractor
 from .transformer import Transformer
 from .ingestor import Ingestor
-from .collection import SourceCollection
 from .registry import HealthcheckrRegistry, LocalRegistry, Service, ServiceType, ExternalServiceType
 from .datastore import DataStore, SourceCollectionModel
 from .config import (
@@ -15,6 +14,8 @@ from .config import (
     LOCAL_REGISTRY_DIRECTORY,
     STAC_GITHUB_REPOSITORY
 )
+
+from pathlib import Path
 
 class Crawler:
     """Crawler class acting as controller and high-level interface.
@@ -132,7 +133,7 @@ class Crawler:
         print()
 
 
-    def transform_collection(self, collection_id, overwrite=False):
+    def transform_collection(self, collection_id, subdir='', overwrite=False):
         """Transform a source collection into a STAC collection file.
         """
         # get source collection from data store
@@ -152,17 +153,28 @@ class Crawler:
             self.extract_collection(collection_id)
 
         if collection.extracted:
-            print(f'Transform {collection_id} STAC catalog or collection...')
+            print(f'Transforming {collection_id} collection into STAC catalog file...')
             print(f'- Source collection file(s): {collection.extracted_files}')
-            transformer = Transformer(collection)
-            transformer.transform(output_dir_path=self.datastore.stac_data_dir, overwrite=overwrite)
+            try:
+                transformer = Transformer(collection)
+                output_dir_path = Path(self.datastore.stac_data_dir, subdir)
+                transformer.transform(output_dir_path=output_dir_path, overwrite=overwrite)
+            except Exception as e:
+                print(f'Could not transform {collection_id} source collection.')
+                print(e)
+                return
+
+            # Update source collection and data store
+            collection.transformed = transformer.transformed
+            collection.stac_dir = transformer.stac_dir
+            self.datastore.save_source_collections(overwrite=True)
         else:
             print(f'Could not extract {collection_id} source collection.')
 
         # report on source collection transformation
         if collection.transformed:
-            print(f'{collection_id} source collection successfully transformed:.')
-            print(f'- STAC collection file = {collection.stac_dir}')
+            print(f'{collection_id} source collection successfully transformed:')
+            print(f'- STAC catalog file = {collection.stac_dir}/catalog.json')
         else:
             print(f'Could not transform {collection_id} source collection.')
 
