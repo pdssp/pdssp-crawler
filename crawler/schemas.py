@@ -116,6 +116,8 @@ class PDSSP_STAC_Item(BaseModel):
 
 class PDSSP_STAC_SSYS_Properties(BaseModel):
     ssys_targets: Optional[list[str]] = Field(alias='ssys:targets')
+    ssys_solar_longitude: Optional[float]
+
 #     ssys_target_class:
 #     ssys_westernmost_longitude: Optional[float]
 #     ssys_easternmost_longitude: Optional[float]
@@ -208,6 +210,8 @@ class PDSODE_Product(BaseModel):
     Footprint_C0_geometry: Optional[str]
     UTC_start_time: str
     UTC_stop_time: str
+    Solar_longitude: Optional[float]
+
     #
     # "BB_georeferenced": "True",
     # "Center_georeferenced": "True",

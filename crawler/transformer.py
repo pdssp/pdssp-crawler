@@ -524,7 +524,13 @@ class PDSODE_STAC(AbstractTransformer):
 
     def get_ssys_properties(self, source_metadata: BaseModel, object_type='item') -> dict:
         if object_type == 'item':
-            ssys_properties = schemas.PDSSP_STAC_SSYS_Properties(**{'ssys:targets':[source_metadata.Target_name.upper()]})
+            ssys_properties = schemas.PDSSP_STAC_SSYS_Properties(
+                **{
+                    'ssys:targets': [source_metadata.Target_name.upper()],
+                    'ssys:solar_longitude': source_metadata.Solar_longitude
+                }
+            )
+
         elif object_type == 'collection':
             ssys_properties = schemas.PDSSP_STAC_SSYS_Properties(**{'ssys:targets':[source_metadata.iiptset.ODEMetaDB.upper()]})
         else:
