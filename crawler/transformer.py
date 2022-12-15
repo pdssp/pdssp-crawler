@@ -343,13 +343,14 @@ class AbstractTransformer:
             source_product_metadata = extractor.read_product_metadata()
             stac_item_metadata = self.transform_source_metadata(source_product_metadata, object_type='item', stac_extensions=stac_extensions)
 
+            print(stac_item_metadata.properties['datetime'])
             # create PySTAC Item
             stac_item = pystac.Item(
                 id=stac_item_metadata.id,
                 stac_extensions=stac_extensions,
                 geometry=stac_item_metadata.geometry,
                 bbox=stac_item_metadata.bbox,
-                datetime=datetime.strptime(stac_item_metadata.properties['datetime'], '%Y-%m-%dT%H:%M:%S.%f'),  # datetime.utcnow()
+                datetime=datetime.fromisoformat(stac_item_metadata.properties['datetime']),
                 properties=stac_item_metadata.properties,  # .dict(exclude_unset=True), # include={'datetime', 'platform', 'start_datetime'}),
                 # assets=stac_assets,
                 extra_fields=stac_item_metadata.extra_fields,  # {'ssys:targets': stac_item_metadata.ssys_targets},
@@ -508,7 +509,7 @@ class PDSODE_STAC(AbstractTransformer):
     def get_properties(self, source_metadata: BaseModel, stac_extensions=['ssys']) -> dict:
         datetime_format = '%Y-%m-%dT%H:%M:%S.%f'
         properties = schemas.PDSSP_STAC_Properties(
-            datetime=datetime.strptime(source_metadata.UTC_start_time, datetime_format).isoformat(),
+            datetime=datetime.strptime(source_metadata.UTC_start_time, datetime_format).isoformat(timespec='milliseconds'),
             created=datetime.strptime(source_metadata.Product_creation_time, datetime_format).isoformat(),
             start_datetime=datetime.strptime(source_metadata.UTC_start_time, datetime_format).isoformat(),
             end_datetime=datetime.strptime(source_metadata.UTC_stop_time, datetime_format).isoformat(),

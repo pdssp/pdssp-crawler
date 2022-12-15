@@ -85,12 +85,12 @@ class PDSSP_STAC_Asset(BaseModel):
 
 class PDSSP_STAC_Properties(BaseModel): # STAC Common Metadata
     title: Optional[str] #
-    description: Optional[str] #
-    datetime: str
-    created: Optional[str]
-    updated: Optional[str]
-    start_datetime: Optional[str]
-    end_datetime: Optional[str]
+    description: Optional[str]
+    datetime: str  # ISO 8601 format
+    created: Optional[str]  # ISO 8601 format
+    updated: Optional[str]  # ISO 8601 format
+    start_datetime: Optional[str]  # ISO 8601 format
+    end_datetime: Optional[str]  # ISO 8601 format
     license: Optional[str]
     platform: Optional[str] # PDS instrument_host_id
     instruments: Optional[list[str]] # PDS instrument_id
@@ -196,7 +196,7 @@ class PDSODE_Product(BaseModel):
     Target_name: str
     """Product target (example: Mars)."""
 
-    Product_version_id: str
+    Product_version_id: Optional[str]
     """Product version"""
 
     Observation_id: Optional[str]
