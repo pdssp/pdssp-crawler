@@ -313,7 +313,7 @@ class PDSODE_Extractor(AbstractExtractor):
 
 
     def extract(self, collection_id, output_dir_path='', service=None, overwrite=False):
-        """Extract collection files required to retrieve collection and product metadata.
+        """Extract source collection files required to retrieve collection and product metadata.
         """
         if service:  # set extractor service to input optional service keyword argument
             self.set_service(service)
@@ -353,10 +353,12 @@ class PDSODE_Extractor(AbstractExtractor):
         iiptset = collection_id.split('_')
 
         # set `target` query parameter
-        if isinstance(collection_metadata.iiptset.ValidTargets.ValidTarget, str):
-            target = collection_metadata.iiptset.ValidTargets.ValidTarget
-        elif isinstance(collection_metadata.iiptset.ValidTargets.ValidTarget, list):
-            target = collection_metadata.iiptset.ValidTargets.ValidTarget[0]
+        # if isinstance(collection_metadata.iiptset.ValidTargets.ValidTarget, str):
+        #     target = collection_metadata.iiptset.ValidTargets.ValidTarget
+        # elif isinstance(collection_metadata.iiptset.ValidTargets.ValidTarget, list):
+        #     target = collection_metadata.iiptset.ValidTargets.ValidTarget[0]
+        target = collection_metadata.iiptset.ODEMetaDB
+        print('target query param: ', target)
 
         # set default ODE API query
         query = dict(
