@@ -521,6 +521,9 @@ class PDSODE_STAC(AbstractTransformer):
         for stac_extension in stac_extensions:
             properties_dict.update(self.get_extension_properties(source_metadata, stac_extension, object_type='item'))
 
+        # if source_metadata.pdsid == 'ESP_012603_1300_RED':
+        #     print('stop')
+
         return properties_dict
 
     def get_ssys_properties(self, source_metadata: BaseModel, object_type='item') -> dict:
@@ -529,15 +532,14 @@ class PDSODE_STAC(AbstractTransformer):
                 **{
                     'ssys:targets': [source_metadata.Target_name.upper()],
                     'ssys:solar_longitude': source_metadata.Solar_longitude,
-                    'ssys_incidence_angle': source_metadata.Incidence_angle,
-                    'ssys_emission_angle': source_metadata.Emission_angle,
-                    'ssys_phase_angle': source_metadata.Phase_angle,
-                    'ssys_spatial_resolution': source_metadata.Map_scale,
-                    'ssys_processing_level': source_metadata.pt,
-                    'ssys_product_type': source_metadata.pt
+                    'ssys:incidence_angle': source_metadata.Incidence_angle,
+                    'ssys:emission_angle': source_metadata.Emission_angle,
+                    'ssys:phase_angle': source_metadata.Phase_angle,
+                    'ssys:spatial_resolution': source_metadata.Map_scale,
+                    'ssys:processing_level': source_metadata.pt,
+                    'ssys:product_type': source_metadata.pt
                 }
             )
-
         elif object_type == 'collection':
             ssys_properties = schemas.PDSSP_STAC_SSYS_Properties(**{'ssys:targets':[source_metadata.iiptset.ODEMetaDB.upper()]})
         else:

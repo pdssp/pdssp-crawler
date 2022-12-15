@@ -121,8 +121,8 @@ class PDSSP_STAC_SSYS_Properties(BaseModel):
     ssys_emission_angle: Optional[float] = Field(alias='ssys:emission_angle')
     ssys_phase_angle: Optional[float] = Field(alias='ssys:phase_angle')
     ssys_spatial_resolution: Optional[float] = Field(alias='ssys:spatial_resolution')
-    ssys_processing_level: Optional[float] = Field(alias='ssys:processing_level')
-    ssys_product_type: Optional[float] = Field(alias='ssys:product_type')
+    ssys_processing_level: Optional[str] = Field(alias='ssys:processing_level')
+    ssys_product_type: Optional[str] = Field(alias='ssys:product_type')
 
 class PDSSP_WFS_Layer(BaseModel):
     pass
