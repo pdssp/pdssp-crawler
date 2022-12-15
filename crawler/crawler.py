@@ -150,10 +150,10 @@ class Crawler:
 
         if not collection.extracted:
             print(f'{collection_id} source collection not extracted to source collection file(s).')
-            self.extract_collection(collection_id)
+            self.extract_collection(collection_id, overwrite=overwrite)
 
         if collection.extracted:
-            print(f'Transforming {collection_id} collection into STAC catalog file...')
+            print(f'Transforming {collection_id} source collection into STAC catalog file...')
             print(f'- Source collection file(s): {collection.extracted_files}')
             try:
                 transformer = Transformer(collection)

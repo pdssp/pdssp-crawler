@@ -179,16 +179,20 @@ class PDSODE_Extractor(AbstractExtractor):
                         for target in iiptset_valid_target:
                             targets.append(target)
 
-            # print(self.service)
             # set source schema
             source_schema = self.service.extra_params['source_schema']
 
-            # print(source_schema)
-            # exit(0)
+            # set reference target
+            target = targets[0].upper()
 
             try:
-                source_collection = SourceCollectionModel(collection_id=collection_id, service=self.service, source_schema=source_schema,
-                                                          n_products=n_products, targets=targets)
+                source_collection = SourceCollectionModel(
+                    collection_id=collection_id,
+                    service=self.service,
+                    source_schema=source_schema,
+                    n_products=n_products,
+                    target=target
+                )
             except:
                 source_collection = None
 
