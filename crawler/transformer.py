@@ -343,7 +343,7 @@ class AbstractTransformer:
             source_product_metadata = extractor.read_product_metadata()
             stac_item_metadata = self.transform_source_metadata(source_product_metadata, object_type='item', stac_extensions=stac_extensions)
 
-            print(stac_item_metadata.properties['datetime'])
+            # print(stac_item_metadata.properties['datetime'])
             # create PySTAC Item
             stac_item = pystac.Item(
                 id=stac_item_metadata.id,
@@ -514,7 +514,8 @@ class PDSODE_STAC(AbstractTransformer):
             start_datetime=datetime.strptime(source_metadata.UTC_start_time, datetime_format).isoformat(),
             end_datetime=datetime.strptime(source_metadata.UTC_stop_time, datetime_format).isoformat(),
             platform=source_metadata.ihid,
-            instruments=[source_metadata.iid]
+            instruments=[source_metadata.iid],
+            gsd=source_metadata.Map_scale
         )
         properties_dict = properties.dict(exclude_unset=True)
         for stac_extension in stac_extensions:
@@ -527,7 +528,13 @@ class PDSODE_STAC(AbstractTransformer):
             ssys_properties = schemas.PDSSP_STAC_SSYS_Properties(
                 **{
                     'ssys:targets': [source_metadata.Target_name.upper()],
-                    'ssys:solar_longitude': source_metadata.Solar_longitude
+                    'ssys:solar_longitude': source_metadata.Solar_longitude,
+                    'ssys_incidence_angle': source_metadata.Incidence_angle,
+                    'ssys_emission_angle': source_metadata.Emission_angle,
+                    'ssys_phase_angle': source_metadata.Phase_angle,
+                    'ssys_spatial_resolution': source_metadata.Map_scale,
+                    'ssys_processing_level': source_metadata.pt,
+                    'ssys_product_type': source_metadata.pt
                 }
             )
 
@@ -535,7 +542,7 @@ class PDSODE_STAC(AbstractTransformer):
             ssys_properties = schemas.PDSSP_STAC_SSYS_Properties(**{'ssys:targets':[source_metadata.iiptset.ODEMetaDB.upper()]})
         else:
             raise InvalidModelObjectTypeError(object_type)
-        return ssys_properties.dict(by_alias=True)
+        return ssys_properties.dict(by_alias=True)  # exclude_unset=True ?
 
     def get_ssys_fields(self, source_metadata: BaseModel, object_type='item') -> dict:
         if object_type == 'item':

@@ -117,12 +117,12 @@ class PDSSP_STAC_Item(BaseModel):
 class PDSSP_STAC_SSYS_Properties(BaseModel):
     ssys_targets: Optional[list[str]] = Field(alias='ssys:targets')
     ssys_solar_longitude: Optional[float] = Field(alias='ssys:solar_longitude')
-
-#     ssys_target_class:
-#     ssys_westernmost_longitude: Optional[float]
-#     ssys_easternmost_longitude: Optional[float]
-#     ssys_instrument_host_name: Optional[str]
-#     ssys_instrument_name: Optional[str]
+    ssys_incidence_angle: Optional[float] = Field(alias='ssys:incidence_angle')
+    ssys_emission_angle: Optional[float] = Field(alias='ssys:emission_angle')
+    ssys_phase_angle: Optional[float] = Field(alias='ssys:phase_angle')
+    ssys_spatial_resolution: Optional[float] = Field(alias='ssys:spatial_resolution')
+    ssys_processing_level: Optional[float] = Field(alias='ssys:processing_level')
+    ssys_product_type: Optional[float] = Field(alias='ssys:product_type')
 
 class PDSSP_WFS_Layer(BaseModel):
     pass
@@ -211,6 +211,11 @@ class PDSODE_Product(BaseModel):
     UTC_start_time: str
     UTC_stop_time: str
     Solar_longitude: Optional[float]
+    Incidence_angle: Optional[float]
+    Emission_angle: Optional[float]
+    Phase_angle: Optional[float]
+    Map_resolution: Optional[float]
+    Map_scale: Optional[float]
 
     #
     # "BB_georeferenced": "True",
