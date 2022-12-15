@@ -19,6 +19,7 @@ class SourceCollectionModel(BaseModel):
     service: Optional[Union[Service, ExternalService]]
     source_schema: Optional[str]
     target: Optional[str]
+    stac_extensions: Optional[list[str]]
     n_products: Optional[int]
     extracted: Optional[bool] = False
     extracted_files: Optional[list] = []

@@ -145,6 +145,10 @@ class PDSODE_IIPTSet(BaseModel):
     ValidTargets: PDSODE_ValidTargets
     NumberProducts: int
 
+class PDSODE_Collection(BaseModel):
+    iiptset: PDSODE_IIPTSet
+    stac_extensions: Optional[list[str]]
+
 class PDSODE_Product_file(BaseModel):
     Description: str  # eg" 'MAP PROJECTION FILE'",'
     FileName: str  # "DSMAP.CAT",

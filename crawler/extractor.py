@@ -25,7 +25,7 @@ from pathlib import Path
 
 from .datastore import DataStore, SourceCollectionModel
 from .registry import ExternalServiceType, Service
-from .schemas import create_schema_object, PDSODE_Product, PDSODE_IIPTSet
+from .schemas import create_schema_object, PDSODE_Product, PDSODE_IIPTSet, PDSODE_Collection
 
 
 def Extractor(collection=None, service_type='', service=None):  # -> AbstractExtractor
@@ -182,6 +182,9 @@ class PDSODE_Extractor(AbstractExtractor):
             # set source schema
             source_schema = self.service.extra_params['source_schema']
 
+            # set STAC extensions
+            stac_extensions = self.service.extra_params['stac_extensions']
+
             # set reference target
             target = targets[0].upper()
 
@@ -191,7 +194,8 @@ class PDSODE_Extractor(AbstractExtractor):
                     service=self.service,
                     source_schema=source_schema,
                     n_products=n_products,
-                    target=target
+                    target=target,
+                    stac_extensions=stac_extensions
                 )
             except:
                 source_collection = None
@@ -231,12 +235,15 @@ class PDSODE_Extractor(AbstractExtractor):
             this_collection_id = f'{iiptset_dict["IHID"]}_{iiptset_dict["IID"]}_{iiptset_dict["PT"]}'
             if this_collection_id == collection_id:
                 try:
-                    print(iiptset_dict)
-                    collection_metadata = PDSODE_IIPTSet(**iiptset_dict)
+                    # collection_metadata = PDSODE_IIPTSet(**iiptset_dict)
+                    pdsode_collection_dict = {'iiptset': iiptset_dict, 'stac_extensions': self.service.extra_params['stac_extensions'] }
+                    # TODO: should be 'stac_extensions': self.collection.stac_extensions
+                    # print(pdsode_collection_dict)
+                    collection_metadata = PDSODE_Collection(**pdsode_collection_dict)
                     return collection_metadata
                 except Exception as e:
                     print(e)
-                    print(iiptset_dict)
+                    print(pdsode_collection_dict)
                     return None
 
     def get_collection_metadata(self, collection_id, service=None) -> SourceCollectionModel:
@@ -257,7 +264,7 @@ class PDSODE_Extractor(AbstractExtractor):
             metadata_dict = json.load(f)
 
         try:
-            collection_metadata = PDSODE_IIPTSet(**metadata_dict)
+            collection_metadata = PDSODE_Collection(**metadata_dict)
         except Exception as e:
             print(e)
             print(metadata_dict)
@@ -330,6 +337,7 @@ class PDSODE_Extractor(AbstractExtractor):
         with open(collection_file_path, 'w') as file:
             file.write(collection_metadata.json(indent=3))
 
+        # report written collection metadata file
         print(collection_file_path)
 
         self.n_extracted_files = 1
@@ -345,10 +353,10 @@ class PDSODE_Extractor(AbstractExtractor):
         iiptset = collection_id.split('_')
 
         # set `target` query parameter
-        if isinstance(collection_metadata.ValidTargets.ValidTarget, str):
-            target = collection_metadata.ValidTargets.ValidTarget
-        elif isinstance(collection_metadata.ValidTargets.ValidTarget, list):
-            target = collection_metadata.ValidTargets.ValidTarget[0]
+        if isinstance(collection_metadata.iiptset.ValidTargets.ValidTarget, str):
+            target = collection_metadata.iiptset.ValidTargets.ValidTarget
+        elif isinstance(collection_metadata.iiptset.ValidTargets.ValidTarget, list):
+            target = collection_metadata.iiptset.ValidTargets.ValidTarget[0]
 
         # set default ODE API query
         query = dict(
@@ -364,7 +372,7 @@ class PDSODE_Extractor(AbstractExtractor):
         )
 
         offset = 0
-        n_products = min(collection_metadata.NumberProducts, extract_limit)  # temporary for testing purpose
+        n_products = min(collection_metadata.iiptset.NumberProducts, extract_limit)  # temporary for testing purpose
         print(f'Extracting metadata of {n_products} products...')
         while offset < n_products:
             # update query `offset` parameter

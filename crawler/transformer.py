@@ -196,11 +196,14 @@ class AbstractTransformer:
         else:
             raise InvalidModelObjectTypeError(object_type)
 
-    def get_stac_collection_dict(self, source_metadata, stac_extensions=['ssys']) -> dict:
+    def get_stac_collection_dict(self, source_metadata, stac_extensions=[]) -> dict:
+        if not stac_extensions:
+            stac_extensions = self.get_stac_extensions(source_metadata)  # from collection metadata, retrieved from collection service `extra_params` JSON attribute.
+
         stac_collection_dict = {
             'type': 'Collection',  # REQUIRED
             'stac_version': self.get_stac_version(),  # REQUIRED
-            'stac_extensions': stac_extensions,  # self.get_stac_extensions(source_metadata, object_type='collection'),
+            'stac_extensions': stac_extensions,
             'id': self.get_id(source_metadata, object_type='collection'),  # REQUIRED
             'title': self.get_title(source_metadata),
             'description': self.get_description(source_metadata),  # REQUIRED
@@ -214,15 +217,12 @@ class AbstractTransformer:
             'extra_fields': {}
         }
         for stac_extension in stac_extensions:
-            # print(stac_extension)
-            # print(source_metadata)
-            # print(self.get_extension_fields(source_metadata, stac_extension, object_type='collection'))
             stac_collection_dict['extra_fields'].update(self.get_extension_fields(source_metadata, stac_extension, object_type='collection'))
             # For example:
             # { 'ssys_targets': ['Mars'] }
         return stac_collection_dict
 
-    def get_stac_item_dict(self, source_metadata, stac_extensions=['ssys']) -> dict:
+    def get_stac_item_dict(self, source_metadata, stac_extensions=[]) -> dict:
         stac_item_dict = {
             'type': 'Feature',  # REQUIRED
             'stac_version': self.get_stac_version(),  # REQUIRED
@@ -242,7 +242,7 @@ class AbstractTransformer:
 
         return stac_item_dict
 
-    def transform_source_metadata(self, source_metadata: BaseModel, object_type='item', stac_extensions=['ssys']) -> Union[schemas.PDSSP_STAC_Item, schemas.PDSSP_STAC_Collection]:
+    def transform_source_metadata(self, source_metadata: BaseModel, object_type='item', stac_extensions=[]) -> Union[schemas.PDSSP_STAC_Item, schemas.PDSSP_STAC_Collection]:
         """Transform input source metadata into output PDSSP STAC metadata schema object.
         """
         # TODO: `object_type` should be derived from the `source_metadata` object class.
@@ -261,7 +261,7 @@ class AbstractTransformer:
 
         return stac_metadata
 
-    def transform(self, source_collection_file_path='', output_dir_path='', stac_extensions=['ssys'], overwrite=False) -> None:
+    def transform(self, source_collection_file_path='', output_dir_path='', stac_extensions=[], overwrite=False) -> None:
         """Transform (extracted) source collection files into PDSSP STAC catalog.
 
         Destination STAC catalog may contain one or several collections, related to only one reference target.
@@ -310,16 +310,21 @@ class AbstractTransformer:
         stac_collection_metadata = self.transform_source_metadata(source_collection_metadata, object_type='collection', stac_extensions=stac_extensions)
 
         # create destination PySTAC Collection object
+        #
+        # set STAC collection ID
         stac_collection_id = stac_collection_metadata.id
+
+        # set empty collection spatial and temporal extent
         # stac_extent = pystac.Extent(
         #     pystac.SpatialExtent(bboxes=stac_collection_metadata.extent.spatial.bbox),
         #     pystac.TemporalExtent(intervals=stac_collection_metadata.extent.temporal.interval)
         # )
         stac_extent = pystac.Extent(pystac.SpatialExtent(bboxes=[[]]), pystac.TemporalExtent(intervals=[[]]))
 
-        # print()
-        # print(stac_collection_metadata)
-        # print()
+        # set STAC collection and items extensions
+        if not stac_extensions:
+            stac_extensions = stac_collection_metadata.stac_extensions
+
         stac_collection = pystac.Collection(
             id=stac_collection_id,
             stac_extensions=stac_extensions,
@@ -394,7 +399,7 @@ class PDSODE_STAC(AbstractTransformer):
         if object_type == 'item':
             return source_metadata.pdsid
         elif object_type == 'collection':
-            return f'{source_metadata.IHID}_{source_metadata.IID}_{source_metadata.PT}'
+            return f'{source_metadata.iiptset.IHID}_{source_metadata.iiptset.IID}_{source_metadata.iiptset.PT}'
         else:
             raise InvalidModelObjectTypeError(object_type)
 
@@ -450,16 +455,15 @@ class PDSODE_STAC(AbstractTransformer):
         else:
             raise InvalidModelObjectTypeError(object_type)
 
-    def get_stac_extensions(self, source_metadata: BaseModel) -> list[str]: # collection only
-        # source_metadata.
-        pass
+    def get_stac_extensions(self, source_metadata: BaseModel) -> list[str]: # for PDSODE collection metadata only
+        return source_metadata.stac_extensions
 
     def get_title(self, source_metadata: BaseModel) -> str:
-        title = f'{source_metadata.IHID}/{source_metadata.IID} {source_metadata.PTName}'
+        title = f'{source_metadata.iiptset.IHID}/{source_metadata.iiptset.IID} {source_metadata.iiptset.PTName}'
         return title
 
     def get_description(self, source_metadata: BaseModel) -> str:
-        description = f'Collection of {source_metadata.IHID}/{source_metadata.IID}/{source_metadata.PT} ({source_metadata.PTName})  PDS data products.'
+        description = f'Collection of {source_metadata.iiptset.IHID}/{source_metadata.iiptset.IID}/{source_metadata.iiptset.PT} ({source_metadata.iiptset.PTName})  PDS data products.'
         return description
 
     def get_keywords(self, source_metadata: BaseModel) -> list[str]:
@@ -490,7 +494,7 @@ class PDSODE_STAC(AbstractTransformer):
         return footprint_bbox
 
     def get_providers(self, source_metadata: BaseModel) -> list[BaseModel]:
-        name = f'{source_metadata.IID} team via PDS ODE'
+        name = f'{source_metadata.iiptset.IID} team via PDS ODE'
         providers = [schemas.PDSSP_STAC_Provider(name=name)]
         return providers
 
@@ -499,20 +503,6 @@ class PDSODE_STAC(AbstractTransformer):
 
     def get_summaries(self, source_metadata: BaseModel) -> dict:
         pass
-
-    # def get_properties(self, source_metadata: BaseModel) -> schemas.PDSSP_STAC_Properties:
-    #     datetime_format = '%Y-%m-%dT%H:%M:%S.%f'
-    #     properties = schemas.PDSSP_STAC_Properties(
-    #         datetime=datetime.strptime(source_metadata.UTC_start_time, datetime_format).isoformat(),
-    #         created=datetime.strptime(source_metadata.Product_creation_time, datetime_format).isoformat(),
-    #         start_datetime=datetime.strptime(source_metadata.UTC_start_time, datetime_format).isoformat(),
-    #         end_datetime=datetime.strptime(source_metadata.UTC_stop_time, datetime_format).isoformat(),
-    #         platform=source_metadata.ihid,
-    #         instruments=[source_metadata.iid],
-    #         ssys_targets=[source_metadata.Target_name]
-    #     )
-    #
-    #     return properties
 
     def get_properties(self, source_metadata: BaseModel, stac_extensions=['ssys']) -> dict:
         datetime_format = '%Y-%m-%dT%H:%M:%S.%f'
@@ -534,7 +524,7 @@ class PDSODE_STAC(AbstractTransformer):
         if object_type == 'item':
             ssys_properties = schemas.PDSSP_STAC_SSYS_Properties(**{'ssys:targets':[source_metadata.Target_name.upper()]})
         elif object_type == 'collection':
-            ssys_properties = schemas.PDSSP_STAC_SSYS_Properties(**{'ssys:targets':[source_metadata.ODEMetaDB.upper()]})
+            ssys_properties = schemas.PDSSP_STAC_SSYS_Properties(**{'ssys:targets':[source_metadata.iiptset.ODEMetaDB.upper()]})
         else:
             raise InvalidModelObjectTypeError(object_type)
         return ssys_properties.dict(by_alias=True)
@@ -543,7 +533,7 @@ class PDSODE_STAC(AbstractTransformer):
         if object_type == 'item':
             ssys_fields = {}
         elif object_type == 'collection':
-            ssys_fields = { 'ssys:targets': source_metadata.ODEMetaDB.upper() }
+            ssys_fields = { 'ssys:targets': source_metadata.iiptset.ODEMetaDB.upper() }
         else:
             raise InvalidModelObjectTypeError(object_type)
         return ssys_fields
