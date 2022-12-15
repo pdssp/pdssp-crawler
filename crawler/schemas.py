@@ -116,7 +116,7 @@ class PDSSP_STAC_Item(BaseModel):
 
 class PDSSP_STAC_SSYS_Properties(BaseModel):
     ssys_targets: Optional[list[str]] = Field(alias='ssys:targets')
-    ssys_solar_longitude: Optional[float]
+    ssys_solar_longitude: Optional[float] = Field(alias='ssys:solar_longitude')
 
 #     ssys_target_class:
 #     ssys_westernmost_longitude: Optional[float]
