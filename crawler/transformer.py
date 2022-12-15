@@ -297,7 +297,8 @@ class AbstractTransformer:
             if stac_catalog_collection.id == self.collection.collection_id:
                 if overwrite:
                     # remove destination STAC catalog collection
-                    stac_catalog.remove_child(self.collection)
+                    print(f'removing child: {self.collection.collection_id}')
+                    stac_catalog.remove_child(self.collection.collection_id)
                 else:
                     raise Exception(f'{stac_catalog.id} destination STAC catalog already hold a collection with the {self.collection.collection_id} collection ID.')
 
@@ -340,7 +341,7 @@ class AbstractTransformer:
         #
         while extractor.file_idx < extractor.n_extracted_files:  # TODO: improve mechanism to loop over all products.
             source_product_metadata = extractor.read_product_metadata()
-            stac_item_metadata = self.transform_source_metadata(source_product_metadata, object_type='item')
+            stac_item_metadata = self.transform_source_metadata(source_product_metadata, object_type='item', stac_extensions=stac_extensions)
 
             # create PySTAC Item
             stac_item = pystac.Item(
