@@ -107,7 +107,7 @@ class PDSSP_STAC_Item(BaseModel):
     stac_extensions: Optional[list[str]]
     id: str
     geometry: object  # GeoJSON Geometry
-    bbox: list[float]
+    bbox: Union[list[float], None]
     properties: dict  # PDSSP_STAC_Properties
     links: Optional[list[PDSSP_STAC_Link]]  # WARNING: NOT optional following STAC standard -> created automatically by PySTAC.
     assets: dict  ## Map<string, PDSSP_STAC_Asset>: dictionary of asset objects that can be downloaded, each with a unique key.
@@ -195,13 +195,13 @@ class PDSODE_Product(BaseModel):
     Product_version_id: str
     """Product version"""
 
-    Observation_id: str
+    Observation_id: Optional[str]
     """Identifies a scientific observation within a data set."""
 
     Product_files: PDSODE_Product_file_key
     """Associated product files."""
 
-    Footprint_C0_geometry: str
+    Footprint_C0_geometry: Optional[str]
     UTC_start_time: str
     UTC_stop_time: str
     #

@@ -162,7 +162,8 @@ class Crawler:
             except Exception as e:
                 print(f'Could not transform {collection_id} source collection.')
                 print(e)
-                return
+                raise
+                # return
 
             # Update source collection and data store
             collection.transformed = transformer.transformed
