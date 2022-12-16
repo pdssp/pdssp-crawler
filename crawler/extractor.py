@@ -358,11 +358,13 @@ class PDSODE_Extractor(AbstractExtractor):
         # elif isinstance(collection_metadata.iiptset.ValidTargets.ValidTarget, list):
         #     target = collection_metadata.iiptset.ValidTargets.ValidTarget[0]
         target = collection_metadata.iiptset.ODEMetaDB
-        print('target query param: ', target)
+        # TODO: handle multiple=target collections. Eg: this (using `ODEMetaDB`) excludes 'DEIMOS' or 'PHOBOS'
+        #  data products for the MEX/HRSC/RDRV4 set.
+        print('`target` ODE API query param = ', target)
 
         # set default ODE API query
         query = dict(
-            target=target,
+            target=target, # mandatory (or `odemetadb` instead?)
             query='product',
             results='copmf',  # warning: this impacts the results metadata
             output='JSON',
