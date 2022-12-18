@@ -4,7 +4,7 @@ from os import path
 name = 'pdssp-crawler'
 version_file = open(path.join('.', 'VERSION'))
 version = version_file.read().strip()
-
+# package_name
 setup(
     name=name,
     version=version,

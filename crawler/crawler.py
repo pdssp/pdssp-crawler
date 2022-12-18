@@ -12,6 +12,7 @@ from .config import (
     STAC_DATA_DIR,
     PDSSP_REGISTRY_ENDPOINT,
     LOCAL_REGISTRY_DIRECTORY,
+    STAC_CATALOG_ENDPOINT,
     STAC_GITHUB_REPOSITORY
 )
 
@@ -153,7 +154,7 @@ class Crawler:
             self.extract_collection(collection_id, overwrite=overwrite)
 
         if collection.extracted:
-            print(f'Transforming {collection_id} source collection into STAC catalog file...')
+            print(f'Transforming {collection_id} source collection into a STAC catalog file...')
             print(f'- Source collection file(s): {collection.extracted_files}')
             try:
                 transformer = Transformer(collection)
@@ -162,8 +163,7 @@ class Crawler:
             except Exception as e:
                 print(f'Could not transform {collection_id} source collection.')
                 print(e)
-                raise
-                # return
+                return
 
             # Update source collection and data store
             collection.transformed = transformer.transformed
@@ -192,7 +192,7 @@ class Crawler:
             print(f'{collection_id} already ingested:')
             print(f'- STAC collection file: {collection.stac_dir}')
             print(f'- STAC collection URL: {collection.stac_url}')
-            if not update:  # quit unless input update
+            if not update:  # quit unless input update is True
                 return
 
         if not collection.transformed:
@@ -200,17 +200,30 @@ class Crawler:
             self.transform_collection(collection_id)
 
         if collection.transformed:
-            print(f'Ingesting {collection_id} STAC catalog or collection...')
-            print(f'- STAC collection file: {collection.stac_dir}')
-            ingestor = Ingestor()
-            ingestor.ingest(collection.stac_dir) # stac2resto
+            print(f'Ingesting {collection_id} STAC catalog...')
+            print(f'- STAC catalog dir: {collection.stac_dir}')
+            try:
+                ingestor = Ingestor(stac_api_url=STAC_CATALOG_ENDPOINT) # requires RESTO_ADMIN_AUTH_TOKEN env variable
+                stac_collection_file = f'{collection.stac_dir}/collection.json'
+                ingestor.ingest(stac_file=stac_collection_file, update_if_exists=update, ingest_strategy='catalog')
+            except Exception as e:
+                print(f'Could not ingest {collection_id} source collection.')
+                print(e)
+                return
+
+            # Update source collection and data store
+            collection.ingested = ingestor.ingested
+            collection.stac_url = ingestor.stac_url
+            self.datastore.save_source_collections(overwrite=True)
+
+
         else:
             print(f'Could not transform {collection_id} source collection.')
 
         # report on source collection ingestion
         if collection.ingested:
             print(f'{collection_id} successfully ingested:')
-            print(f'- STAC collection file: {collection.stac_dir}')
-            print(f'- STAC collection URL: {collection.stac_url}')
+            print(f'- Source STAC catalog/collection directory (`stac_dir`): {collection.stac_dir}')
+            print(f'- Destination STAC catalog/collection URL: {collection.stac_url}')
         else:
             print(f'Could not ingest {collection_id} STAC collection.')

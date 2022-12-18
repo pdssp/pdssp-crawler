@@ -22,7 +22,7 @@ class SourceCollectionModel(BaseModel):
     stac_extensions: Optional[list[str]]
     n_products: Optional[int]
     extracted: Optional[bool] = False
-    extracted_files: Optional[list] = []
+    extracted_files: Optional[list] = []  # should be changed/renamed to `source_dir`
     transformed: Optional[bool] = False
     stac_dir: Optional[str] = ''
     ingested: Optional[bool] = False
