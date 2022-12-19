@@ -12,7 +12,7 @@ package_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 VERSION = open(os.path.join(package_path, 'VERSION')).read().strip()
 
 
-@click.version_option()
+@click.version_option(package_name='pdssp-crawler')
 @click.group()
 def cli():
     """Crawler CLI."""
