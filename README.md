@@ -34,6 +34,9 @@ pip install -r pdssp-crawler/tests/requirements.txt
 pip install -r pdssp-crawler/docs/requirements.txt
 ```
 
+> :info: In a next version installation via Docker will be possible, enabling deployment to the PDSSP server.
+
+
 ## Configuration
 
 Edit the [crawler/config.py](pdssp-crawler/crawler/config.py) file to change the following variables:
