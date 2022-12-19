@@ -501,7 +501,7 @@ class PDSODE_STAC(AbstractTransformer):
         return providers
 
     def get_licence(self, source_metadata: BaseModel) -> str:
-        return 'Default CC-BY-SA-4.0 license for PDS ODE collections [TBC]'
+        return 'Default CC-BY-SA-4.0 license for PDS ODE collections [TO BE DEFINED]'
 
     def get_summaries(self, source_metadata: BaseModel) -> dict:
         pass
