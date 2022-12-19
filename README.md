@@ -12,6 +12,9 @@ In both cases, metadata ingested into the PDSSP STAC Catalog are compliant to th
 
 ## Installation
 
+In a next version installation via Docker will be possible, enabling deployment to the PDSSP server.
+For now, follow these steps:
+
 1. Set up conda environment
 
 ```
@@ -33,9 +36,6 @@ pip install -e pdssp-crawler
 pip install -r pdssp-crawler/tests/requirements.txt
 pip install -r pdssp-crawler/docs/requirements.txt
 ```
-
-> :info: In a next version installation via Docker will be possible, enabling deployment to the PDSSP server.
-
 
 ## Configuration
 
