@@ -1,12 +1,14 @@
 # PDSSP Crawler
 
+**Extract, transform and ingest planetary surface metadata into a STAC catalog.**
+
 The PDSSP Crawler is the software component responsible for the extraction, transformation and ingestion of planetary surface data products metadata into the _PDSSP STAC Catalog service_ (RESTO). Through an Airflow web interface, it also provides a way to orchestrate and manage the PDSSP Crawler's tasks and behaviour.
 
-Collection and products metadata are extracted from _OGC data catalog services_ (WFS and Features API), defined in the _PDSSP Services Registry_. Metadata can also be extracted from non-OGC data catalog services (PDS ODE API, ENP-TAP, HTTP GET), locally defined by the PDSSP operator (see [data/services](data/services)).
+Collection and products metadata are extracted from _OGC data catalog services_ (WFS and Features API), defined in the _PDSSP Services Registry_. Metadata can also be extracted from non-OGC data catalog services (PDS ODE API, ENP-TAP, HTTP GET, PDS API, ...), locally defined by the PDSSP operator (see [data/services](data/services)).
 
-In both cases, metadata ingested into the PDSSP STAC Catalog are compliant to the STAC data model and STAC extensions, including the Solar System STAC extension.
+In both cases, metadata ingested into the PDSSP STAC Catalog are compliant to the _PDSSP Data Model_, which is primarily the STAC data model extended through existing and new STAC extensions, including the Solar System STAC extension.
 
-> :warning: The PDSSP Crawler is under development, and the current version is not fully fonctional nor stable. See the [online documentation](https://pdssp.github.io/pdssp-crawler) for more information.
+> :warning: The PDSSP Crawler is under development, and the current version is not fully functional nor stable. See the [online documentation](https://pdssp.github.io/pdssp-crawler) for more information.
 
 ## Installation
 
@@ -79,7 +81,7 @@ https://pdssp.ias.universite-paris-saclay.fr/crawler (in development)
 
 Keeping in mind that this project is starting and in active development...
 
-If you are interested in the general topic of _planetary geospatial data catalog interoperability_ or the PDSSP Crawler in particular, feel to reach out to us, raise your questions, suggestions, or issues via the [PDSSP Crawler GitHub Issues](https://github.com/pdssp/pdssp-crawler/issues).
+If you are interested in the general topic of _planetary geospatial data catalog interoperability_ or the PDSSP Crawler in particular, feel to reach out to us, raise your questions, suggestions, or issues the [PDSSP Crawler GitHub Issues](https://github.com/pdssp/pdssp-crawler/issues).
 
 
 ## Authors
@@ -91,3 +93,5 @@ If you are interested in the general topic of _planetary geospatial data catalog
 See also the list of [contributors](https://github.com/pdssp/pdssp-crawler/graphs/contributors) who is participating in the development of the PDSSP Crawler.
 
 ## License
+
+This project is licenced under [Apache License 2.0](https://github.com/pdssp/pdssp-crawler/blob/main/LICENSE).
