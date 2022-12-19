@@ -6,12 +6,7 @@ Collection and products metadata are extracted from _OGC data catalog services_ 
 
 In both cases, metadata ingested into the PDSSP STAC Catalog are compliant to the STAC data model and STAC extensions, including the Solar System STAC extension.
 
-See the [online documentation](https://pdssp.github.io/pdssp-crawler) for more information.
-
-## Development
-
-> :warning: The PDSSP Crawler is under development, and the current version is not fully fonctional nor stable.
-
+> :warning: The PDSSP Crawler is under development, and the current version is not fully fonctional nor stable. See the [online documentation](https://pdssp.github.io/pdssp-crawler) for more information.
 
 ## Installation
 
