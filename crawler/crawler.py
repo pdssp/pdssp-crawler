@@ -13,7 +13,6 @@ from .config import (
     PDSSP_REGISTRY_ENDPOINT,
     LOCAL_REGISTRY_DIRECTORY,
     STAC_CATALOG_ENDPOINT,
-    STAC_GITHUB_REPOSITORY
 )
 
 from pathlib import Path
@@ -69,6 +68,7 @@ class Crawler:
                 else:
                     print('[WARNING] Not a collection.')
             print()
+
         print(f'{len(self.registered_collections)} collections retrieved from {len(self.registered_services)} registered services.')
 
     def get_registered_collections(self, retrieve=False) -> List[SourceCollectionModel]:
@@ -79,7 +79,6 @@ class Crawler:
     def save_registered_collections(self, retrieve=False):
         registered_collections = self.get_registered_collections(retrieve=retrieve)
         self.datastore.save_collections(registered_collections, basename='registered_collections')
-
 
     def list_source_collections(self, collection_id='', service_type=None, target=None, extracted=None, transformed=None, ingested=None):
         """Display all, or a filtered list of source collections indexed in the data store.

@@ -3,7 +3,6 @@ import requests
 import os
 from pathlib import Path
 
-# DESTINATION_STAC_CATALOGS = ['mars', 'moon', 'titan']
 
 COLLECTION_DEFAULT_MODEL = 'DefaultModel'
 

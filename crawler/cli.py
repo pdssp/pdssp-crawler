@@ -4,8 +4,15 @@ import click
 import os
 import yaml
 
-from crawler.config import LOCAL_REGISTRY_DIRECTORY
-from crawler.registry import RegistryInterface
+from .config import (
+    SOURCE_DATA_DIR,
+    STAC_DATA_DIR,
+    PDSSP_REGISTRY_ENDPOINT,
+    LOCAL_REGISTRY_DIRECTORY,
+    STAC_CATALOG_ENDPOINT,
+)
+from crawler.crawler import Crawler
+from crawler.extractor import Extractor
 import crawler.schemas
 
 package_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -18,65 +25,97 @@ def cli():
     """Crawler CLI."""
     pass
 
+@cli.command()
+def config():
+    """Display Crawler configuration."""
+    click.echo()
+    click.echo(f'(Internal) PDSSP Services Registry URL   : {PDSSP_REGISTRY_ENDPOINT}')
+    click.echo(f'(External) services registry directory   : {LOCAL_REGISTRY_DIRECTORY}')
+    click.echo(f'Source collections data directory        : {SOURCE_DATA_DIR}')
+    click.echo(f'STAC collections data directory          : {STAC_DATA_DIR}')
+    click.echo(f'Destination (PDSSP) STAC API Catalog URL : {STAC_CATALOG_ENDPOINT}')
+    click.echo()
+
 
 @cli.command()
-@click.option('--get-collections/--no-get-collections', help='Get list of registry collections.', default=False)
-@click.option('--get-collection/--no-get-collection', help='Get registry collection.', default=False)
-@click.option('--get-catalogs/--no-get-catalogs', help='Get list of registry catalogs.', default=False)
-@click.option('--get-catalog/--no-get-catalog', help='Get registry catalog.', default=False)
-@click.option('--id', type=click.STRING, help='ID or ID filter.', default='')
-@click.option('--path', type=click.STRING, help='Path filter.', default='')
-def registry(get_collections, get_collection, get_catalogs, get_catalog, id, path):
-    """Get registry catalogs and collections."""
+@click.option('--id', type=click.STRING, help='Collection ID filter.', default='')
+@click.option('--service-type', type=click.STRING, help='Service type filter.', default='')
+@click.option('--target', type=click.STRING, help='Target filter.', default='')
+@click.option('--extracted/--no-extracted', help='Filter to return only transformed collections', default=None)
+@click.option('--transformed/--no-transformed', help='Filter to return only transformed collections', default=None)
+@click.option('--ingested/--no-ingested', help='Filter to return only ingested collections', default=None)
+def collections(id, service_type, target, extracted, transformed, ingested):
+    """Display source collections available in the data store.
 
-    registry = RegistryInterface('YAML', path=LOCAL_REGISTRY_YAML_FILE)
+    Returned source collections can optionally be filtered by identifier, service type, target, and whether or it has been
+    extracted, transformed or ingested.
+    """
+    Crawler().list_source_collections(
+        collection_id=id,
+        service_type=service_type,
+        target=target,
+        extracted=extracted,
+        transformed=transformed,
+        ingested=ingested
+    )
 
-    if get_collections:
-        # print(id, path)
-        collections = registry.get_collections(id=id, path=path)
-        if collections:
-            click.echo(f'{len(collections)} collections matching input filters:')
-            click.echo()
-            click.echo(f'{"ID":<40}  {"path":<20}  {"service type":<15}  {"metadata schema":<18}  {"stac extensions":<20}')
-            click.echo(f'{"-"*40}  {"-"*20}  {"-"*15}  {"-"*18}  {"-"*20}')
-            for collection in collections:
-                click.echo(f'{collection.id:<40}  {collection.path:<20}  '
-                           f'{collection.source.service.type:<15}  {collection.source.metadata_schema:<18}  '
-                           f'{collection.extensions}')
-            click.echo()
-        else:
-            click.echo(f'No collections matching input filter: id={id}, path={path}')
-    elif get_collection:
-        collection = registry.get_collection(id)
-        if collection:
-            click.echo(yaml.safe_dump(collection.dict(), sort_keys=False))
-        else:
-            click.echo(f'No collection matching input ID: {id}')
-    elif get_catalogs:
-        catalogs = registry.get_catalogs(id=id, path=path)
-        if catalogs:
-            click.echo(f'{len(catalogs)} catalogs matching input filters:')
-            click.echo()
-            click.echo(
-                f'{"ID":<30}  {"path":<20}')
-            click.echo(f'{"-" * 30}  {"-" * 20}')
-            for catalog in catalogs:
-                click.echo(f'{catalog.id:<30}  {catalog.path:<20}')
-            click.echo()
-        else:
-            click.echo(f'No catalogs matching input filter: id={id}, path={path}')
-    elif get_catalog:
-        catalog = registry.get_catalog(id)
-        if catalog:
-            click.echo(yaml.safe_dump(catalog.dict(), sort_keys=False))
-        else:
-            click.echo(f'No catalog matching input ID: {id}')
+
+@cli.command()
+@click.option('--id', type=click.STRING, help='Collection ID.', default='')
+@click.option('--overwrite/--no-overwrite', help='Overwrite existing source collection files.', default=False)
+def extract(id, overwrite):
+    """Extract source collection metadata files from source data catalog service.
+    """
+    Crawler().extract_collection(id, overwrite=overwrite)
+
+
+@cli.command()
+@click.option('--id', type=click.STRING, help='Collection ID.', default='')
+@click.option('-o', '--overwrite/--no-overwrite', help='Overwrite existing STAC catalog files.', default=False)
+def transform(id, overwrite):
+    """Transform extracted source collection files to STAC catalog files.
+    """
+    Crawler().transform_collection(id, overwrite=overwrite)
+
+
+@cli.command()
+@click.option('--id', type=click.STRING, help='Collection ID.', default='')
+@click.option('--update/--no-update', help='Update destination STAC collection if exists', default=False)
+def ingest(id, update):
+    """Ingest transformed STAC catalog files to destination STAC API Catalog.
+    """
+    Crawler().ingest_collection(id, update=update)
+
+
+@cli.command()
+@click.option('-s', '--service-title', type=click.STRING, help='Show service information/collections for a given service title.', default='')
+def registry(service_title):
+    """Display internal and external registered services.
+
+    Optionally display service information and collections using the `service` option.
+    For example::
+
+        crawler registry --service-title='PDS ODE API'
+        crawler registry -s 'PDS ODE API'
+
+    """
+    crawler = Crawler()
+    registered_services = crawler.get_registered_services()
+    if service_title:
+        for registered_service in registered_services:
+            if registered_service.title == service_title:
+                collections = Extractor(service=registered_service).get_service_collections()
+                print()
+                print(f'{len(collections)} collections found in {service_title}:')
+                for collection in collections:
+                    print(f'- {collection.collection_id}')
+                print()
     else:
-        click.echo(f'type: {registry.type}')
-        click.echo(f'path: {registry.path}')
-        click.echo(f'number of catalogs: {len(registry.catalogs)}')
-        click.echo(f'number of collections: {len(registry.collections)}')
-        click.echo()
+        print()
+        print(f'{len(registered_services)} registered services found:')
+        for registered_service in registered_services:
+            print(f'- {registered_service.title}')
+        print()
 
 @cli.command()
 @click.option('--get/--no-get', help='Get schema JSON representation.', default=False)
@@ -84,7 +123,6 @@ def registry(get_collections, get_collection, get_catalogs, get_catalog, id, pat
 @click.option('--type', type=click.STRING, help='Type of the schema object: `collection` or `item`.', default='')
 def schemas(get, name, type):
     """Get schemas information."""
-
     if get:
         print(crawler.schemas.get_schema_json(name,type))
     else:

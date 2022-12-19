@@ -25,8 +25,8 @@ Crawler Python API
    :undoc-members:
    :show-inheritance:
 
-``store`` module
-----------------
+``datastore`` module
+--------------------
 
 .. automodule:: crawler.datastore
    :members:

@@ -141,7 +141,7 @@ class DataStore:
         if ingested:
             source_collections = []
             for collection in filtered_collections:
-                if collection.extracted:
+                if collection.ingested:
                     source_collections.append(collection)
             filtered_collections = source_collections
 

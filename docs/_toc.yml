@@ -4,6 +4,9 @@
 format: jb-book
 root: index
 parts:
+- caption:
+  chapters:
+     - file: changelog.md
 - caption: Developer Guides
   chapters:
     - file: design.md

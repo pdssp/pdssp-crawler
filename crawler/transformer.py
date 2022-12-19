@@ -153,7 +153,7 @@ class AbstractTransformer:
         pass
 
     def get_licence(self, source_metadata: BaseModel) -> str:
-        return 'Default CC-BY-SA-4.0 license [TBC]'
+        return 'Default CC-BY-SA-4.0 license ???'
 
     def get_summaries(self, source_metadata: BaseModel) -> dict:
         pass

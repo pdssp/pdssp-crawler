@@ -1,6 +1,6 @@
 # PDSSP Crawler
 
-**Extract, transform and ingest planetary surface metadata into a STAC catalog.**
+**Extract, transform and ingest planetary surface metadata into a STAC API Catalog.**
 
 The PDSSP Crawler is the software component responsible for the extraction, transformation and ingestion of planetary surface data products metadata into the _PDSSP STAC Catalog service_ (RESTO). Through an Airflow web interface, it also provides a way to orchestrate and manage the PDSSP Crawler's tasks and behaviour.
 
@@ -12,8 +12,7 @@ In both cases, metadata ingested into the PDSSP STAC Catalog are compliant to th
 
 ## Installation
 
-In a next version installation via Docker will be possible, enabling deployment to the PDSSP server.
-For now, follow these steps:
+In a next version installation via Docker will be possible, enabling deployment to the PDSSP server. For now, follow these steps:
 
 1. Set up conda environment
 
@@ -39,7 +38,7 @@ pip install -r pdssp-crawler/docs/requirements.txt
 
 ## Configuration
 
-Edit the [crawler/config.py](pdssp-crawler/crawler/config.py) file to change the following variables:
+The configuration mechanism will be improved in the next versions. For now, edit the [crawler/config.py](pdssp-crawler/crawler/config.py) file to change the following variables :
 
 ```python
 SOURCE_DATA_DIR = '/Users/nmanaud/workspace/pdssp/crawler-data'
@@ -48,6 +47,10 @@ PDSSP_REGISTRY_ENDPOINT = 'https://pdssp.ias.universite-paris-saclay.fr/registry
 LOCAL_REGISTRY_DIRECTORY = '/Users/nmanaud/workspace/pdssp/pdssp-crawler/data/services'
 STAC_CATALOG_ENDPOINT = 'https://pdssp.ias.universite-paris-saclay.fr/catalog'
 ```
+
+Set the `RESTO_ADMIN_AUTH_TOKEN` environment variable, required for ingestion POST request to PDSSP Catalog STAC API (RESTO).
+
+Airflow configutation [TBD]
 
 ## Usage
 
@@ -82,7 +85,7 @@ https://pdssp.ias.universite-paris-saclay.fr/crawler (in development)
 
 ## Contributing
 
-Keeping in mind that this project is starting and in active development... if you are interested in the general topic of _planetary geospatial data catalog interoperability_ or the PDSSP Crawler in particular, feel to reach out to us, raise your questions, suggestions, or issues the [PDSSP Crawler GitHub Issues](https://github.com/pdssp/pdssp-crawler/issues).
+Keeping in mind that this project is starting and in active development... if you are interested in the general topic of _planetary geospatial data catalog interoperability_ or the PDSSP Crawler in particular, feel to reach out to us, raise your questions, suggestions, or issues using [PDSSP Crawler GitHub Issues](https://github.com/pdssp/pdssp-crawler/issues).
 
 
 ## Authors
