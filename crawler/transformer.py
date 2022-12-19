@@ -386,8 +386,11 @@ class AbstractTransformer:
         stac_catalog.save(catalog_type=pystac.CatalogType.SELF_CONTAINED)
 
         # set transformer status attributes
+        for link in stac_collection.links:
+            if link.rel == 'self':
+                stac_dir = Path(link.target).parent
         self.transformed = True
-        self.stac_dir = stac_catalog_dirpath
+        self.stac_dir = stac_dir
 
     def _geometry_from_wkt(self, wkt):
         pass

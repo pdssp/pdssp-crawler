@@ -59,7 +59,7 @@ Airflow configutation [TBD]
 For example:
 
 ```shell
-crawler extract --source_collection_id='pdsode-mex-omega-edr'
+crawler extract --id='MRO_HIRISE_RDRV11'
 ```
 
 
