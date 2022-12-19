@@ -6,7 +6,7 @@ The PDSSP Crawler is the software component responsible for the extraction, tran
 
 Collection and products metadata are extracted from _OGC data catalog services_ (WFS and Features API), defined in the _PDSSP Services Registry_. Metadata can also be extracted from non-OGC data catalog services (PDS ODE API, ENP-TAP, HTTP GET, PDS API, ...), locally defined by the PDSSP operator (see [data/services](data/services)).
 
-In both cases, metadata ingested into the PDSSP STAC Catalog are compliant to the _PDSSP Data Model_, which is primarily the STAC data model extended through existing and new STAC extensions, including the Solar System STAC extension.
+In both cases, metadata ingested into the PDSSP STAC Catalog are compliant to the _PDSSP Data Model_, which consists of the STAC data model extended through existing and new STAC extensions, including the Solar System STAC extension.
 
 > :warning: The PDSSP Crawler is under development, and the current version is not fully functional nor stable. See the [online documentation](https://pdssp.github.io/pdssp-crawler) for more information.
 
