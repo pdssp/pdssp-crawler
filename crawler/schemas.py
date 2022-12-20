@@ -385,6 +385,8 @@ def get_schema_json(name: str, object_type: str) -> Optional[BaseModel]:
         return None
 
 def create_schema_object(metadata: dict, name: str, object_type: str) -> Optional[BaseModel]:
+    """Create a collection or item metadata object from an input metadata dictionary and a metadata schema name.
+    """
     if name in METADATA_SCHEMAS.keys():
         if object_type in METADATA_SCHEMAS[name].keys():
             BaseModelClass = METADATA_SCHEMAS[name][object_type]
@@ -404,4 +406,4 @@ METADATA_SCHEMAS = {
     'EPNTAP': {'collection': EPNTAP_Collection,'item': EPNTAP_Granule},
     'MARSSI_WFS': {'collection': MARSSI_WFS_Layer, 'item': MARSSI_WFS_Feature}
 }
-"""Metadata schemas and their corresponding ``"collection"`` and ``"item"``-type classes."""
+"""Mapping of netadata schemas and their corresponding ``"collection"`` and ``"item"`` classes."""

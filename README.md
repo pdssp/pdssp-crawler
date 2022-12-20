@@ -85,14 +85,14 @@ https://pdssp.ias.universite-paris-saclay.fr/crawler (in development)
 
 ## Contributing
 
-Keeping in mind that this project is starting and in active development... if you are interested in the general topic of _planetary geospatial data catalog interoperability_ or the PDSSP Crawler in particular, feel to reach out to us, raise your questions, suggestions, or issues using [PDSSP Crawler GitHub Issues](https://github.com/pdssp/pdssp-crawler/issues).
+Keeping in mind that this project is in active development... if you are interested in the general topic of _planetary geospatial data catalog interoperability_ or the PDSSP Crawler in particular, feel to reach out to us, raise your questions, suggestions, or issues using [PDSSP Crawler GitHub Issues](https://github.com/pdssp/pdssp-crawler/issues).
 
 
 ## Authors
 
 * [Nicolas Manaud](https://github.com/nmanaud) (initial design/implementation work)
 * [Jérôme Gasperi](https://github.com/jjrom) ("stac2resto", Dockerizing)
-* [J-Christophe Malapert](https://github.com/J-Christophe) (project initiator/management)
+* [Jean-Christophe Malapert](https://github.com/J-Christophe) (project initiator/management)
 
 See also the list of [contributors](https://github.com/pdssp/pdssp-crawler/graphs/contributors) who is participating in the development of the PDSSP Crawler.
 

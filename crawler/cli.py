@@ -27,7 +27,7 @@ def cli():
 
 @cli.command()
 def config():
-    """Display Crawler configuration."""
+    """Show Crawler configuration."""
     click.echo()
     click.echo(f'(Internal) PDSSP Services Registry URL   : {PDSSP_REGISTRY_ENDPOINT}')
     click.echo(f'(External) services registry directory   : {LOCAL_REGISTRY_DIRECTORY}')
@@ -45,7 +45,7 @@ def config():
 @click.option('--transformed/--no-transformed', help='Filter to return only transformed collections', default=None)
 @click.option('--ingested/--no-ingested', help='Filter to return only ingested collections', default=None)
 def collections(id, service_type, target, extracted, transformed, ingested):
-    """Display source collections available in the data store.
+    """Show source collections available in the data store.
 
     Returned source collections can optionally be filtered by identifier, service type, target, and whether or it has been
     extracted, transformed or ingested.
@@ -90,7 +90,7 @@ def ingest(id, update):
 @cli.command()
 @click.option('-s', '--service-title', type=click.STRING, help='Show service information/collections for a given service title.', default='')
 def registry(service_title):
-    """Display internal and external registered services.
+    """Show internal and external registered services.
 
     Optionally display service information and collections using the `service` option.
     For example::
