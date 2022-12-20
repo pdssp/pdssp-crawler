@@ -344,6 +344,16 @@ title="Print to PDF"
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#crawler-extract">
+     extract
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#crawler-ingest">
+     ingest
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#crawler-registry">
      registry
     </a>
@@ -351,6 +361,11 @@ title="Print to PDF"
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#crawler-schemas">
      schemas
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#crawler-transform">
+     transform
     </a>
    </li>
   </ul>
@@ -390,6 +405,16 @@ title="Print to PDF"
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#crawler-extract">
+     extract
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#crawler-ingest">
+     ingest
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#crawler-registry">
      registry
     </a>
@@ -397,6 +422,11 @@ title="Print to PDF"
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#crawler-schemas">
      schemas
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#crawler-transform">
+     transform
     </a>
    </li>
   </ul>
@@ -429,13 +459,9 @@ title="Print to PDF"
 
 <section id="crawler-collections">
 <h3>collections<a class="headerlink" href="#crawler-collections" title="Permalink to this headline">#</a></h3>
-<p>Display source collections available in the data store.</p>
+<p>Show source collections available in the data store.</p>
 <p>Returned source collections can optionally be filtered by identifier, service type, target, and whether or it has been
-extracted, transformed or ingested. For example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">crawler</span> <span class="n">collections</span> <span class="o">--</span><span class="nb">id</span><span class="o">=</span><span class="n">mex</span>
-<span class="n">crawler</span> <span class="n">collections</span> <span class="o">--</span><span class="n">target</span><span class="o">=</span><span class="n">mars</span> <span class="o">--</span><span class="n">ingested</span>
-</pre></div>
-</div>
+extracted, transformed or ingested.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crawler collections <span class="o">[</span>OPTIONS<span class="o">]</span>
 </pre></div>
 </div>
@@ -472,59 +498,75 @@ extracted, transformed or ingested. For example:</p>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-crawler-collections-ingested">
-<span id="cmdoption-crawler-collections-0"></span><span class="sig-name descname"><span class="pre">--ingested</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-extracted</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crawler-collections-ingested" title="Permalink to this definition">#</a></dt>
+<span id="cmdoption-crawler-collections-no-ingested"></span><span class="sig-name descname"><span class="pre">--ingested</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-ingested</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crawler-collections-ingested" title="Permalink to this definition">#</a></dt>
 <dd><p>Filter to return only ingested collections</p>
 </dd></dl>
 
 </section>
 <section id="crawler-config">
 <h3>config<a class="headerlink" href="#crawler-config" title="Permalink to this headline">#</a></h3>
-<p>Display Crawler configuration.</p>
+<p>Show Crawler configuration.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crawler config <span class="o">[</span>OPTIONS<span class="o">]</span>
 </pre></div>
 </div>
 </section>
+<section id="crawler-extract">
+<h3>extract<a class="headerlink" href="#crawler-extract" title="Permalink to this headline">#</a></h3>
+<p>Extract source collection metadata files from source data catalog service.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crawler extract <span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crawler-extract-id">
+<span class="sig-name descname"><span class="pre">--id</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;id&gt;</span></span><a class="headerlink" href="#cmdoption-crawler-extract-id" title="Permalink to this definition">#</a></dt>
+<dd><p>Collection ID.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crawler-extract-overwrite">
+<span id="cmdoption-crawler-extract-no-overwrite"></span><span class="sig-name descname"><span class="pre">--overwrite</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-overwrite</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crawler-extract-overwrite" title="Permalink to this definition">#</a></dt>
+<dd><p>Overwrite existing source collection files.</p>
+</dd></dl>
+
+</section>
+<section id="crawler-ingest">
+<h3>ingest<a class="headerlink" href="#crawler-ingest" title="Permalink to this headline">#</a></h3>
+<p>Ingest transformed STAC catalog files to destination STAC API Catalog.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crawler ingest <span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crawler-ingest-id">
+<span class="sig-name descname"><span class="pre">--id</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;id&gt;</span></span><a class="headerlink" href="#cmdoption-crawler-ingest-id" title="Permalink to this definition">#</a></dt>
+<dd><p>Collection ID.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crawler-ingest-update">
+<span id="cmdoption-crawler-ingest-no-update"></span><span class="sig-name descname"><span class="pre">--update</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-update</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crawler-ingest-update" title="Permalink to this definition">#</a></dt>
+<dd><p>Update destination STAC collection if exists</p>
+</dd></dl>
+
+</section>
 <section id="crawler-registry">
 <h3>registry<a class="headerlink" href="#crawler-registry" title="Permalink to this headline">#</a></h3>
-<p>Get registry catalogs and collections.</p>
+<p>Show internal and external registered services.</p>
+<p>Optionally display service information and collections using the <cite>service</cite> option.
+For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">crawler</span> <span class="n">registry</span> <span class="o">--</span><span class="n">service</span><span class="o">-</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;PDS ODE API&#39;</span>
+<span class="n">crawler</span> <span class="n">registry</span> <span class="o">-</span><span class="n">s</span> <span class="s1">&#39;PDS ODE API&#39;</span>
+</pre></div>
+</div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crawler registry <span class="o">[</span>OPTIONS<span class="o">]</span>
 </pre></div>
 </div>
 <p class="rubric">Options</p>
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-crawler-registry-get-collections">
-<span id="cmdoption-crawler-registry-no-get-collections"></span><span class="sig-name descname"><span class="pre">--get-collections</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-get-collections</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crawler-registry-get-collections" title="Permalink to this definition">#</a></dt>
-<dd><p>Get list of registry collections.</p>
-</dd></dl>
-
-<dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-crawler-registry-get-collection">
-<span id="cmdoption-crawler-registry-no-get-collection"></span><span class="sig-name descname"><span class="pre">--get-collection</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-get-collection</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crawler-registry-get-collection" title="Permalink to this definition">#</a></dt>
-<dd><p>Get registry collection.</p>
-</dd></dl>
-
-<dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-crawler-registry-get-catalogs">
-<span id="cmdoption-crawler-registry-no-get-catalogs"></span><span class="sig-name descname"><span class="pre">--get-catalogs</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-get-catalogs</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crawler-registry-get-catalogs" title="Permalink to this definition">#</a></dt>
-<dd><p>Get list of registry catalogs.</p>
-</dd></dl>
-
-<dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-crawler-registry-get-catalog">
-<span id="cmdoption-crawler-registry-no-get-catalog"></span><span class="sig-name descname"><span class="pre">--get-catalog</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-get-catalog</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crawler-registry-get-catalog" title="Permalink to this definition">#</a></dt>
-<dd><p>Get registry catalog.</p>
-</dd></dl>
-
-<dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-crawler-registry-id">
-<span class="sig-name descname"><span class="pre">--id</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;id&gt;</span></span><a class="headerlink" href="#cmdoption-crawler-registry-id" title="Permalink to this definition">#</a></dt>
-<dd><p>ID or ID filter.</p>
-</dd></dl>
-
-<dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-crawler-registry-path">
-<span class="sig-name descname"><span class="pre">--path</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;path&gt;</span></span><a class="headerlink" href="#cmdoption-crawler-registry-path" title="Permalink to this definition">#</a></dt>
-<dd><p>Path filter.</p>
+<dt class="sig sig-object std" id="cmdoption-crawler-registry-s">
+<span id="cmdoption-crawler-registry-service-title"></span><span class="sig-name descname"><span class="pre">-s</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--service-title</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;service_title&gt;</span></span><a class="headerlink" href="#cmdoption-crawler-registry-s" title="Permalink to this definition">#</a></dt>
+<dd><p>Show service information/collections for a given service title.</p>
 </dd></dl>
 
 </section>
@@ -551,6 +593,26 @@ extracted, transformed or ingested. For example:</p>
 <dt class="sig sig-object std" id="cmdoption-crawler-schemas-type">
 <span class="sig-name descname"><span class="pre">--type</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;type&gt;</span></span><a class="headerlink" href="#cmdoption-crawler-schemas-type" title="Permalink to this definition">#</a></dt>
 <dd><p>Type of the schema object: <cite>collection</cite> or <cite>item</cite>.</p>
+</dd></dl>
+
+</section>
+<section id="crawler-transform">
+<h3>transform<a class="headerlink" href="#crawler-transform" title="Permalink to this headline">#</a></h3>
+<p>Transform extracted source collection files to STAC catalog files.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crawler transform <span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crawler-transform-id">
+<span class="sig-name descname"><span class="pre">--id</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;id&gt;</span></span><a class="headerlink" href="#cmdoption-crawler-transform-id" title="Permalink to this definition">#</a></dt>
+<dd><p>Collection ID.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crawler-transform-o">
+<span id="cmdoption-crawler-transform-overwrite"></span><span id="cmdoption-crawler-transform-no-overwrite"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--overwrite</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-overwrite</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crawler-transform-o" title="Permalink to this definition">#</a></dt>
+<dd><p>Overwrite existing STAC catalog files.</p>
 </dd></dl>
 
 </section>

@@ -329,40 +329,16 @@ title="Open an issue"
 </li>
       </ul></li>
       <li>
-    --get-catalog
-
-      <ul>
-        <li><a href="crawler_cli.html#cmdoption-crawler-registry-get-catalog">crawler-registry command line option</a>
-</li>
-      </ul></li>
-      <li>
-    --get-catalogs
-
-      <ul>
-        <li><a href="crawler_cli.html#cmdoption-crawler-registry-get-catalogs">crawler-registry command line option</a>
-</li>
-      </ul></li>
-      <li>
-    --get-collection
-
-      <ul>
-        <li><a href="crawler_cli.html#cmdoption-crawler-registry-get-collection">crawler-registry command line option</a>
-</li>
-      </ul></li>
-      <li>
-    --get-collections
-
-      <ul>
-        <li><a href="crawler_cli.html#cmdoption-crawler-registry-get-collections">crawler-registry command line option</a>
-</li>
-      </ul></li>
-      <li>
     --id
 
       <ul>
         <li><a href="crawler_cli.html#cmdoption-crawler-collections-id">crawler-collections command line option</a>
 </li>
-        <li><a href="crawler_cli.html#cmdoption-crawler-registry-id">crawler-registry command line option</a>
+        <li><a href="crawler_cli.html#cmdoption-crawler-extract-id">crawler-extract command line option</a>
+</li>
+        <li><a href="crawler_cli.html#cmdoption-crawler-ingest-id">crawler-ingest command line option</a>
+</li>
+        <li><a href="crawler_cli.html#cmdoption-crawler-transform-id">crawler-transform command line option</a>
 </li>
       </ul></li>
       <li>
@@ -383,7 +359,7 @@ title="Open an issue"
     --no-extracted
 
       <ul>
-        <li><a href="crawler_cli.html#cmdoption-crawler-collections-extracted">crawler-collections command line option</a>, <a href="crawler_cli.html#cmdoption-crawler-collections-ingested">[1]</a>
+        <li><a href="crawler_cli.html#cmdoption-crawler-collections-extracted">crawler-collections command line option</a>
 </li>
       </ul></li>
       <li>
@@ -393,34 +369,20 @@ title="Open an issue"
         <li><a href="crawler_cli.html#cmdoption-crawler-schemas-get">crawler-schemas command line option</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
-    --no-get-catalog
+    --no-ingested
 
       <ul>
-        <li><a href="crawler_cli.html#cmdoption-crawler-registry-get-catalog">crawler-registry command line option</a>
+        <li><a href="crawler_cli.html#cmdoption-crawler-collections-ingested">crawler-collections command line option</a>
 </li>
       </ul></li>
       <li>
-    --no-get-catalogs
+    --no-overwrite
 
       <ul>
-        <li><a href="crawler_cli.html#cmdoption-crawler-registry-get-catalogs">crawler-registry command line option</a>
+        <li><a href="crawler_cli.html#cmdoption-crawler-extract-overwrite">crawler-extract command line option</a>
 </li>
-      </ul></li>
-      <li>
-    --no-get-collection
-
-      <ul>
-        <li><a href="crawler_cli.html#cmdoption-crawler-registry-get-collection">crawler-registry command line option</a>
-</li>
-      </ul></li>
-      <li>
-    --no-get-collections
-
-      <ul>
-        <li><a href="crawler_cli.html#cmdoption-crawler-registry-get-collections">crawler-registry command line option</a>
+        <li><a href="crawler_cli.html#cmdoption-crawler-transform-o">crawler-transform command line option</a>
 </li>
       </ul></li>
       <li>
@@ -430,11 +392,29 @@ title="Open an issue"
         <li><a href="crawler_cli.html#cmdoption-crawler-collections-transformed">crawler-collections command line option</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
-    --path
+    --no-update
 
       <ul>
-        <li><a href="crawler_cli.html#cmdoption-crawler-registry-path">crawler-registry command line option</a>
+        <li><a href="crawler_cli.html#cmdoption-crawler-ingest-update">crawler-ingest command line option</a>
+</li>
+      </ul></li>
+      <li>
+    --overwrite
+
+      <ul>
+        <li><a href="crawler_cli.html#cmdoption-crawler-extract-overwrite">crawler-extract command line option</a>
+</li>
+        <li><a href="crawler_cli.html#cmdoption-crawler-transform-o">crawler-transform command line option</a>
+</li>
+      </ul></li>
+      <li>
+    --service-title
+
+      <ul>
+        <li><a href="crawler_cli.html#cmdoption-crawler-registry-s">crawler-registry command line option</a>
 </li>
       </ul></li>
       <li>
@@ -466,10 +446,31 @@ title="Open an issue"
 </li>
       </ul></li>
       <li>
+    --update
+
+      <ul>
+        <li><a href="crawler_cli.html#cmdoption-crawler-ingest-update">crawler-ingest command line option</a>
+</li>
+      </ul></li>
+      <li>
     --version
 
       <ul>
         <li><a href="crawler_cli.html#cmdoption-crawler-version">crawler command line option</a>
+</li>
+      </ul></li>
+      <li>
+    -o
+
+      <ul>
+        <li><a href="crawler_cli.html#cmdoption-crawler-transform-o">crawler-transform command line option</a>
+</li>
+      </ul></li>
+      <li>
+    -s
+
+      <ul>
+        <li><a href="crawler_cli.html#cmdoption-crawler-registry-s">crawler-registry command line option</a>
 </li>
       </ul></li>
   </ul></td>
@@ -567,7 +568,9 @@ title="Open an issue"
 </li>
         <li><a href="crawler_cli.html#cmdoption-crawler-collections-ingested">--ingested</a>
 </li>
-        <li><a href="crawler_cli.html#cmdoption-crawler-collections-extracted">--no-extracted</a>, <a href="crawler_cli.html#cmdoption-crawler-collections-ingested">[1]</a>
+        <li><a href="crawler_cli.html#cmdoption-crawler-collections-extracted">--no-extracted</a>
+</li>
+        <li><a href="crawler_cli.html#cmdoption-crawler-collections-ingested">--no-ingested</a>
 </li>
         <li><a href="crawler_cli.html#cmdoption-crawler-collections-transformed">--no-transformed</a>
 </li>
@@ -579,32 +582,38 @@ title="Open an issue"
 </li>
       </ul></li>
       <li>
-    crawler-registry command line option
+    crawler-extract command line option
 
       <ul>
-        <li><a href="crawler_cli.html#cmdoption-crawler-registry-get-catalog">--get-catalog</a>
+        <li><a href="crawler_cli.html#cmdoption-crawler-extract-id">--id</a>
 </li>
-        <li><a href="crawler_cli.html#cmdoption-crawler-registry-get-catalogs">--get-catalogs</a>
+        <li><a href="crawler_cli.html#cmdoption-crawler-extract-overwrite">--no-overwrite</a>
 </li>
-        <li><a href="crawler_cli.html#cmdoption-crawler-registry-get-collection">--get-collection</a>
-</li>
-        <li><a href="crawler_cli.html#cmdoption-crawler-registry-get-collections">--get-collections</a>
-</li>
-        <li><a href="crawler_cli.html#cmdoption-crawler-registry-id">--id</a>
-</li>
-        <li><a href="crawler_cli.html#cmdoption-crawler-registry-get-catalog">--no-get-catalog</a>
-</li>
-        <li><a href="crawler_cli.html#cmdoption-crawler-registry-get-catalogs">--no-get-catalogs</a>
-</li>
-        <li><a href="crawler_cli.html#cmdoption-crawler-registry-get-collection">--no-get-collection</a>
-</li>
-        <li><a href="crawler_cli.html#cmdoption-crawler-registry-get-collections">--no-get-collections</a>
-</li>
-        <li><a href="crawler_cli.html#cmdoption-crawler-registry-path">--path</a>
+        <li><a href="crawler_cli.html#cmdoption-crawler-extract-overwrite">--overwrite</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    crawler-ingest command line option
+
+      <ul>
+        <li><a href="crawler_cli.html#cmdoption-crawler-ingest-id">--id</a>
+</li>
+        <li><a href="crawler_cli.html#cmdoption-crawler-ingest-update">--no-update</a>
+</li>
+        <li><a href="crawler_cli.html#cmdoption-crawler-ingest-update">--update</a>
+</li>
+      </ul></li>
+      <li>
+    crawler-registry command line option
+
+      <ul>
+        <li><a href="crawler_cli.html#cmdoption-crawler-registry-s">--service-title</a>
+</li>
+        <li><a href="crawler_cli.html#cmdoption-crawler-registry-s">-s</a>
+</li>
+      </ul></li>
       <li>
     crawler-schemas command line option
 
@@ -616,6 +625,19 @@ title="Open an issue"
         <li><a href="crawler_cli.html#cmdoption-crawler-schemas-get">--no-get</a>
 </li>
         <li><a href="crawler_cli.html#cmdoption-crawler-schemas-type">--type</a>
+</li>
+      </ul></li>
+      <li>
+    crawler-transform command line option
+
+      <ul>
+        <li><a href="crawler_cli.html#cmdoption-crawler-transform-id">--id</a>
+</li>
+        <li><a href="crawler_cli.html#cmdoption-crawler-transform-o">--no-overwrite</a>
+</li>
+        <li><a href="crawler_cli.html#cmdoption-crawler-transform-o">--overwrite</a>
+</li>
+        <li><a href="crawler_cli.html#cmdoption-crawler-transform-o">-o</a>
 </li>
       </ul></li>
       <li>
