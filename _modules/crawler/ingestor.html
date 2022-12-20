@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -42,7 +42,7 @@
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../../_static/togglebutton.js"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
@@ -276,9 +276,367 @@ title="Open an issue"
               <div>
                 
   <h1>Source code for crawler.ingestor</h1><div class="highlight"><pre>
-<div class="viewcode-block" id="Ingestor"><a class="viewcode-back" href="../../crawler_api.html#crawler.ingestor.Ingestor">[docs]</a><span></span><span class="k">class</span> <span class="nc">Ingestor</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span></div>
+<span></span><span class="kn">import</span> <span class="nn">pystac</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+
+<span class="n">COLLECTION_DEFAULT_MODEL</span> <span class="o">=</span> <span class="s1">&#39;DefaultModel&#39;</span>
+
+<span class="n">INGEST_STRATEGIES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;catalog&#39;</span><span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;ingest_catalog&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;ingest_feature&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+    <span class="s1">&#39;feature&#39;</span><span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;ingest_catalog&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;ingest_feature&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+    <span class="s1">&#39;both&#39;</span><span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;ingest_catalog&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;ingest_feature&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+    <span class="s1">&#39;none&#39;</span><span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;ingest_catalog&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;ingest_feature&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+<span class="p">}</span>
+<span class="sd">&quot;&quot;&quot;Ingest strategies define what is ingested i.e. &quot;collection&quot;, &quot;feature&quot;, &quot;both&quot; or &quot;none&quot;.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Ingestor"><a class="viewcode-back" href="../../crawler_api.html#crawler.ingestor.Ingestor">[docs]</a><span class="k">class</span> <span class="nc">Ingestor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Ingestion of STAC catalog or collection into destination STAC API service (eg: PDSSP RESTO).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stac_api_url</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">auth_token</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">source_collection</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stac_api_url</span> <span class="o">=</span> <span class="n">stac_api_url</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ingested</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stac_url</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_not_split_geom</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source_collection</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">processed_features</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># stac2resto `lookup_table`</span>
+
+        <span class="c1"># set source_schema and collection properties</span>
+        <span class="k">if</span> <span class="n">stac_api_url</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">source_collection</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stac_api_url</span> <span class="o">=</span> <span class="n">stac_api_url</span>
+        <span class="k">elif</span> <span class="n">source_collection</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">stac_api_url</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_source_collection</span><span class="p">(</span><span class="n">source_collection</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Only one of the `stac_api_url` or `source_collection` input keyword arguments can be used.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># set header: resto admin auth token is required for POST</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">auth_token</span><span class="p">:</span>
+            <span class="n">auth_token</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;RESTO_ADMIN_AUTH_TOKEN&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">auth_token</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;RESTO_ADMIN_AUTH_TOKEN enviroment variable, or `auth_token` input argument, is required for ingestion.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Accept&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;User-Agent&#39;</span><span class="p">:</span> <span class="s1">&#39;stac2resto&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="s1">&#39;Bearer &#39;</span> <span class="o">+</span> <span class="n">auth_token</span>
+        <span class="p">}</span>
+
+<div class="viewcode-block" id="Ingestor.set_source_collection"><a class="viewcode-back" href="../../crawler_api.html#crawler.ingestor.Ingestor.set_source_collection">[docs]</a>    <span class="k">def</span> <span class="nf">set_source_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_collection</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source_collection</span> <span class="o">=</span> <span class="n">source_collection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ingested</span> <span class="o">=</span> <span class="n">source_collection</span><span class="o">.</span><span class="n">ingested</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stac_url</span> <span class="o">=</span> <span class="n">source_collection</span><span class="o">.</span><span class="n">stac_url</span></div>
+
+<div class="viewcode-block" id="Ingestor.update_source_collection"><a class="viewcode-back" href="../../crawler_api.html#crawler.ingestor.Ingestor.update_source_collection">[docs]</a>    <span class="k">def</span> <span class="nf">update_source_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_collection</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">source_collection</span><span class="o">.</span><span class="n">ingested</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ingested</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">source_collection</span><span class="o">.</span><span class="n">stac_url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stac_url</span></div>
+
+<div class="viewcode-block" id="Ingestor.post_catalog"><a class="viewcode-back" href="../../crawler_api.html#crawler.ingestor.Ingestor.post_catalog">[docs]</a>    <span class="k">def</span> <span class="nf">post_catalog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">catalog_dict</span><span class="p">):</span>
+        <span class="n">catalog_id</span> <span class="o">=</span> <span class="n">catalog_dict</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+
+        <span class="c1"># post request</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">stac_api_url</span><span class="si">}</span><span class="s1">/catalogs&#39;</span>
+        <span class="n">parent_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">parent_path</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">parent_id</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;/</span><span class="si">{</span><span class="n">parent_id</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Creating </span><span class="si">{</span><span class="n">catalog_id</span><span class="si">}</span><span class="s1"> catalog to </span><span class="si">{</span><span class="n">url</span><span class="si">}{</span><span class="n">parent_path</span><span class="si">}</span><span class="s1">...&#39;</span><span class="p">)</span>
+        <span class="n">ssl_verify</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">catalog_dict</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;pid&quot;</span><span class="p">:</span> <span class="n">parent_id</span><span class="p">},</span> <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="n">ssl_verify</span><span class="p">)</span>
+
+        <span class="c1"># handling response</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">catalog_id</span><span class="si">}</span><span class="s1"> catalog ingested successfully.&#39;</span><span class="p">)</span>
+
+            <span class="c1"># set ingestor status/attributes</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ingested</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stac_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">url</span><span class="si">}{</span><span class="n">parent_path</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">catalog_id</span><span class="si">}</span><span class="s1">&#39;</span>  <span class="c1"># ?</span>
+            <span class="c1"># self.update_source_collection()</span>
+            <span class="c1"># TODO: all collections belonging to the ingested catalog should be updated !</span>
+
+            <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="c1"># HTTP !== 200 =&gt; error</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Catalog ingestion failed: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()))</span></div>
+
+<div class="viewcode-block" id="Ingestor.update_catalog"><a class="viewcode-back" href="../../crawler_api.html#crawler.ingestor.Ingestor.update_catalog">[docs]</a>    <span class="k">def</span> <span class="nf">update_catalog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Ingestor.delete_catalog"><a class="viewcode-back" href="../../crawler_api.html#crawler.ingestor.Ingestor.delete_catalog">[docs]</a>    <span class="k">def</span> <span class="nf">delete_catalog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">catalog_id</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Ingestor.post_collection"><a class="viewcode-back" href="../../crawler_api.html#crawler.ingestor.Ingestor.post_collection">[docs]</a>    <span class="k">def</span> <span class="nf">post_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection_dict</span><span class="p">,</span> <span class="n">update_if_exists</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="c1"># copy input STAC collection dict</span>
+        <span class="n">tmp_collection_dict</span> <span class="o">=</span> <span class="n">collection_dict</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1"># get collection Id</span>
+        <span class="n">collection_id</span> <span class="o">=</span> <span class="n">tmp_collection_dict</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+
+        <span class="c1"># add collection default model to apply to new collection if not present in collection.json file</span>
+        <span class="k">if</span> <span class="s1">&#39;model&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tmp_collection_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">tmp_collection_dict</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLLECTION_DEFAULT_MODEL</span>
+
+        <span class="c1"># discard summaries and links</span>
+        <span class="k">if</span> <span class="s1">&#39;summaries&#39;</span> <span class="ow">in</span> <span class="n">tmp_collection_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">tmp_collection_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;summaries&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;links&#39;</span> <span class="ow">in</span> <span class="n">tmp_collection_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">tmp_collection_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;links&#39;</span><span class="p">)</span>
+
+        <span class="c1"># POST request</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">stac_api_url</span><span class="si">}</span><span class="s1">/collections&#39;</span>
+        <span class="n">ssl_verify</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Creating </span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1"> collection using `</span><span class="si">{</span><span class="n">COLLECTION_DEFAULT_MODEL</span><span class="si">}</span><span class="s1">` model to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">stac_api_url</span><span class="si">}</span><span class="s1"> ...&#39;</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">tmp_collection_dict</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="n">ssl_verify</span><span class="p">)</span>
+
+        <span class="c1"># handling response</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1"> collection created successfully.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">response</span>
+        <span class="k">elif</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">409</span><span class="p">:</span>
+            <span class="c1"># HTTP 409 =&gt; collection exists. Retry with PUT to update, if `update_if_exists` input argument set to True.</span>
+            <span class="k">if</span> <span class="n">update_if_exists</span><span class="p">:</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_collection</span><span class="p">(</span><span class="n">collection_dict</span><span class="p">,</span> <span class="n">update_if_exists</span><span class="o">=</span><span class="n">update_if_exists</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1"> already exists. Use `update_if_exists=True` to update collection.&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># HTTP !== 200 =&gt; error</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1"> collection POST failed: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()))</span>
+
+        <span class="k">return</span> <span class="n">response</span></div>
+
+<div class="viewcode-block" id="Ingestor.update_collection"><a class="viewcode-back" href="../../crawler_api.html#crawler.ingestor.Ingestor.update_collection">[docs]</a>    <span class="k">def</span> <span class="nf">update_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection_dict</span><span class="p">,</span> <span class="n">update_if_exists</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="c1"># copy input STAC collection dict</span>
+        <span class="n">tmp_collection_dict</span> <span class="o">=</span> <span class="n">collection_dict</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1"># set collection Id</span>
+        <span class="n">collection_id</span> <span class="o">=</span> <span class="n">tmp_collection_dict</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+
+        <span class="c1"># add collection default model to apply to new collection if not present in collection.json file</span>
+        <span class="k">if</span> <span class="s1">&#39;model&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tmp_collection_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">tmp_collection_dict</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COLLECTION_DEFAULT_MODEL</span>
+
+        <span class="c1"># discard summaries and links</span>
+        <span class="k">if</span> <span class="s1">&#39;summaries&#39;</span> <span class="ow">in</span> <span class="n">tmp_collection_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">tmp_collection_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;summaries&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;links&#39;</span> <span class="ow">in</span> <span class="n">tmp_collection_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">tmp_collection_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;links&#39;</span><span class="p">)</span>
+
+        <span class="c1"># PUT request</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">stac_api_url</span><span class="si">}</span><span class="s1">/collections/</span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">ssl_verify</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Updating existing </span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1"> collection using </span><span class="si">{</span><span class="n">COLLECTION_DEFAULT_MODEL</span><span class="si">}</span><span class="s1"> model to </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s1"> ...&#39;</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">tmp_collection_dict</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="n">ssl_verify</span><span class="p">)</span>
+
+        <span class="c1"># handle response</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1"> collection created successfully.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">response</span>
+        <span class="k">elif</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">409</span><span class="p">:</span>
+            <span class="c1"># HTTP 409 =&gt; collection exists. Retry with PUT to update, if `update_if_exists` input argument set to True.</span>
+            <span class="k">if</span> <span class="n">update_if_exists</span><span class="p">:</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_collection</span><span class="p">(</span><span class="n">collection_dict</span><span class="p">,</span> <span class="n">update_if_exists</span><span class="o">=</span><span class="n">update_if_exists</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1"> already exists. Use `update_if_exists=True` to update collection.&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">response</span>
+
+        <span class="c1"># HTTP !== 200 =&gt; error</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1"> collection PUT failed: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()))</span>
+
+        <span class="k">return</span> <span class="n">response</span></div>
+
+<div class="viewcode-block" id="Ingestor.delete_collection"><a class="viewcode-back" href="../../crawler_api.html#crawler.ingestor.Ingestor.delete_collection">[docs]</a>    <span class="k">def</span> <span class="nf">delete_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection_id</span><span class="p">):</span>
+        <span class="c1"># set request</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">stac_api_url</span><span class="si">}</span><span class="s1">/collections/</span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">ssl_verify</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># DELETE request</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Deleting </span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1"> collection ...&#39;</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="n">ssl_verify</span><span class="p">)</span>
+
+        <span class="c1"># handle response</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1"> collection deleted successfully.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1"> collection DELETE failed: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">response</span></div>
+
+<div class="viewcode-block" id="Ingestor.post_feature"><a class="viewcode-back" href="../../crawler_api.html#crawler.ingestor.Ingestor.post_feature">[docs]</a>    <span class="k">def</span> <span class="nf">post_feature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_dict</span><span class="p">,</span> <span class="n">update_if_exists</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="c1"># set feature ID</span>
+        <span class="n">feature_id</span> <span class="o">=</span> <span class="n">feature_dict</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+        <span class="n">collection_id</span> <span class="o">=</span> <span class="n">feature_dict</span><span class="p">[</span><span class="s1">&#39;collection&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">feature_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">processed_features</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># Set request</span>
+        <span class="c1">#</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">stac_api_url</span><span class="si">}</span><span class="s1">/collections/</span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1">/items&#39;</span>
+        <span class="n">ssl_verify</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># use or not ST_SplitDateLine</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_not_split_geom</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;_splitGeom&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+
+        <span class="c1"># Post request</span>
+        <span class="c1">#</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Creating </span><span class="si">{</span><span class="n">feature_id</span><span class="si">}</span><span class="s1"> feature in </span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1"> collection ...&#39;</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">feature_dict</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="n">ssl_verify</span><span class="p">)</span>
+
+        <span class="c1"># Handle response</span>
+        <span class="c1">#</span>
+        <span class="c1"># HTTP 409 =&gt; feature exists. Retry with PUT to update (self.update_feature)</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">409</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">update_if_exists</span><span class="p">:</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_feature</span><span class="p">(</span><span class="n">feature_dict</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">feature_id</span><span class="si">}</span><span class="s1"> already exists. Use `update_if_exists=True` to update feature.&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">feature_id</span><span class="si">}</span><span class="s1"> feature created successfully.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">feature_id</span><span class="si">}</span><span class="s1"> feature POST failed: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># # HTTP !== 200 =&gt; error</span>
+        <span class="c1"># if response.status_code != 200:</span>
+        <span class="c1">#     print(&#39;Collection POST failed: &#39; + str(response.json()))</span>
+
+        <span class="k">return</span> <span class="n">response</span></div>
+
+<div class="viewcode-block" id="Ingestor.update_feature"><a class="viewcode-back" href="../../crawler_api.html#crawler.ingestor.Ingestor.update_feature">[docs]</a>    <span class="k">def</span> <span class="nf">update_feature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_dict</span><span class="p">):</span>
+        <span class="c1"># set feature and parent collection ID</span>
+        <span class="n">feature_id</span> <span class="o">=</span> <span class="n">feature_dict</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+        <span class="n">collection_id</span> <span class="o">=</span> <span class="n">feature_dict</span><span class="p">[</span><span class="s1">&#39;collection&#39;</span><span class="p">]</span>
+
+        <span class="c1"># set request</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">stac_api_url</span><span class="si">}</span><span class="s1">/collections/</span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1">/items/</span><span class="si">{</span><span class="n">feature_id</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">ssl_verify</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># post request</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Updating </span><span class="si">{</span><span class="n">feature_id</span><span class="si">}</span><span class="s1"> feature in </span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1"> collection ...&#39;</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">feature_dict</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="n">ssl_verify</span><span class="p">)</span>
+
+        <span class="c1"># handle response</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">feature_id</span><span class="si">}</span><span class="s1"> feature updated successfully.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">feature_id</span><span class="si">}</span><span class="s1"> feature PUT failed: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">response</span></div>
+
+<div class="viewcode-block" id="Ingestor.delete_feature"><a class="viewcode-back" href="../../crawler_api.html#crawler.ingestor.Ingestor.delete_feature">[docs]</a>    <span class="k">def</span> <span class="nf">delete_feature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_id</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Ingestor.delete"><a class="viewcode-back" href="../../crawler_api.html#crawler.ingestor.Ingestor.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stac_file</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">collection_id</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">feature_id</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">catalog_id</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">stac_file</span><span class="p">:</span>
+            <span class="c1"># read input STAC file</span>
+            <span class="n">stac_object_dict</span> <span class="o">=</span> <span class="n">pystac</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">stac_file</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">stac_object_dict</span> <span class="ow">or</span> <span class="s1">&#39;type&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stac_object_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Invalid STAC file: </span><span class="si">{</span><span class="n">stac_file</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+
+            <span class="n">stac_object_type</span> <span class="o">=</span> <span class="n">stac_object_dict</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+            <span class="n">stac_object_id</span> <span class="o">=</span> <span class="n">stac_object_dict</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Found `</span><span class="si">{</span><span class="n">stac_object_id</span><span class="si">}</span><span class="s1">` </span><span class="si">{</span><span class="n">stac_object_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># get input STAC object type and ID</span>
+            <span class="k">if</span> <span class="n">collection_id</span><span class="p">:</span>
+                <span class="n">stac_object_type</span> <span class="o">=</span> <span class="s1">&#39;Collection&#39;</span>
+                <span class="n">stac_object_id</span> <span class="o">=</span> <span class="n">collection_id</span>
+            <span class="k">elif</span> <span class="n">feature_id</span><span class="p">:</span>
+                <span class="n">stac_object_type</span> <span class="o">=</span> <span class="s1">&#39;Feature&#39;</span>
+                <span class="n">stac_object_id</span> <span class="o">=</span> <span class="n">feature_id</span>
+            <span class="k">elif</span> <span class="n">catalog_id</span><span class="p">:</span>
+                <span class="n">stac_object_type</span> <span class="o">=</span> <span class="s1">&#39;Catalog&#39;</span>
+                <span class="n">stac_object_id</span> <span class="o">=</span> <span class="n">catalog_id</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;At least one of the input optional argument is required.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># delete STAC object</span>
+        <span class="k">if</span> <span class="n">stac_object_type</span> <span class="o">==</span> <span class="s1">&#39;Collection&#39;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">stac_object_id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">delete_collection</span><span class="p">(</span><span class="n">stac_object_id</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">stac_object_type</span> <span class="o">==</span> <span class="s1">&#39;Feature&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">delete_feature</span><span class="p">(</span><span class="n">stac_object_id</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">stac_object_type</span> <span class="o">==</span> <span class="s1">&#39;Catalog&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">delete_catalog</span><span class="p">(</span><span class="n">stac_object_id</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid STAC object type.&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Ingestor.ingest"><a class="viewcode-back" href="../../crawler_api.html#crawler.ingestor.Ingestor.ingest">[docs]</a>    <span class="k">def</span> <span class="nf">ingest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stac_file</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">stac_api_url</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">update_if_exists</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ingest_strategy</span><span class="o">=</span><span class="s1">&#39;catalog&#39;</span><span class="p">):</span>  <span class="c1"># dest_catalog_name=&#39;&#39;,</span>
+        <span class="sd">&quot;&quot;&quot;Ingest input STAC file into destination STAC API catalog service.</span>
+
+<span class="sd">        Input STAC file can be a catalog, a collection or an item JSON file. Different ingestion strategies define</span>
+<span class="sd">        what is ingested i.e. &#39;catalog&#39;, &#39;feature&#39;, &#39;both&#39; or &#39;none&#39;.</span>
+
+<span class="sd">        ~ stac2resto (&quot;process_stuff(url, lookup_table&quot;))</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># read input STAC file</span>
+        <span class="n">stac_object_dict</span> <span class="o">=</span> <span class="n">pystac</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">stac_file</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>  <span class="c1"># &quot;stuff&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">stac_object_dict</span> <span class="ow">or</span> <span class="s1">&#39;type&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stac_object_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Invalid STAC file: </span><span class="si">{</span><span class="n">stac_file</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ingest_strategy</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">INGEST_STRATEGIES</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Invalid `</span><span class="si">{</span><span class="n">ingest_strategy</span><span class="si">}</span><span class="s1">` ingestion strategy. Allowed values are: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">INGEST_STRATEGIES</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ingest_feature</span> <span class="o">=</span> <span class="n">INGEST_STRATEGIES</span><span class="p">[</span><span class="n">ingest_strategy</span><span class="p">][</span><span class="s1">&#39;ingest_feature&#39;</span><span class="p">]</span>
+            <span class="n">ingest_catalog</span> <span class="o">=</span> <span class="n">INGEST_STRATEGIES</span><span class="p">[</span><span class="n">ingest_strategy</span><span class="p">][</span><span class="s1">&#39;ingest_catalog&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">stac_object_dict</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Feature&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ingest_feature</span><span class="p">:</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_feature</span><span class="p">(</span><span class="n">stac_object_dict</span><span class="p">,</span> <span class="n">update_if_exists</span><span class="o">=</span><span class="n">update_if_exists</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">response</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">processed_features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stac_object_dict</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">])</span> <span class="c1"># append feature ID</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">stac_object_dict</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Collection&#39;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Found `</span><span class="si">{</span><span class="n">stac_object_dict</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">` collection.&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ingest_catalog</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">post_collection</span><span class="p">(</span><span class="n">stac_object_dict</span><span class="p">,</span> <span class="n">update_if_exists</span><span class="o">=</span><span class="n">update_if_exists</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">stac_object_dict</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Catalog&#39;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Found `</span><span class="si">{</span><span class="n">stac_object_dict</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">` catalog.&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ingest_catalog</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">post_catalog</span><span class="p">(</span><span class="n">stac_object_dict</span><span class="p">)</span>
+
+        <span class="c1"># no links skip</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">stac_object_dict</span><span class="p">[</span><span class="s1">&#39;links&#39;</span><span class="p">],</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  No links to process - skipping&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># recursively process/ingest links</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">stac_object_dict</span><span class="p">[</span><span class="s1">&#39;links&#39;</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   Found </span><span class="si">%s</span><span class="s2"> links&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">stac_object_dict</span><span class="p">[</span><span class="s1">&#39;links&#39;</span><span class="p">]:</span>
+            <span class="c1"># derive the absolute child url</span>
+            <span class="c1"># child_path = get_absolute_url(stac_file, link[&#39;href&#39;])</span>
+            <span class="n">child_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">stac_file</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">link</span><span class="p">[</span><span class="s1">&#39;href&#39;</span><span class="p">]))</span> <span class="c1">#</span>
+
+            <span class="k">if</span> <span class="n">link</span><span class="p">[</span><span class="s1">&#39;rel&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;item&#39;</span><span class="p">,</span> <span class="s1">&#39;items&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">ingest_feature</span><span class="p">:</span>
+                <span class="c1"># print(child_path)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ingest</span><span class="p">(</span><span class="n">stac_file</span><span class="o">=</span><span class="n">child_path</span><span class="p">,</span> <span class="n">ingest_strategy</span><span class="o">=</span><span class="n">ingest_strategy</span><span class="p">,</span> <span class="n">update_if_exists</span><span class="o">=</span><span class="n">update_if_exists</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">link</span><span class="p">[</span><span class="s1">&#39;rel&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;child&#39;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;------------------------------------------------------------------------------------&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Process </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">child_path</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;------------------------------------------------------------------------------------&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ingest</span><span class="p">(</span><span class="n">stac_file</span><span class="o">=</span><span class="n">child_path</span><span class="p">,</span> <span class="n">ingest_strategy</span><span class="o">=</span><span class="n">ingest_strategy</span><span class="p">,</span> <span class="n">update_if_exists</span><span class="o">=</span><span class="n">update_if_exists</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">stac_object_dict</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Collection&#39;</span><span class="p">:</span>
+            <span class="c1"># self.ingested = True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stac_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">stac_api_url</span><span class="si">}</span><span class="s1">/collections/</span><span class="si">{</span><span class="n">stac_object_dict</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span></div></div>
 </pre></div>
 
               </div>

@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -42,7 +42,7 @@
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../../_static/togglebutton.js"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
@@ -102,7 +102,14 @@ const thebe_selector_output = ".output, .cell_output"
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <p aria-level="2" class="caption" role="heading">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../changelog.html">
+   Release Notes
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Developer Guides
  </span>
@@ -280,93 +287,680 @@ title="Open an issue"
 
 <span class="c1"># import</span>
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
 
-<span class="kn">from</span> <span class="nn">crawler.schemas</span> <span class="kn">import</span> <span class="n">create_schema_object</span>  <span class="c1"># create_metadata_object ?</span>
+<span class="kn">import</span> <span class="nn">crawler.schemas</span> <span class="k">as</span> <span class="nn">schemas</span>
+<span class="kn">from</span> <span class="nn">.extractor</span> <span class="kn">import</span> <span class="n">Extractor</span>
+<span class="kn">from</span> <span class="nn">.datastore</span> <span class="kn">import</span> <span class="n">SourceCollectionModel</span>
+
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span> <span class="nn">shapely.wkt</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">import</span> <span class="nn">pystac</span>
 
 
-<div class="viewcode-block" id="Transformer"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.Transformer">[docs]</a><span class="k">def</span> <span class="nf">Transformer</span><span class="p">(</span><span class="n">source_schema</span><span class="p">,</span> <span class="n">destination_schema</span><span class="o">=</span><span class="s1">&#39;PDSSP_STAC&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="Transformer"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.Transformer">[docs]</a><span class="k">def</span> <span class="nf">Transformer</span><span class="p">(</span><span class="n">collection</span><span class="p">:</span> <span class="n">SourceCollectionModel</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">source_schema</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">destination_schema</span><span class="o">=</span><span class="s1">&#39;PDSSP_STAC&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Transformer function serving as Transformer objects factory.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">source_schema</span> <span class="ow">in</span> <span class="n">SOURCE_TRANSFORMERS</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="n">TransformerClass</span> <span class="o">=</span> <span class="n">SOURCE_TRANSFORMERS</span><span class="p">[</span><span class="n">source_schema</span><span class="p">]</span>
-        <span class="n">transformer</span> <span class="o">=</span> <span class="n">TransformerClass</span><span class="p">(</span><span class="n">source_schema</span><span class="p">,</span> <span class="n">destination_schema</span><span class="o">=</span><span class="n">destination_schema</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">transformer</span>
+    <span class="c1"># set source_schema_str</span>
+    <span class="k">if</span> <span class="n">collection</span><span class="p">:</span>
+        <span class="n">source_schema_str</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">source_schema</span>
+    <span class="k">elif</span> <span class="n">source_schema</span><span class="p">:</span>
+        <span class="n">source_schema_str</span> <span class="o">=</span> <span class="n">source_schema</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown schema name: `</span><span class="si">{</span><span class="n">source_schema</span><span class="si">}</span><span class="s1">`.&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="kc">None</span>
-    <span class="k">pass</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;At least one of the `service_type` (str) or `service` (Service) keyword argument is required as input.&#39;</span><span class="p">)</span>
+
+    <span class="c1"># check that source_schema is valid and create corresponding Transformer object.</span>
+    <span class="k">if</span> <span class="n">source_schema_str</span> <span class="ow">in</span> <span class="n">SOURCE_TRANSFORMERS</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">TransformerClass</span> <span class="o">=</span> <span class="n">SOURCE_TRANSFORMERS</span><span class="p">[</span><span class="n">source_schema_str</span><span class="p">]</span>
+        <span class="n">transformer</span> <span class="o">=</span> <span class="n">TransformerClass</span><span class="p">(</span><span class="n">collection</span><span class="o">=</span><span class="n">collection</span><span class="p">,</span> <span class="n">source_schema</span><span class="o">=</span><span class="n">source_schema</span><span class="p">,</span>
+                                       <span class="n">destination_schema</span><span class="o">=</span><span class="n">destination_schema</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">transformer</span></div>
 
 
 <div class="viewcode-block" id="TransformerSchemaInputError"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.TransformerSchemaInputError">[docs]</a><span class="k">class</span> <span class="nc">TransformerSchemaInputError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Custom error that is raised when invalid schema name is passed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="InvalidModelObjectTypeError"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.InvalidModelObjectTypeError">[docs]</a><span class="k">class</span> <span class="nc">InvalidModelObjectTypeError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Custom error that is raised when invalid STAC object type is passed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">object_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">object_type</span> <span class="o">=</span> <span class="n">object_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Invalid `</span><span class="si">{</span><span class="n">object_type</span><span class="si">}</span><span class="s2">` type. Allowed object type: &#39;collection&#39; or &#39;item&#39;.&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="AbstractTransformer"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer">[docs]</a><span class="k">class</span> <span class="nc">AbstractTransformer</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_schema</span><span class="p">,</span> <span class="n">destination_schema</span><span class="o">=</span><span class="s1">&#39;PDSSP_STAC&#39;</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">source_schema</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">SOURCE_TRANSFORMERS</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="n">TransformerSchemaInputError</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">source_schema</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Allowed schema names: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">SOURCE_TRANSFORMERS</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">source_schema</span> <span class="o">=</span> <span class="n">source_schema</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">destination_schema</span> <span class="o">=</span> <span class="s1">&#39;PDSSP_STAC&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source_schema</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">destination_schema</span><span class="o">=</span><span class="s1">&#39;PDSSP_STAC&#39;</span><span class="p">):</span>
+        <span class="c1"># automatically set extractor service type from inheriting Extractor class.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source_schema</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">class_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="k">for</span> <span class="n">schema_name</span> <span class="ow">in</span> <span class="n">SOURCE_TRANSFORMERS</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">class_name</span> <span class="o">==</span> <span class="n">SOURCE_TRANSFORMERS</span><span class="p">[</span><span class="n">schema_name</span><span class="p">]</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">schema_name</span> <span class="o">=</span> <span class="n">schema_name</span>
+
+        <span class="c1"># if source_schema not in SOURCE_TRANSFORMERS.keys():</span>
+        <span class="c1">#     raise TransformerSchemaInputError(value=source_schema, message=f&#39;Allowed schema names: {list(SOURCE_TRANSFORMERS.keys())}&#39;)</span>
+
+        <span class="c1"># init transformer properties</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">destination_schema</span> <span class="o">=</span> <span class="n">destination_schema</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">collection</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transformed</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stac_dir</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="c1"># set source_schema and collection properties</span>
+        <span class="k">if</span> <span class="n">source_schema</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">collection</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_source_schema</span><span class="p">(</span><span class="n">source_schema</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">collection</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">source_schema</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_source_collection</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Only one of the `source_schema` or `collection` input keyword arguments can be used.&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&gt; &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;source_schema: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">source_schema</span><span class="si">}</span><span class="s2"> | &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;destination_schema: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">destination_schema</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;destination_schema: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">destination_schema</span><span class="si">}</span><span class="s2"> | &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;transformed: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">transformed</span><span class="si">}</span><span class="s2"> | &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;stac_dir: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">stac_dir</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
 
-<div class="viewcode-block" id="AbstractTransformer.transform_source_metadata"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.transform_source_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">transform_source_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseModel</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">src_metadata</span></div>
+<div class="viewcode-block" id="AbstractTransformer.set_source_schema"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.set_source_schema">[docs]</a>    <span class="k">def</span> <span class="nf">set_source_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_schema</span><span class="p">):</span>
+        <span class="c1"># check that input source metadata matches with the transformer metadata schema.</span>
+        <span class="k">if</span> <span class="n">source_schema</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_schema</span><span class="p">:</span>
+            <span class="c1"># check that a schema is defined for the input source schema.</span>
+            <span class="n">schema_names</span> <span class="o">=</span> <span class="n">schemas</span><span class="o">.</span><span class="n">get_schema_names</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">source_schema</span> <span class="ow">in</span> <span class="n">schemas</span><span class="o">.</span><span class="n">get_schema_names</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">source_schema</span> <span class="o">=</span> <span class="n">source_schema</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;There is no schema defined for input `</span><span class="si">{</span><span class="n">source_schema</span><span class="si">}</span><span class="s1">`. Defined schemas are: </span><span class="si">{</span><span class="n">schema_names</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Input `</span><span class="si">{</span><span class="n">source_schema</span><span class="si">}</span><span class="s1">` does not match any Transformer source schema.&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="AbstractTransformer.transform_source_file"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.transform_source_file">[docs]</a>    <span class="k">def</span> <span class="nf">transform_source_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src_file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dst_file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">pass</span></div></div>
+<div class="viewcode-block" id="AbstractTransformer.set_source_collection"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.set_source_collection">[docs]</a>    <span class="k">def</span> <span class="nf">set_source_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection</span><span class="p">:</span> <span class="n">SourceCollectionModel</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set transformed source collection from input SourceCollectionModel object and derive Transfornmer properties from it.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># set extract collection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">collection</span> <span class="o">=</span> <span class="n">collection</span>
+
+        <span class="c1"># set source metadata</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source_schema</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">source_schema</span>
+
+        <span class="c1"># set output STAC file path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stac_dir</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">stac_dir</span></div>
+
+<div class="viewcode-block" id="AbstractTransformer.get_id"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="AbstractTransformer.get_stac_version"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_stac_version">[docs]</a>    <span class="k">def</span> <span class="nf">get_stac_version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">schemas</span><span class="o">.</span><span class="n">STAC_VERSION</span></div>
+
+<div class="viewcode-block" id="AbstractTransformer.get_links"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_links">[docs]</a>    <span class="k">def</span> <span class="nf">get_links</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="AbstractTransformer.get_assets"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_assets">[docs]</a>    <span class="k">def</span> <span class="nf">get_assets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">schemas</span><span class="o">.</span><span class="n">PDSSP_STAC_Asset</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">{}</span></div>
+
+<div class="viewcode-block" id="AbstractTransformer.get_stac_extensions"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_stac_extensions">[docs]</a>    <span class="k">def</span> <span class="nf">get_stac_extensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span> <span class="c1"># collection only</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="AbstractTransformer.get_title"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_title">[docs]</a>    <span class="k">def</span> <span class="nf">get_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="AbstractTransformer.get_description"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_description">[docs]</a>    <span class="k">def</span> <span class="nf">get_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="AbstractTransformer.get_keywords"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_keywords">[docs]</a>    <span class="k">def</span> <span class="nf">get_keywords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="AbstractTransformer.get_geometry"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_geometry">[docs]</a>    <span class="k">def</span> <span class="nf">get_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]:</span>  <span class="c1"># GeoJSON Geometry ??</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="AbstractTransformer.get_extent"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_extent">[docs]</a>    <span class="k">def</span> <span class="nf">get_extent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="AbstractTransformer.get_bbox"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_bbox">[docs]</a>    <span class="k">def</span> <span class="nf">get_bbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="AbstractTransformer.get_providers"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_providers">[docs]</a>    <span class="k">def</span> <span class="nf">get_providers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="AbstractTransformer.get_licence"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_licence">[docs]</a>    <span class="k">def</span> <span class="nf">get_licence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;Default CC-BY-SA-4.0 license ???&#39;</span></div>
+
+<div class="viewcode-block" id="AbstractTransformer.get_summaries"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_summaries">[docs]</a>    <span class="k">def</span> <span class="nf">get_summaries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="AbstractTransformer.get_properties"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_properties">[docs]</a>    <span class="k">def</span> <span class="nf">get_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseModel</span><span class="p">:</span>  <span class="c1"># PDSSP_STAC_Properties</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="AbstractTransformer.get_extension_properties"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_extension_properties">[docs]</a>    <span class="k">def</span> <span class="nf">get_extension_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">stac_extension</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseModel</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">stac_extension</span> <span class="o">==</span> <span class="s1">&#39;ssys&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ssys_properties</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="n">object_type</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">stac_extension</span> <span class="o">==</span> <span class="s1">&#39;proj&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_proj_properties</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="n">object_type</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Undefined </span><span class="si">{</span><span class="n">stac_extension</span><span class="si">}</span><span class="s1"> STAC extension.&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AbstractTransformer.get_extension_fields"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_extension_fields">[docs]</a>    <span class="k">def</span> <span class="nf">get_extension_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">stac_extension</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseModel</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">stac_extension</span> <span class="o">==</span> <span class="s1">&#39;ssys&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ssys_fields</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="n">object_type</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">stac_extension</span> <span class="o">==</span> <span class="s1">&#39;proj&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_proj_fields</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="n">object_type</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Undefined </span><span class="si">{</span><span class="n">stac_extension</span><span class="si">}</span><span class="s1"> STAC extension.&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AbstractTransformer.get_ssys_properties"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_ssys_properties">[docs]</a>    <span class="k">def</span> <span class="nf">get_ssys_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseModel</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;item&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{}</span>
+        <span class="k">elif</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;collection&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidModelObjectTypeError</span><span class="p">(</span><span class="n">object_type</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AbstractTransformer.get_ssys_fields"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_ssys_fields">[docs]</a>    <span class="k">def</span> <span class="nf">get_ssys_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{}</span></div>
+
+<div class="viewcode-block" id="AbstractTransformer.get_proj_properties"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_proj_properties">[docs]</a>    <span class="k">def</span> <span class="nf">get_proj_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseModel</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;item&#39;</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;collection&#39;</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidModelObjectTypeError</span><span class="p">(</span><span class="n">object_type</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AbstractTransformer.get_stac_collection_dict"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_stac_collection_dict">[docs]</a>    <span class="k">def</span> <span class="nf">get_stac_collection_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">,</span> <span class="n">stac_extensions</span><span class="o">=</span><span class="p">[])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">stac_extensions</span><span class="p">:</span>
+            <span class="n">stac_extensions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stac_extensions</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">)</span>  <span class="c1"># from collection metadata, retrieved from collection service `extra_params` JSON attribute.</span>
+
+        <span class="n">stac_collection_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Collection&#39;</span><span class="p">,</span>  <span class="c1"># REQUIRED</span>
+            <span class="s1">&#39;stac_version&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stac_version</span><span class="p">(),</span>  <span class="c1"># REQUIRED</span>
+            <span class="s1">&#39;stac_extensions&#39;</span><span class="p">:</span> <span class="n">stac_extensions</span><span class="p">,</span>
+            <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_id</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;collection&#39;</span><span class="p">),</span>  <span class="c1"># REQUIRED</span>
+            <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_title</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">),</span>
+            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_description</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">),</span>  <span class="c1"># REQUIRED</span>
+            <span class="s1">&#39;keywords&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_keywords</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">),</span>
+            <span class="s1">&#39;licence&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_licence</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">),</span>  <span class="c1"># REQUIRED</span>
+            <span class="s1">&#39;providers&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_providers</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">),</span>
+            <span class="s1">&#39;extent&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_extent</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">),</span>  <span class="c1"># REQUIRED</span>
+            <span class="s1">&#39;summaries&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_summaries</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">),</span>  <span class="c1"># STRONGLY RECOMMENDED</span>
+            <span class="s1">&#39;links&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_links</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;collection&#39;</span><span class="p">),</span>  <span class="c1"># REQUIRED</span>
+            <span class="s1">&#39;assets&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_assets</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;collection&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;extra_fields&#39;</span><span class="p">:</span> <span class="p">{}</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="n">stac_extension</span> <span class="ow">in</span> <span class="n">stac_extensions</span><span class="p">:</span>
+            <span class="n">stac_collection_dict</span><span class="p">[</span><span class="s1">&#39;extra_fields&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_extension_fields</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">,</span> <span class="n">stac_extension</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;collection&#39;</span><span class="p">))</span>
+            <span class="c1"># For example:</span>
+            <span class="c1"># { &#39;ssys_targets&#39;: [&#39;Mars&#39;] }</span>
+        <span class="k">return</span> <span class="n">stac_collection_dict</span></div>
+
+<div class="viewcode-block" id="AbstractTransformer.get_stac_item_dict"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_stac_item_dict">[docs]</a>    <span class="k">def</span> <span class="nf">get_stac_item_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">,</span> <span class="n">stac_extensions</span><span class="o">=</span><span class="p">[])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="n">stac_item_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Feature&#39;</span><span class="p">,</span>  <span class="c1"># REQUIRED</span>
+            <span class="s1">&#39;stac_version&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stac_version</span><span class="p">(),</span>  <span class="c1"># REQUIRED</span>
+            <span class="s1">&#39;stac_extensions&#39;</span><span class="p">:</span> <span class="n">stac_extensions</span><span class="p">,</span>
+            <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_id</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">),</span>  <span class="c1"># REQUIRED</span>
+            <span class="s1">&#39;geometry&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_geometry</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">),</span>  <span class="c1"># REQUIRED</span>
+            <span class="s1">&#39;bbox&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_bbox</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">),</span>  <span class="c1"># REQUIRED</span>
+            <span class="s1">&#39;properties&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_properties</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">,</span> <span class="n">stac_extensions</span><span class="o">=</span><span class="n">stac_extensions</span><span class="p">),</span>  <span class="c1"># REQUIRED</span>
+            <span class="s1">&#39;links&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_links</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">),</span>  <span class="c1"># REQUIRED</span>
+            <span class="s1">&#39;assets&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_assets</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">),</span>  <span class="c1"># REQUIRED</span>
+            <span class="s1">&#39;collection&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;extra_fields&#39;</span><span class="p">:</span> <span class="p">{}</span>
+        <span class="p">}</span>
+        <span class="c1"># add STAC extensions extra fields</span>
+        <span class="k">for</span> <span class="n">stac_extension</span> <span class="ow">in</span> <span class="n">stac_extensions</span><span class="p">:</span>
+            <span class="n">stac_item_dict</span><span class="p">[</span><span class="s1">&#39;extra_fields&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_extension_fields</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">,</span> <span class="n">stac_extension</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">stac_item_dict</span></div>
+
+<div class="viewcode-block" id="AbstractTransformer.transform_source_metadata"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.transform_source_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">transform_source_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">,</span> <span class="n">stac_extensions</span><span class="o">=</span><span class="p">[])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">schemas</span><span class="o">.</span><span class="n">PDSSP_STAC_Item</span><span class="p">,</span> <span class="n">schemas</span><span class="o">.</span><span class="n">PDSSP_STAC_Collection</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Transform input source metadata into output PDSSP STAC metadata schema object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: `object_type` should be derived from the `source_metadata` object class.</span>
+        <span class="k">if</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;item&#39;</span><span class="p">:</span>
+            <span class="n">stac_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stac_item_dict</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">,</span> <span class="n">stac_extensions</span><span class="o">=</span><span class="n">stac_extensions</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;collection&#39;</span><span class="p">:</span>
+            <span class="n">stac_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stac_collection_dict</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">,</span> <span class="n">stac_extensions</span><span class="o">=</span><span class="n">stac_extensions</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidModelObjectTypeError</span><span class="p">(</span><span class="n">object_type</span><span class="p">)</span>
+
+        <span class="c1"># Attempt to create destination STAC metadata object</span>
+        <span class="c1"># print(stac_dict)</span>
+        <span class="n">stac_metadata</span> <span class="o">=</span> <span class="n">schemas</span><span class="o">.</span><span class="n">create_schema_object</span><span class="p">(</span><span class="n">stac_dict</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">destination_schema</span><span class="p">,</span> <span class="n">object_type</span><span class="p">)</span>
+        <span class="c1"># print(stac_metadata)</span>
+        <span class="c1"># print()</span>
+
+        <span class="k">return</span> <span class="n">stac_metadata</span></div>
+
+<div class="viewcode-block" id="AbstractTransformer.transform"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_collection_file_path</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">output_dir_path</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">stac_extensions</span><span class="o">=</span><span class="p">[],</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Transform (extracted) source collection files into PDSSP STAC catalog.</span>
+
+<span class="sd">        Destination STAC catalog may contain one or several collections, related to only one reference target.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: Some methods currently require a source collection model object.</span>
+        <span class="c1">#   - properly implement this,</span>
+        <span class="c1">#   - implement `source_collection_file_path` and `output_dir_path`.</span>
+
+        <span class="c1"># set destination STAC catalog path, based on source collection related target.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">output_dir_path</span><span class="p">:</span>
+            <span class="n">output_dir_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stac_dir</span>
+        <span class="n">stac_catalog_dirpath</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_dir_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+
+        <span class="c1"># set destination STAC catalog file</span>
+        <span class="n">stac_catalog_filepath</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">stac_catalog_dirpath</span><span class="p">,</span> <span class="s1">&#39;catalog.json&#39;</span><span class="p">)</span>
+
+        <span class="c1"># if destination STAC catalog file exists, create catalog STAC object from file.</span>
+        <span class="k">if</span> <span class="n">Path</span><span class="o">.</span><span class="n">is_file</span><span class="p">(</span><span class="n">stac_catalog_filepath</span><span class="p">):</span>
+            <span class="n">stac_catalog</span> <span class="o">=</span> <span class="n">pystac</span><span class="o">.</span><span class="n">Catalog</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">stac_catalog_filepath</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># else create STAC catalog from scratch.</span>
+            <span class="n">stac_catalog</span> <span class="o">=</span> <span class="n">pystac</span><span class="o">.</span><span class="n">Catalog</span><span class="p">(</span>
+                <span class="nb">id</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;pdssp-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s1">-catalog&#39;</span><span class="p">,</span>
+                <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">title</span><span class="p">()</span><span class="si">}</span><span class="s1"> STAC Catalog holding one or several PDSSP-compliant data products collections.&#39;</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;This catalog was generated by the PDSSSP Crawler on </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">,</span>
+                <span class="n">stac_extensions</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ssys&#39;</span><span class="p">],</span>
+                <span class="n">extra_fields</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;ssys:targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">upper</span><span class="p">()]}</span>
+            <span class="p">)</span>
+
+        <span class="c1"># check that input source collection haven&#39;t been transformed and exists in destination STAC catalog.</span>
+        <span class="n">stac_catalog_collections</span> <span class="o">=</span> <span class="n">stac_catalog</span><span class="o">.</span><span class="n">get_all_collections</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">stac_catalog_collection</span> <span class="ow">in</span> <span class="n">stac_catalog_collections</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">stac_catalog_collection</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">collection_id</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
+                    <span class="c1"># remove destination STAC catalog collection</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;removing child: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">collection_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">stac_catalog</span><span class="o">.</span><span class="n">remove_child</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">collection_id</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">stac_catalog</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1"> destination STAC catalog already hold a collection with the </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">collection_id</span><span class="si">}</span><span class="s1"> collection ID.&#39;</span><span class="p">)</span>
+
+
+        <span class="c1"># set extractor</span>
+        <span class="n">extractor</span> <span class="o">=</span> <span class="n">Extractor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="p">)</span>
+
+        <span class="c1"># read and transform source collection metadata, into destination `PDSSP_STAC_Collection` metadata.</span>
+        <span class="n">source_collection_metadata</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">read_collection_metadata</span><span class="p">()</span>
+        <span class="n">stac_collection_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform_source_metadata</span><span class="p">(</span><span class="n">source_collection_metadata</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;collection&#39;</span><span class="p">,</span> <span class="n">stac_extensions</span><span class="o">=</span><span class="n">stac_extensions</span><span class="p">)</span>
+
+        <span class="c1"># create destination PySTAC Collection object</span>
+        <span class="c1">#</span>
+        <span class="c1"># set STAC collection ID</span>
+        <span class="n">stac_collection_id</span> <span class="o">=</span> <span class="n">stac_collection_metadata</span><span class="o">.</span><span class="n">id</span>
+
+        <span class="c1"># set empty collection spatial and temporal extent</span>
+        <span class="c1"># stac_extent = pystac.Extent(</span>
+        <span class="c1">#     pystac.SpatialExtent(bboxes=stac_collection_metadata.extent.spatial.bbox),</span>
+        <span class="c1">#     pystac.TemporalExtent(intervals=stac_collection_metadata.extent.temporal.interval)</span>
+        <span class="c1"># )</span>
+        <span class="n">stac_extent</span> <span class="o">=</span> <span class="n">pystac</span><span class="o">.</span><span class="n">Extent</span><span class="p">(</span><span class="n">pystac</span><span class="o">.</span><span class="n">SpatialExtent</span><span class="p">(</span><span class="n">bboxes</span><span class="o">=</span><span class="p">[[]]),</span> <span class="n">pystac</span><span class="o">.</span><span class="n">TemporalExtent</span><span class="p">(</span><span class="n">intervals</span><span class="o">=</span><span class="p">[[]]))</span>
+
+        <span class="c1"># set STAC collection and items extensions</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">stac_extensions</span><span class="p">:</span>
+            <span class="n">stac_extensions</span> <span class="o">=</span> <span class="n">stac_collection_metadata</span><span class="o">.</span><span class="n">stac_extensions</span>
+
+        <span class="n">stac_collection</span> <span class="o">=</span> <span class="n">pystac</span><span class="o">.</span><span class="n">Collection</span><span class="p">(</span>
+            <span class="nb">id</span><span class="o">=</span><span class="n">stac_collection_id</span><span class="p">,</span>
+            <span class="n">stac_extensions</span><span class="o">=</span><span class="n">stac_extensions</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="n">stac_collection_metadata</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="n">stac_collection_metadata</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
+            <span class="n">extent</span><span class="o">=</span><span class="n">stac_extent</span><span class="p">,</span>
+            <span class="n">license</span><span class="o">=</span><span class="n">stac_collection_metadata</span><span class="o">.</span><span class="n">licence</span><span class="p">,</span>
+            <span class="n">extra_fields</span><span class="o">=</span><span class="n">stac_collection_metadata</span><span class="o">.</span><span class="n">extra_fields</span>  <span class="c1"># {&#39;ssys:targets&#39;: &#39;MARS&#39;}</span>
+        <span class="p">)</span>
+
+        <span class="c1"># read and transform source collection products metadata, into destination `PDSSP_STAC_Item` metadata, then</span>
+        <span class="c1"># create and add the corresponding PySTAC Item object to the PySTAC Collection.</span>
+        <span class="c1">#</span>
+        <span class="k">while</span> <span class="n">extractor</span><span class="o">.</span><span class="n">file_idx</span> <span class="o">&lt;</span> <span class="n">extractor</span><span class="o">.</span><span class="n">n_extracted_files</span><span class="p">:</span>  <span class="c1"># TODO: improve mechanism to loop over all products.</span>
+            <span class="n">source_product_metadata</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">read_product_metadata</span><span class="p">()</span>
+            <span class="n">stac_item_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform_source_metadata</span><span class="p">(</span><span class="n">source_product_metadata</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">,</span> <span class="n">stac_extensions</span><span class="o">=</span><span class="n">stac_extensions</span><span class="p">)</span>
+
+            <span class="c1"># print(stac_item_metadata.properties[&#39;datetime&#39;])</span>
+            <span class="c1"># create PySTAC Item</span>
+            <span class="n">stac_item</span> <span class="o">=</span> <span class="n">pystac</span><span class="o">.</span><span class="n">Item</span><span class="p">(</span>
+                <span class="nb">id</span><span class="o">=</span><span class="n">stac_item_metadata</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                <span class="n">stac_extensions</span><span class="o">=</span><span class="n">stac_extensions</span><span class="p">,</span>
+                <span class="n">geometry</span><span class="o">=</span><span class="n">stac_item_metadata</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span>
+                <span class="n">bbox</span><span class="o">=</span><span class="n">stac_item_metadata</span><span class="o">.</span><span class="n">bbox</span><span class="p">,</span>
+                <span class="n">datetime</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">stac_item_metadata</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;datetime&#39;</span><span class="p">]),</span>
+                <span class="n">properties</span><span class="o">=</span><span class="n">stac_item_metadata</span><span class="o">.</span><span class="n">properties</span><span class="p">,</span>  <span class="c1"># .dict(exclude_unset=True), # include={&#39;datetime&#39;, &#39;platform&#39;, &#39;start_datetime&#39;}),</span>
+                <span class="c1"># assets=stac_assets,</span>
+                <span class="n">extra_fields</span><span class="o">=</span><span class="n">stac_item_metadata</span><span class="o">.</span><span class="n">extra_fields</span><span class="p">,</span>  <span class="c1"># {&#39;ssys:targets&#39;: stac_item_metadata.ssys_targets},</span>
+                <span class="n">collection</span><span class="o">=</span><span class="n">stac_collection_id</span>
+            <span class="p">)</span>
+
+            <span class="c1"># add assets to pySTAC item</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">stac_item_metadata</span><span class="o">.</span><span class="n">assets</span><span class="p">:</span>
+                <span class="n">asset_metadata</span> <span class="o">=</span> <span class="n">stac_item_metadata</span><span class="o">.</span><span class="n">assets</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                <span class="n">stac_item</span><span class="o">.</span><span class="n">add_asset</span><span class="p">(</span>
+                    <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span>
+                    <span class="n">asset</span><span class="o">=</span><span class="n">pystac</span><span class="o">.</span><span class="n">Asset</span><span class="p">(</span>
+                        <span class="n">href</span><span class="o">=</span><span class="n">asset_metadata</span><span class="o">.</span><span class="n">href</span><span class="p">,</span>
+                        <span class="n">title</span><span class="o">=</span><span class="n">asset_metadata</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+                        <span class="n">description</span><span class="o">=</span><span class="n">asset_metadata</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
+                        <span class="n">media_type</span><span class="o">=</span><span class="n">asset_metadata</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
+                        <span class="n">roles</span><span class="o">=</span><span class="n">asset_metadata</span><span class="o">.</span><span class="n">roles</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="c1"># add item to PySTAC Collection</span>
+            <span class="n">stac_collection</span><span class="o">.</span><span class="n">add_item</span><span class="p">(</span><span class="n">stac_item</span><span class="p">)</span>
+
+        <span class="c1"># update collection extent from items</span>
+        <span class="n">stac_collection</span><span class="o">.</span><span class="n">update_extent_from_items</span><span class="p">()</span>
+
+        <span class="c1"># add collection to the output STAC catalog</span>
+        <span class="n">stac_catalog</span><span class="o">.</span><span class="n">add_child</span><span class="p">(</span><span class="n">stac_collection</span><span class="p">)</span>
+
+        <span class="c1"># save STAC catalog files</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Writing STAC JSON files in </span><span class="si">{</span><span class="n">stac_catalog_dirpath</span><span class="si">}</span><span class="s1"> directory...&#39;</span><span class="p">)</span>
+        <span class="n">Path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">stac_catalog_dirpath</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
+        <span class="n">stac_catalog</span><span class="o">.</span><span class="n">normalize_hrefs</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">stac_catalog_dirpath</span><span class="p">))</span>
+        <span class="n">stac_catalog</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">catalog_type</span><span class="o">=</span><span class="n">pystac</span><span class="o">.</span><span class="n">CatalogType</span><span class="o">.</span><span class="n">SELF_CONTAINED</span><span class="p">)</span>
+
+        <span class="c1"># set transformer status attributes</span>
+        <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">stac_collection</span><span class="o">.</span><span class="n">links</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">link</span><span class="o">.</span><span class="n">rel</span> <span class="o">==</span> <span class="s1">&#39;self&#39;</span><span class="p">:</span>
+                <span class="n">stac_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transformed</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stac_dir</span> <span class="o">=</span> <span class="n">stac_dir</span></div>
+
+    <span class="k">def</span> <span class="nf">_geometry_from_wkt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wkt</span><span class="p">):</span>
+        <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="PDSODE_STAC"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.PDSODE_STAC">[docs]</a><span class="k">class</span> <span class="nc">PDSODE_STAC</span><span class="p">(</span><span class="n">AbstractTransformer</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_schema</span><span class="p">,</span> <span class="n">destination_schema</span><span class="o">=</span><span class="s1">&#39;PDSSP_STAC&#39;</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">source_schema</span><span class="p">,</span> <span class="n">destination_schema</span><span class="o">=</span><span class="n">destination_schema</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source_schema</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">destination_schema</span><span class="o">=</span><span class="s1">&#39;PDSSP_STAC&#39;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">collection</span><span class="o">=</span><span class="n">collection</span><span class="p">,</span> <span class="n">source_schema</span><span class="o">=</span><span class="n">source_schema</span><span class="p">,</span> <span class="n">destination_schema</span><span class="o">=</span><span class="n">destination_schema</span><span class="p">)</span>
 
-<div class="viewcode-block" id="PDSODE_STAC.get_stac_item_dict"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.PDSODE_STAC.get_stac_item_dict">[docs]</a>    <span class="k">def</span> <span class="nf">get_stac_item_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src_metadata</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span>
-            <span class="s1">&#39;stac_version&#39;</span><span class="p">:</span> <span class="n">stac_version</span><span class="p">,</span>
-            <span class="s1">&#39;stac_extensions&#39;</span><span class="p">:</span> <span class="n">stac_extensions</span><span class="p">,</span>
-            <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">src_metadata</span><span class="o">.</span><span class="n">granule_uid</span><span class="p">,</span>
-            <span class="s1">&#39;geometry&#39;</span><span class="p">:</span> <span class="n">geometry_from_wkt</span><span class="p">(</span><span class="n">source_item</span><span class="o">.</span><span class="n">s_region</span><span class="p">),</span>
-            <span class="s1">&#39;bbox&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">source_item</span><span class="o">.</span><span class="n">c1min</span><span class="p">,</span> <span class="n">source_item</span><span class="o">.</span><span class="n">c2min</span><span class="p">,</span> <span class="n">source_item</span><span class="o">.</span><span class="n">c1max</span><span class="p">,</span> <span class="n">source_item</span><span class="o">.</span><span class="n">c2max</span><span class="p">],</span>
-            <span class="s1">&#39;properties&#39;</span><span class="p">:</span> <span class="n">properties_dict</span><span class="p">,</span>
-            <span class="s1">&#39;links&#39;</span><span class="p">:</span> <span class="n">links_dict</span><span class="p">,</span>
-            <span class="s1">&#39;assets&#39;</span><span class="p">:</span> <span class="n">assets_dict</span><span class="p">,</span>
-            <span class="s1">&#39;collection&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span>
-        <span class="p">}</span></div>
+<div class="viewcode-block" id="PDSODE_STAC.get_id"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.PDSODE_STAC.get_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;item&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">pdsid</span>
+        <span class="k">elif</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;collection&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">iiptset</span><span class="o">.</span><span class="n">IHID</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">iiptset</span><span class="o">.</span><span class="n">IID</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">iiptset</span><span class="o">.</span><span class="n">PT</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidModelObjectTypeError</span><span class="p">(</span><span class="n">object_type</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="PDSODE_STAC.transform_source_metadata"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.PDSODE_STAC.transform_source_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">transform_source_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseModel</span><span class="p">:</span>  <span class="c1"># PDSSP_STAC_Item or PDSSP_STAC_Collection</span>
-        <span class="c1"># check that input source metadata object class (schema model, eg: EPNTAP_Granule -&gt; EPNTAP Item) is valid for</span>
-        <span class="c1"># the transformer, given its source schema name (self.source_schema).</span>
+    <span class="c1">#</span>
+    <span class="c1"># def get_links(self, source_metadata: BaseModel, object_type=&#39;item&#39;) -&gt; list[BaseModel]:</span>
+    <span class="c1">#     pass</span>
 
-        <span class="n">pdssp_stac_item_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stac_item_dict</span><span class="p">(</span><span class="n">src_metadata</span><span class="p">)</span>
-        <span class="n">pdssp_stac_item</span> <span class="o">=</span> <span class="n">create_schema_object</span><span class="p">(</span><span class="n">pdssp_stac_item_dict</span><span class="p">,</span> <span class="s1">&#39;PDSSP_STAC&#39;</span><span class="p">,</span> <span class="s1">&#39;item&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">pdssp_stac_item</span></div></div>
+<div class="viewcode-block" id="PDSODE_STAC.get_assets"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.PDSODE_STAC.get_assets">[docs]</a>    <span class="k">def</span> <span class="nf">get_assets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">schemas</span><span class="o">.</span><span class="n">PDSSP_STAC_Asset</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;item&#39;</span><span class="p">:</span>
+            <span class="n">assets</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">product_file</span> <span class="ow">in</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">Product_files</span><span class="o">.</span><span class="n">Product_file</span><span class="p">:</span>
+                <span class="c1"># set PDSSP_STAC_Asset object input arguments</span>
+                <span class="n">href</span> <span class="o">=</span> <span class="n">product_file</span><span class="o">.</span><span class="n">URL</span>
+                <span class="n">title</span> <span class="o">=</span> <span class="n">product_file</span><span class="o">.</span><span class="n">FileName</span>
+                <span class="n">description</span> <span class="o">=</span> <span class="n">product_file</span><span class="o">.</span><span class="n">Description</span>
+                <span class="n">media_type</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                <span class="n">roles</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">ext</span> <span class="o">=</span> <span class="n">product_file</span><span class="o">.</span><span class="n">FileName</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">ext</span> <span class="o">==</span> <span class="s1">&#39;LBL&#39;</span><span class="p">:</span>
+                    <span class="n">media_type</span> <span class="o">=</span> <span class="s1">&#39;text/plain&#39;</span>
+                    <span class="n">roles</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;metadata&#39;</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="n">ext</span> <span class="o">==</span> <span class="s1">&#39;JP2&#39;</span><span class="p">:</span>
+                    <span class="n">media_type</span> <span class="o">=</span> <span class="s1">&#39;image/jp2&#39;</span>
+                    <span class="n">roles</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="n">ext</span> <span class="o">==</span> <span class="s1">&#39;PNG&#39;</span><span class="p">:</span>
+                    <span class="n">media_type</span> <span class="o">=</span> <span class="s1">&#39;image/png&#39;</span>
+                <span class="k">elif</span> <span class="n">ext</span> <span class="o">==</span> <span class="s1">&#39;JPG&#39;</span> <span class="ow">or</span> <span class="n">ext</span> <span class="o">==</span> <span class="s1">&#39;JPEG&#39;</span><span class="p">:</span>
+                    <span class="n">media_type</span> <span class="o">=</span> <span class="s1">&#39;image/jpeg&#39;</span>
+
+                <span class="k">if</span> <span class="n">product_file</span><span class="o">.</span><span class="n">Type</span> <span class="o">==</span> <span class="s1">&#39;Product&#39;</span><span class="p">:</span>
+                    <span class="n">roles</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="n">product_file</span><span class="o">.</span><span class="n">Type</span> <span class="o">==</span> <span class="s1">&#39;Browse&#39;</span><span class="p">:</span>
+                    <span class="n">roles</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;thumbnail&#39;</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">roles</span> <span class="o">=</span> <span class="p">[</span><span class="n">product_file</span><span class="o">.</span><span class="n">Type</span><span class="p">]</span>
+
+                <span class="c1"># create PDSSP_STAC_Asset object</span>
+                <span class="n">asset</span> <span class="o">=</span> <span class="n">schemas</span><span class="o">.</span><span class="n">PDSSP_STAC_Asset</span><span class="p">(</span>
+                    <span class="n">href</span><span class="o">=</span><span class="n">href</span><span class="p">,</span>
+                    <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+                    <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
+                    <span class="n">media_type</span><span class="o">=</span><span class="n">media_type</span><span class="p">,</span>
+                    <span class="n">roles</span><span class="o">=</span><span class="n">roles</span>
+                <span class="p">)</span>
+
+                <span class="c1"># add PDSSP_STAC_Asset object to assets dictionary</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="n">title</span>
+                <span class="n">assets</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">asset</span><span class="p">})</span>
+
+            <span class="k">return</span> <span class="n">assets</span>
+        <span class="k">elif</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;collection&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidModelObjectTypeError</span><span class="p">(</span><span class="n">object_type</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PDSODE_STAC.get_stac_extensions"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.PDSODE_STAC.get_stac_extensions">[docs]</a>    <span class="k">def</span> <span class="nf">get_stac_extensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span> <span class="c1"># for PDSODE collection metadata only</span>
+        <span class="k">return</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">stac_extensions</span></div>
+
+<div class="viewcode-block" id="PDSODE_STAC.get_title"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.PDSODE_STAC.get_title">[docs]</a>    <span class="k">def</span> <span class="nf">get_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">iiptset</span><span class="o">.</span><span class="n">IHID</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">iiptset</span><span class="o">.</span><span class="n">IID</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">iiptset</span><span class="o">.</span><span class="n">PTName</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">return</span> <span class="n">title</span></div>
+
+<div class="viewcode-block" id="PDSODE_STAC.get_description"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.PDSODE_STAC.get_description">[docs]</a>    <span class="k">def</span> <span class="nf">get_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Collection of </span><span class="si">{</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">iiptset</span><span class="o">.</span><span class="n">IHID</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">iiptset</span><span class="o">.</span><span class="n">IID</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">iiptset</span><span class="o">.</span><span class="n">PT</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">iiptset</span><span class="o">.</span><span class="n">PTName</span><span class="si">}</span><span class="s1">)  PDS data products.&#39;</span>
+        <span class="k">return</span> <span class="n">description</span></div>
+
+<div class="viewcode-block" id="PDSODE_STAC.get_keywords"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.PDSODE_STAC.get_keywords">[docs]</a>    <span class="k">def</span> <span class="nf">get_keywords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="PDSODE_STAC.get_geometry"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.PDSODE_STAC.get_geometry">[docs]</a>    <span class="k">def</span> <span class="nf">get_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]:</span>  <span class="c1"># GeoJSON Geometry ??</span>
+        <span class="n">footprint_wkt</span> <span class="o">=</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">Footprint_C0_geometry</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">footprint_wkt</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">footprint_shape</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">wkt</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">footprint_wkt</span><span class="p">)</span>
+        <span class="n">footprint_bbox</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">footprint_shape</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span>
+        <span class="n">footprint_geometry</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">mapping</span><span class="p">(</span><span class="n">footprint_shape</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">footprint_geometry</span></div>
+
+<div class="viewcode-block" id="PDSODE_STAC.get_extent"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.PDSODE_STAC.get_extent">[docs]</a>    <span class="k">def</span> <span class="nf">get_extent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">schemas</span><span class="o">.</span><span class="n">PDSSP_STAC_Extent</span><span class="p">:</span>
+        <span class="n">collection_extent</span> <span class="o">=</span> <span class="n">schemas</span><span class="o">.</span><span class="n">PDSSP_STAC_Extent</span><span class="p">(</span>
+            <span class="n">spatial</span><span class="o">=</span><span class="n">schemas</span><span class="o">.</span><span class="n">PDSSP_STAC_SpatialExtent</span><span class="p">(</span><span class="n">bbox</span><span class="o">=</span><span class="p">[[]]),</span>
+            <span class="n">temporal</span><span class="o">=</span><span class="n">schemas</span><span class="o">.</span><span class="n">PDSSP_STAC_TemporalExtent</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="p">[[]])</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">collection_extent</span></div>
+
+<div class="viewcode-block" id="PDSODE_STAC.get_bbox"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.PDSODE_STAC.get_bbox">[docs]</a>    <span class="k">def</span> <span class="nf">get_bbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+        <span class="n">footprint_wkt</span> <span class="o">=</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">Footprint_C0_geometry</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">footprint_wkt</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">footprint_shape</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">wkt</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">footprint_wkt</span><span class="p">)</span>
+        <span class="n">footprint_bbox</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">footprint_shape</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">footprint_bbox</span></div>
+
+<div class="viewcode-block" id="PDSODE_STAC.get_providers"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.PDSODE_STAC.get_providers">[docs]</a>    <span class="k">def</span> <span class="nf">get_providers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">iiptset</span><span class="o">.</span><span class="n">IID</span><span class="si">}</span><span class="s1"> team via PDS ODE&#39;</span>
+        <span class="n">providers</span> <span class="o">=</span> <span class="p">[</span><span class="n">schemas</span><span class="o">.</span><span class="n">PDSSP_STAC_Provider</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">providers</span></div>
+
+<div class="viewcode-block" id="PDSODE_STAC.get_licence"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.PDSODE_STAC.get_licence">[docs]</a>    <span class="k">def</span> <span class="nf">get_licence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;Default CC-BY-SA-4.0 license for PDS ODE collections [TO BE DEFINED]&#39;</span></div>
+
+<div class="viewcode-block" id="PDSODE_STAC.get_summaries"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.PDSODE_STAC.get_summaries">[docs]</a>    <span class="k">def</span> <span class="nf">get_summaries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="PDSODE_STAC.get_properties"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.PDSODE_STAC.get_properties">[docs]</a>    <span class="k">def</span> <span class="nf">get_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">stac_extensions</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ssys&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="n">datetime_format</span> <span class="o">=</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%S.</span><span class="si">%f</span><span class="s1">&#39;</span>
+        <span class="n">properties</span> <span class="o">=</span> <span class="n">schemas</span><span class="o">.</span><span class="n">PDSSP_STAC_Properties</span><span class="p">(</span>
+            <span class="n">datetime</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">UTC_start_time</span><span class="p">,</span> <span class="n">datetime_format</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="n">timespec</span><span class="o">=</span><span class="s1">&#39;milliseconds&#39;</span><span class="p">),</span>
+            <span class="n">created</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">Product_creation_time</span><span class="p">,</span> <span class="n">datetime_format</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+            <span class="n">start_datetime</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">UTC_start_time</span><span class="p">,</span> <span class="n">datetime_format</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+            <span class="n">end_datetime</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">UTC_stop_time</span><span class="p">,</span> <span class="n">datetime_format</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+            <span class="n">platform</span><span class="o">=</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">ihid</span><span class="p">,</span>
+            <span class="n">instruments</span><span class="o">=</span><span class="p">[</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">iid</span><span class="p">],</span>
+            <span class="n">gsd</span><span class="o">=</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">Map_scale</span>
+        <span class="p">)</span>
+        <span class="n">properties_dict</span> <span class="o">=</span> <span class="n">properties</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">stac_extension</span> <span class="ow">in</span> <span class="n">stac_extensions</span><span class="p">:</span>
+            <span class="n">properties_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_extension_properties</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">,</span> <span class="n">stac_extension</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">))</span>
+
+        <span class="c1"># if source_metadata.pdsid == &#39;ESP_012603_1300_RED&#39;:</span>
+        <span class="c1">#     print(&#39;stop&#39;)</span>
+
+        <span class="k">return</span> <span class="n">properties_dict</span></div>
+
+<div class="viewcode-block" id="PDSODE_STAC.get_ssys_properties"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.PDSODE_STAC.get_ssys_properties">[docs]</a>    <span class="k">def</span> <span class="nf">get_ssys_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;item&#39;</span><span class="p">:</span>
+            <span class="n">ssys_properties</span> <span class="o">=</span> <span class="n">schemas</span><span class="o">.</span><span class="n">PDSSP_STAC_SSYS_Properties</span><span class="p">(</span>
+                <span class="o">**</span><span class="p">{</span>
+                    <span class="s1">&#39;ssys:targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">Target_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()],</span>
+                    <span class="s1">&#39;ssys:solar_longitude&#39;</span><span class="p">:</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">Solar_longitude</span><span class="p">,</span>
+                    <span class="s1">&#39;ssys:incidence_angle&#39;</span><span class="p">:</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">Incidence_angle</span><span class="p">,</span>
+                    <span class="s1">&#39;ssys:emission_angle&#39;</span><span class="p">:</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">Emission_angle</span><span class="p">,</span>
+                    <span class="s1">&#39;ssys:phase_angle&#39;</span><span class="p">:</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">Phase_angle</span><span class="p">,</span>
+                    <span class="s1">&#39;ssys:spatial_resolution&#39;</span><span class="p">:</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">Map_scale</span><span class="p">,</span>
+                    <span class="s1">&#39;ssys:processing_level&#39;</span><span class="p">:</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">pt</span><span class="p">,</span>
+                    <span class="s1">&#39;ssys:product_type&#39;</span><span class="p">:</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">pt</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;collection&#39;</span><span class="p">:</span>
+            <span class="n">ssys_properties</span> <span class="o">=</span> <span class="n">schemas</span><span class="o">.</span><span class="n">PDSSP_STAC_SSYS_Properties</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s1">&#39;ssys:targets&#39;</span><span class="p">:[</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">iiptset</span><span class="o">.</span><span class="n">ODEMetaDB</span><span class="o">.</span><span class="n">upper</span><span class="p">()]})</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidModelObjectTypeError</span><span class="p">(</span><span class="n">object_type</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ssys_properties</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">by_alias</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># exclude_unset=True ?</span></div>
+
+<div class="viewcode-block" id="PDSODE_STAC.get_ssys_fields"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.PDSODE_STAC.get_ssys_fields">[docs]</a>    <span class="k">def</span> <span class="nf">get_ssys_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;item&#39;</span><span class="p">:</span>
+            <span class="n">ssys_fields</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">elif</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;collection&#39;</span><span class="p">:</span>
+            <span class="n">ssys_fields</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;ssys:targets&#39;</span><span class="p">:</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">iiptset</span><span class="o">.</span><span class="n">ODEMetaDB</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidModelObjectTypeError</span><span class="p">(</span><span class="n">object_type</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ssys_fields</span></div>
+
+<div class="viewcode-block" id="PDSODE_STAC.get_proj_properties"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.PDSODE_STAC.get_proj_properties">[docs]</a>    <span class="k">def</span> <span class="nf">get_proj_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;item&#39;</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;collection&#39;</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidModelObjectTypeError</span><span class="p">(</span><span class="n">object_type</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="EPNTAP_STAC"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.EPNTAP_STAC">[docs]</a><span class="k">class</span> <span class="nc">EPNTAP_STAC</span><span class="p">(</span><span class="n">AbstractTransformer</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_schema</span><span class="p">,</span> <span class="n">destination_schema</span><span class="o">=</span><span class="s1">&#39;PDSSP_STAC&#39;</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">source_schema</span><span class="p">,</span> <span class="n">destination_schema</span><span class="o">=</span><span class="n">destination_schema</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source_schema</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">destination_schema</span><span class="o">=</span><span class="s1">&#39;PDSSP_STAC&#39;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">collection</span><span class="o">=</span><span class="n">collection</span><span class="p">,</span> <span class="n">source_schema</span><span class="o">=</span><span class="n">source_schema</span><span class="p">,</span> <span class="n">destination_schema</span><span class="o">=</span><span class="n">destination_schema</span><span class="p">)</span>
+
+<div class="viewcode-block" id="EPNTAP_STAC.get_id"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.EPNTAP_STAC.get_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;item&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">granule_uid</span>
+        <span class="k">elif</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;collection&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">collection_id</span>  <span class="c1"># not defined yet in schema</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidModelObjectTypeError</span><span class="p">(</span><span class="n">object_type</span><span class="p">)</span></div>
+
+    <span class="c1"># def get_stac_extensions(self, source_metadata: BaseModel, object_type=&#39;item&#39;) -&gt; list[str]:</span>
+    <span class="c1">#     pass</span>
+
+<div class="viewcode-block" id="EPNTAP_STAC.get_links"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.EPNTAP_STAC.get_links">[docs]</a>    <span class="k">def</span> <span class="nf">get_links</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="EPNTAP_STAC.get_assets"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.EPNTAP_STAC.get_assets">[docs]</a>    <span class="k">def</span> <span class="nf">get_assets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="EPNTAP_STAC.get_title"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.EPNTAP_STAC.get_title">[docs]</a>    <span class="k">def</span> <span class="nf">get_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="EPNTAP_STAC.get_description"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.EPNTAP_STAC.get_description">[docs]</a>    <span class="k">def</span> <span class="nf">get_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="EPNTAP_STAC.get_keywords"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.EPNTAP_STAC.get_keywords">[docs]</a>    <span class="k">def</span> <span class="nf">get_keywords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="EPNTAP_STAC.get_geometry"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.EPNTAP_STAC.get_geometry">[docs]</a>    <span class="k">def</span> <span class="nf">get_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]:</span>  <span class="c1"># GeoJSON Geometry ??</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_from_wkt</span><span class="p">(</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">s_region</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="EPNTAP_STAC.get_extent"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.EPNTAP_STAC.get_extent">[docs]</a>    <span class="k">def</span> <span class="nf">get_extent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="EPNTAP_STAC.get_bbox"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.EPNTAP_STAC.get_bbox">[docs]</a>    <span class="k">def</span> <span class="nf">get_bbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">c1min</span><span class="p">,</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">c2min</span><span class="p">,</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">c1max</span><span class="p">,</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">c2max</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="EPNTAP_STAC.get_summaries"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.EPNTAP_STAC.get_summaries">[docs]</a>    <span class="k">def</span> <span class="nf">get_summaries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="EPNTAP_STAC.get_properties"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.EPNTAP_STAC.get_properties">[docs]</a>    <span class="k">def</span> <span class="nf">get_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseModel</span><span class="p">:</span>  <span class="c1"># PDSSP_STAC_Properties</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="EPNTAP_STAC.get_providers"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.EPNTAP_STAC.get_providers">[docs]</a>    <span class="k">def</span> <span class="nf">get_providers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="EPNTAP_STAC.get_licence"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.EPNTAP_STAC.get_licence">[docs]</a>    <span class="k">def</span> <span class="nf">get_licence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="EPNTAP_STAC.get_collection"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.EPNTAP_STAC.get_collection">[docs]</a>    <span class="k">def</span> <span class="nf">get_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">pass</span></div></div>
 
 
 <div class="viewcode-block" id="MARSSI_STAC"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.MARSSI_STAC">[docs]</a><span class="k">class</span> <span class="nc">MARSSI_STAC</span><span class="p">(</span><span class="n">AbstractTransformer</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_schema</span><span class="p">,</span> <span class="n">destination_schema</span><span class="o">=</span><span class="s1">&#39;PDSSP_STAC&#39;</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">source_schema</span><span class="p">,</span> <span class="n">destination_schema</span><span class="o">=</span><span class="n">destination_schema</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source_schema</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">destination_schema</span><span class="o">=</span><span class="s1">&#39;PDSSP_STAC&#39;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">collection</span><span class="o">=</span><span class="n">collection</span><span class="p">,</span> <span class="n">source_schema</span><span class="o">=</span><span class="n">source_schema</span><span class="p">,</span> <span class="n">destination_schema</span><span class="o">=</span><span class="n">destination_schema</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MARSSI_STAC.get_id"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.MARSSI_STAC.get_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="MARSSI_STAC.get_stac_extensions"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.MARSSI_STAC.get_stac_extensions">[docs]</a>    <span class="k">def</span> <span class="nf">get_stac_extensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="MARSSI_STAC.get_links"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.MARSSI_STAC.get_links">[docs]</a>    <span class="k">def</span> <span class="nf">get_links</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="MARSSI_STAC.get_assets"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.MARSSI_STAC.get_assets">[docs]</a>    <span class="k">def</span> <span class="nf">get_assets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="MARSSI_STAC.get_title"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.MARSSI_STAC.get_title">[docs]</a>    <span class="k">def</span> <span class="nf">get_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="MARSSI_STAC.get_description"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.MARSSI_STAC.get_description">[docs]</a>    <span class="k">def</span> <span class="nf">get_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="MARSSI_STAC.get_keywords"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.MARSSI_STAC.get_keywords">[docs]</a>    <span class="k">def</span> <span class="nf">get_keywords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="MARSSI_STAC.get_geometry"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.MARSSI_STAC.get_geometry">[docs]</a>    <span class="k">def</span> <span class="nf">get_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]:</span>  <span class="c1"># GeoJSON Geometry ??</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="MARSSI_STAC.get_extent"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.MARSSI_STAC.get_extent">[docs]</a>    <span class="k">def</span> <span class="nf">get_extent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="MARSSI_STAC.get_bbox"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.MARSSI_STAC.get_bbox">[docs]</a>    <span class="k">def</span> <span class="nf">get_bbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="MARSSI_STAC.get_summaries"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.MARSSI_STAC.get_summaries">[docs]</a>    <span class="k">def</span> <span class="nf">get_summaries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="MARSSI_STAC.get_properties"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.MARSSI_STAC.get_properties">[docs]</a>    <span class="k">def</span> <span class="nf">get_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseModel</span><span class="p">:</span>  <span class="c1"># PDSSP_STAC_Properties</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="MARSSI_STAC.get_providers"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.MARSSI_STAC.get_providers">[docs]</a>    <span class="k">def</span> <span class="nf">get_providers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="MARSSI_STAC.get_licence"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.MARSSI_STAC.get_licence">[docs]</a>    <span class="k">def</span> <span class="nf">get_licence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="MARSSI_STAC.get_collection"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.MARSSI_STAC.get_collection">[docs]</a>    <span class="k">def</span> <span class="nf">get_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">pass</span></div></div>
+
 
 <span class="n">SOURCE_TRANSFORMERS</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;PDSODE&#39;</span><span class="p">:</span> <span class="n">PDSODE_STAC</span><span class="p">,</span>
     <span class="s1">&#39;EPNTAP&#39;</span><span class="p">:</span> <span class="n">EPNTAP_STAC</span><span class="p">,</span>
-    <span class="s1">&#39;MARSSI&#39;</span><span class="p">:</span> <span class="n">MARSSI_STAC</span>
+    <span class="s1">&#39;MARSSI_WFS&#39;</span><span class="p">:</span> <span class="n">MARSSI_STAC</span>
 <span class="p">}</span>
 </pre></div>
 

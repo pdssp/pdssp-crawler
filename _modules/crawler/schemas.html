@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -42,7 +42,7 @@
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../../_static/togglebutton.js"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
@@ -102,7 +102,14 @@ const thebe_selector_output = ".output, .cell_output"
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <p aria-level="2" class="caption" role="heading">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../changelog.html">
+   Release Notes
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Developer Guides
  </span>
@@ -296,19 +303,20 @@ title="Open an issue"
 <span class="sd">- https://github.com/ivoa-std/EPNTAP/blob/master/example-record.xml</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="c1"># from datetime import datetime</span>
 
-<span class="c1"># PDSSP STAC Metadata Schemas</span>
-<span class="c1"># &#39;PDSSP_STAC&#39;: {&#39;collection&#39;: PDSSP_STAC_Collection, &#39;item&#39;: PDSSP_STAC_Item},</span>
-<span class="c1">#</span>
+<span class="n">STAC_VERSION</span> <span class="o">=</span> <span class="s1">&#39;1.0.0&#39;</span>
+
+<span class="c1"># PDSSP_STAC -&gt; &quot;proxy&quot; schema to STAC model</span>
 
 <div class="viewcode-block" id="PDSSP_STAC_SpatialExtent"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.PDSSP_STAC_SpatialExtent">[docs]</a><span class="k">class</span> <span class="nc">PDSSP_STAC_SpatialExtent</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="n">bbox</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span>
     <span class="sd">&quot;&quot;&quot;Potential spatial extents covered by the Collection.&quot;&quot;&quot;</span></div>
 
 <div class="viewcode-block" id="PDSSP_STAC_TemporalExtent"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.PDSSP_STAC_TemporalExtent">[docs]</a><span class="k">class</span> <span class="nc">PDSSP_STAC_TemporalExtent</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="n">interval</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">interval</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
     <span class="sd">&quot;&quot;&quot;Potential temporal extents covered by the Collection.&quot;&quot;&quot;</span></div>
 
 <div class="viewcode-block" id="PDSSP_STAC_Extent"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.PDSSP_STAC_Extent">[docs]</a><span class="k">class</span> <span class="nc">PDSSP_STAC_Extent</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
@@ -339,55 +347,67 @@ title="Open an issue"
 
 <div class="viewcode-block" id="PDSSP_STAC_Collection"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.PDSSP_STAC_Collection">[docs]</a><span class="k">class</span> <span class="nc">PDSSP_STAC_Collection</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">stac_version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;1.0.0&#39;</span>
+    <span class="n">stac_version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">STAC_VERSION</span>
     <span class="n">stac_extensions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">description</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">keywords</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
-    <span class="n">licence</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">licence</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">providers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">PDSSP_STAC_Provider</span><span class="p">]]</span>
     <span class="n">extent</span><span class="p">:</span> <span class="n">PDSSP_STAC_Extent</span>
     <span class="n">summaries</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>
-    <span class="n">links</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">PDSSP_STAC_Link</span><span class="p">]</span>
-    <span class="n">assets</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>  <span class="c1">## Map&lt;string, PDSSP_STAC_Asset&gt;: dictionary of asset objects that can be downloaded, each with a unique key</span></div>
+    <span class="n">links</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">PDSSP_STAC_Link</span><span class="p">]]</span>  <span class="c1"># WARNING: NOT optional following STAC standard -&gt; created automatically by PySTAC.</span>
+    <span class="n">assets</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>  <span class="c1">## Map&lt;string, PDSSP_STAC_Asset&gt;: dictionary of asset objects that can be downloaded, each with a unique key</span>
+    <span class="n">extra_fields</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="PDSSP_STAC_Assets"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.PDSSP_STAC_Assets">[docs]</a><span class="k">class</span> <span class="nc">PDSSP_STAC_Assets</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<div class="viewcode-block" id="PDSSP_STAC_Asset"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.PDSSP_STAC_Asset">[docs]</a><span class="k">class</span> <span class="nc">PDSSP_STAC_Asset</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="n">href</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="nb">type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">roles</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span></div>
 
-<div class="viewcode-block" id="PDSSP_STAC_Properties"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.PDSSP_STAC_Properties">[docs]</a><span class="k">class</span> <span class="nc">PDSSP_STAC_Properties</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+<div class="viewcode-block" id="PDSSP_STAC_Properties"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.PDSSP_STAC_Properties">[docs]</a><span class="k">class</span> <span class="nc">PDSSP_STAC_Properties</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span> <span class="c1"># STAC Common Metadata</span>
+    <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="c1">#</span>
     <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="n">datetime</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">created</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="n">updated</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="n">start_datetime</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="n">end_datetime</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">datetime</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># ISO 8601 format</span>
+    <span class="n">created</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>  <span class="c1"># ISO 8601 format</span>
+    <span class="n">updated</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>  <span class="c1"># ISO 8601 format</span>
+    <span class="n">start_datetime</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>  <span class="c1"># ISO 8601 format</span>
+    <span class="n">end_datetime</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>  <span class="c1"># ISO 8601 format</span>
     <span class="n">license</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="n">platform</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="n">instruments</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
-    <span class="n">constellation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="n">mission</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="n">gsd</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-    <span class="n">ssys_targets</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
-    <span class="n">ssys_westernmost_longitude</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-    <span class="n">ssys_easternmost_longitude</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span></div>
+    <span class="n">platform</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="c1"># PDS instrument_host_id</span>
+    <span class="n">instruments</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="c1"># PDS instrument_id</span>
+    <span class="n">constellation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>  <span class="c1"># ?</span>
+    <span class="n">mission</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>   <span class="c1"># PDS mission_id</span>
+    <span class="n">gsd</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span></div>
+    <span class="c1"># ssys_targets: Optional[list[str]] = Field(None, alias=&#39;ssys:targets&#39;)</span>
+    <span class="c1"># ssys_solar_longitude: Optional[float]</span>
+    <span class="c1"># ssys_instrument_host: Optional[str]</span>
 
 <div class="viewcode-block" id="PDSSP_STAC_Item"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.PDSSP_STAC_Item">[docs]</a><span class="k">class</span> <span class="nc">PDSSP_STAC_Item</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">stac_version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;1.0.0&#39;</span>
+    <span class="n">stac_version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">STAC_VERSION</span>
     <span class="n">stac_extensions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">geometry</span><span class="p">:</span> <span class="nb">object</span> <span class="c1"># GeoJSON Geometry</span>
-    <span class="n">bbox</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-    <span class="n">properties</span><span class="p">:</span> <span class="n">PDSSP_STAC_Properties</span>
-    <span class="n">links</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">PDSSP_STAC_Link</span><span class="p">]</span>
+    <span class="n">geometry</span><span class="p">:</span> <span class="nb">object</span>  <span class="c1"># GeoJSON Geometry</span>
+    <span class="n">bbox</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span>
+    <span class="n">properties</span><span class="p">:</span> <span class="nb">dict</span>  <span class="c1"># PDSSP_STAC_Properties</span>
+    <span class="n">links</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">PDSSP_STAC_Link</span><span class="p">]]</span>  <span class="c1"># WARNING: NOT optional following STAC standard -&gt; created automatically by PySTAC.</span>
     <span class="n">assets</span><span class="p">:</span> <span class="nb">dict</span>  <span class="c1">## Map&lt;string, PDSSP_STAC_Asset&gt;: dictionary of asset objects that can be downloaded, each with a unique key.</span>
-    <span class="n">collection</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></div>
+    <span class="n">collection</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">extra_fields</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="PDSSP_STAC_SSYS_Properties"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.PDSSP_STAC_SSYS_Properties">[docs]</a><span class="k">class</span> <span class="nc">PDSSP_STAC_SSYS_Properties</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">ssys_targets</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;ssys:targets&#39;</span><span class="p">)</span>
+    <span class="n">ssys_solar_longitude</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;ssys:solar_longitude&#39;</span><span class="p">)</span>
+    <span class="n">ssys_incidence_angle</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;ssys:incidence_angle&#39;</span><span class="p">)</span>
+    <span class="n">ssys_emission_angle</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;ssys:emission_angle&#39;</span><span class="p">)</span>
+    <span class="n">ssys_phase_angle</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;ssys:phase_angle&#39;</span><span class="p">)</span>
+    <span class="n">ssys_spatial_resolution</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;ssys:spatial_resolution&#39;</span><span class="p">)</span>
+    <span class="n">ssys_processing_level</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;ssys:processing_level&#39;</span><span class="p">)</span>
+    <span class="n">ssys_product_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;ssys:product_type&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PDSSP_WFS_Layer"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.PDSSP_WFS_Layer">[docs]</a><span class="k">class</span> <span class="nc">PDSSP_WFS_Layer</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="k">pass</span></div>
@@ -397,8 +417,24 @@ title="Open an issue"
 
 <span class="c1"># PDS ODE Metadata Schemas</span>
 <span class="c1">#</span>
+<div class="viewcode-block" id="PDSODE_ValidTargets"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.PDSODE_ValidTargets">[docs]</a><span class="k">class</span> <span class="nc">PDSODE_ValidTargets</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">ValidTarget</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span></div>
+
 <div class="viewcode-block" id="PDSODE_IIPTSet"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.PDSODE_IIPTSet">[docs]</a><span class="k">class</span> <span class="nc">PDSODE_IIPTSet</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="k">pass</span></div>
+    <span class="n">ODEMetaDB</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">IHID</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">IHName</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">IID</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">IName</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">PT</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">PTName</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">DataSetId</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">ValidTargets</span><span class="p">:</span> <span class="n">PDSODE_ValidTargets</span>
+    <span class="n">NumberProducts</span><span class="p">:</span> <span class="nb">int</span></div>
+
+<div class="viewcode-block" id="PDSODE_Collection"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.PDSODE_Collection">[docs]</a><span class="k">class</span> <span class="nc">PDSODE_Collection</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">iiptset</span><span class="p">:</span> <span class="n">PDSODE_IIPTSet</span>
+    <span class="n">stac_extensions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span></div>
 
 <div class="viewcode-block" id="PDSODE_Product_file"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.PDSODE_Product_file">[docs]</a><span class="k">class</span> <span class="nc">PDSODE_Product_file</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="n">Description</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># eg&quot; &#39;MAP PROJECTION FILE&#39;&quot;,&#39;</span>
@@ -406,6 +442,9 @@ title="Open an issue"
     <span class="n">KBytes</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># &quot;7&quot;,</span>
     <span class="n">Type</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># &quot;Referenced&quot;,</span>
     <span class="n">URL</span><span class="p">:</span> <span class="nb">str</span> <span class="c1"># &quot;https://hirise.lpl.arizona.edu/PDS/CATALOG/DSMAP.CAT&quot;</span></div>
+
+<div class="viewcode-block" id="PDSODE_Product_file_key"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.PDSODE_Product_file_key">[docs]</a><span class="k">class</span> <span class="nc">PDSODE_Product_file_key</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">Product_file</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">PDSODE_Product_file</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="PDSODE_Product"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.PDSODE_Product">[docs]</a><span class="k">class</span> <span class="nc">PDSODE_Product</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="n">ode_id</span><span class="p">:</span> <span class="nb">str</span>
@@ -426,10 +465,10 @@ title="Open an issue"
     <span class="n">Label_Product_Type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="sd">&quot;&quot;&quot;Label product type (if it exists in the label and is different from the ODE_Product_Type).&quot;&quot;&quot;</span>
 
-    <span class="n">Data_set_id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">Data_Set_Id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="sd">&quot;&quot;&quot;PDS Data Set Id.&quot;&quot;&quot;</span>
 
-    <span class="n">PDSVolume_id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">PDSVolume_Id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="sd">&quot;&quot;&quot;Volume Id.&quot;&quot;&quot;</span>
 
     <span class="n">RelativePathtoVol</span><span class="p">:</span> <span class="nb">str</span>
@@ -444,14 +483,24 @@ title="Open an issue"
     <span class="n">Target_name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="sd">&quot;&quot;&quot;Product target (example: Mars).&quot;&quot;&quot;</span>
 
-    <span class="n">Product_version_id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">Product_version_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="sd">&quot;&quot;&quot;Product version&quot;&quot;&quot;</span>
 
-    <span class="n">Observation_id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">Observation_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="sd">&quot;&quot;&quot;Identifies a scientific observation within a data set.&quot;&quot;&quot;</span>
 
-    <span class="n">Product_files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">PDSODE_Product_file</span><span class="p">]</span>
-    <span class="sd">&quot;&quot;&quot;Associated product files.&quot;&quot;&quot;</span></div>
+    <span class="n">Product_files</span><span class="p">:</span> <span class="n">PDSODE_Product_file_key</span>
+    <span class="sd">&quot;&quot;&quot;Associated product files.&quot;&quot;&quot;</span>
+
+    <span class="n">Footprint_C0_geometry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">UTC_start_time</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">UTC_stop_time</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">Solar_longitude</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="n">Incidence_angle</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="n">Emission_angle</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="n">Phase_angle</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="n">Map_resolution</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="n">Map_scale</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span></div>
 
     <span class="c1">#</span>
     <span class="c1"># &quot;BB_georeferenced&quot;: &quot;True&quot;,</span>
@@ -621,6 +670,8 @@ title="Open an issue"
         <span class="k">return</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="create_schema_object"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.create_schema_object">[docs]</a><span class="k">def</span> <span class="nf">create_schema_object</span><span class="p">(</span><span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">object_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Create a collection or item metadata object from an input metadata dictionary and a metadata schema name.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">METADATA_SCHEMAS</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">object_type</span> <span class="ow">in</span> <span class="n">METADATA_SCHEMAS</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">BaseModelClass</span> <span class="o">=</span> <span class="n">METADATA_SCHEMAS</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">object_type</span><span class="p">]</span>
@@ -635,12 +686,12 @@ title="Open an issue"
 
 <span class="n">METADATA_SCHEMAS</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;PDSSP_STAC&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;collection&#39;</span><span class="p">:</span> <span class="n">PDSSP_STAC_Collection</span><span class="p">,</span> <span class="s1">&#39;item&#39;</span><span class="p">:</span> <span class="n">PDSSP_STAC_Item</span><span class="p">},</span>
-    <span class="s1">&#39;PDSSP_WFS&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;item&#39;</span><span class="p">:</span> <span class="n">PDSSP_WFS_Feature</span><span class="p">},</span>
-    <span class="s1">&#39;PDSODE&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;item&#39;</span><span class="p">:</span> <span class="n">PDSODE_Product</span><span class="p">},</span>
-    <span class="s1">&#39;EPNTAP&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;item&#39;</span><span class="p">:</span> <span class="n">EPNTAP_Granule</span><span class="p">},</span>
-    <span class="s1">&#39;MARSSI_WFS&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;item&#39;</span><span class="p">:</span> <span class="n">MARSSI_WFS_Feature</span><span class="p">}</span>
+    <span class="s1">&#39;PDSSP_WFS&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;collection&#39;</span><span class="p">:</span> <span class="n">PDSSP_WFS_Layer</span><span class="p">,</span> <span class="s1">&#39;item&#39;</span><span class="p">:</span> <span class="n">PDSSP_WFS_Feature</span><span class="p">},</span>
+    <span class="s1">&#39;PDSODE&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;collection&#39;</span><span class="p">:</span> <span class="n">PDSODE_IIPTSet</span><span class="p">,</span><span class="s1">&#39;item&#39;</span><span class="p">:</span> <span class="n">PDSODE_Product</span><span class="p">},</span>
+    <span class="s1">&#39;EPNTAP&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;collection&#39;</span><span class="p">:</span> <span class="n">EPNTAP_Collection</span><span class="p">,</span><span class="s1">&#39;item&#39;</span><span class="p">:</span> <span class="n">EPNTAP_Granule</span><span class="p">},</span>
+    <span class="s1">&#39;MARSSI_WFS&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;collection&#39;</span><span class="p">:</span> <span class="n">MARSSI_WFS_Layer</span><span class="p">,</span> <span class="s1">&#39;item&#39;</span><span class="p">:</span> <span class="n">MARSSI_WFS_Feature</span><span class="p">}</span>
 <span class="p">}</span>
-<span class="sd">&quot;&quot;&quot;Metadata schemas and their corresponding ``&quot;collection&quot;`` and ``&quot;item&quot;``-type classes.&quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot;Mapping of netadata schemas and their corresponding ``&quot;collection&quot;`` and ``&quot;item&quot;`` classes.&quot;&quot;&quot;</span>
 </pre></div>
 
               </div>

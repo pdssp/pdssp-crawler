@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -42,7 +42,7 @@
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../../_static/togglebutton.js"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
@@ -303,21 +303,27 @@ title="Open an issue"
 
 <span class="kn">from</span> <span class="nn">.datastore</span> <span class="kn">import</span> <span class="n">DataStore</span><span class="p">,</span> <span class="n">SourceCollectionModel</span>
 <span class="kn">from</span> <span class="nn">.registry</span> <span class="kn">import</span> <span class="n">ExternalServiceType</span><span class="p">,</span> <span class="n">Service</span>
-<span class="kn">from</span> <span class="nn">.schemas</span> <span class="kn">import</span> <span class="n">create_schema_object</span><span class="p">,</span> <span class="n">PDSODE_Product</span>
+<span class="kn">from</span> <span class="nn">.schemas</span> <span class="kn">import</span> <span class="n">create_schema_object</span><span class="p">,</span> <span class="n">PDSODE_Product</span><span class="p">,</span> <span class="n">PDSODE_IIPTSet</span><span class="p">,</span> <span class="n">PDSODE_Collection</span>
 
-<div class="viewcode-block" id="Extractor"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.Extractor">[docs]</a><span class="k">def</span> <span class="nf">Extractor</span><span class="p">(</span><span class="n">service_type</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span> <span class="c1"># source_collection_model as input !!!!!!</span>
+
+<div class="viewcode-block" id="Extractor"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.Extractor">[docs]</a><span class="k">def</span> <span class="nf">Extractor</span><span class="p">(</span><span class="n">collection</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">service_type</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># -&gt; AbstractExtractor</span>
     <span class="sd">&quot;&quot;&quot;Extractor function serving as Extractor objects factory.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">service</span><span class="p">:</span>
+
+    <span class="c1"># set service_type_enum</span>
+    <span class="k">if</span> <span class="n">collection</span><span class="p">:</span>
+        <span class="n">service_type_enum</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">type</span>
+    <span class="k">elif</span> <span class="n">service</span><span class="p">:</span>
         <span class="n">service_type_enum</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">type</span>
     <span class="k">elif</span> <span class="n">service_type</span><span class="p">:</span>
         <span class="n">service_type_enum</span> <span class="o">=</span> <span class="n">ExternalServiceType</span><span class="p">[</span><span class="n">service_type</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Either a `service_type` (str) or `service` (Service) keyword argument is required as input.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;At least one of the `service_type` (str) or `service` (Service) keyword argument is required as input.&#39;</span><span class="p">)</span>
 
+    <span class="c1"># check that service_type_enum is valid and create corresponding Extractor object.</span>
     <span class="k">if</span> <span class="n">service_type_enum</span> <span class="ow">in</span> <span class="n">EXTRACTORS</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="n">ExtractorClass</span> <span class="o">=</span> <span class="n">EXTRACTORS</span><span class="p">[</span><span class="n">service_type_enum</span><span class="p">]</span>
-        <span class="n">extractor</span> <span class="o">=</span> <span class="n">ExtractorClass</span><span class="p">(</span><span class="n">service</span><span class="o">=</span><span class="n">service</span><span class="p">)</span>
+        <span class="n">extractor</span> <span class="o">=</span> <span class="n">ExtractorClass</span><span class="p">(</span><span class="n">collection</span><span class="o">=</span><span class="n">collection</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="n">service</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">extractor</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Invalid catalog service type: </span><span class="si">{</span><span class="n">service_type_enum</span><span class="si">}</span><span class="s1">. Allowed types are: </span><span class="si">{</span><span class="n">EXTRACTORS</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
@@ -326,7 +332,7 @@ title="Open an issue"
 <div class="viewcode-block" id="AbstractExtractor"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.AbstractExtractor">[docs]</a><span class="k">class</span> <span class="nc">AbstractExtractor</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Abstract Extractor class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="c1"># automatically set extractor service type from inheriting Extractor class.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">service_type</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="n">class_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
@@ -335,29 +341,57 @@ title="Open an issue"
                 <span class="bp">self</span><span class="o">.</span><span class="n">service_type</span> <span class="o">=</span> <span class="n">service_type</span>
         <span class="c1"># print(f&#39;service type = {self.service_type}&#39;)</span>
 
-        <span class="c1"># check that optional input service object matches with the extractor service type.</span>
+        <span class="c1"># init extractor properties</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">service_collections</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="n">service</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">collection</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extracted</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_extracted_files</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extracted_files</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># self.extracted_data_dir = &#39;&#39;</span>
+
+        <span class="c1"># set service and collection properties</span>
+        <span class="k">if</span> <span class="n">service</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">collection</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_service</span><span class="p">(</span><span class="n">service</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">collection</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">service</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_collection</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Only one of the `service` or `collection` input keyword arguments can be used.&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">products</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="c1"># self.n_products = 0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_idx</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">product_idx</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">extracted</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_extracted_files</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">extracted_files</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="c1"># self.extracted_data_dir = &#39;&#39;</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&gt; &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;extracted: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">extracted</span><span class="si">}</span><span class="s2"> | &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;extracted_files: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">extracted_files</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
 
 <div class="viewcode-block" id="AbstractExtractor.set_service"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.AbstractExtractor.set_service">[docs]</a>    <span class="k">def</span> <span class="nf">set_service</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="p">):</span>
+        <span class="c1"># check that input service object matches with the extractor service type.</span>
         <span class="k">if</span> <span class="n">service</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">service_type</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">service</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">service_collections</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># reset list of service collections</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;`</span><span class="si">{</span><span class="n">service</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s1">` type from input `service` object does not match &#39;</span>
                              <span class="sa">f</span><span class="s1">&#39;Extractor `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">service_type</span><span class="si">}</span><span class="s1">` service type &#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AbstractExtractor.set_collection"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.AbstractExtractor.set_collection">[docs]</a>    <span class="k">def</span> <span class="nf">set_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection</span><span class="p">:</span> <span class="n">SourceCollectionModel</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set extracted source collection from input SourceCollectionModel object and derive Extractor properties from it.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># set extract collection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">collection</span> <span class="o">=</span> <span class="n">collection</span>
+
+        <span class="c1"># set service</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_service</span><span class="p">(</span><span class="n">collection</span><span class="o">.</span><span class="n">service</span><span class="p">)</span>
+
+        <span class="c1"># set extracted files</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extracted</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">extracted</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_extracted_files</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">collection</span><span class="o">.</span><span class="n">extracted_files</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extracted_files</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">extracted_files</span></div>
 
 <div class="viewcode-block" id="AbstractExtractor.get_service_collections"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.AbstractExtractor.get_service_collections">[docs]</a>    <span class="k">def</span> <span class="nf">get_service_collections</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[]</span></div>
@@ -368,13 +402,10 @@ title="Open an issue"
 <div class="viewcode-block" id="PDSODE_Extractor"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.PDSODE_Extractor">[docs]</a><span class="k">class</span> <span class="nc">PDSODE_Extractor</span><span class="p">(</span><span class="n">AbstractExtractor</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;PDSODE_Extractor class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">extracted_files</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">service</span><span class="o">=</span><span class="n">service</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">collection</span><span class="o">=</span><span class="n">collection</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="n">service</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">retrieve_service_collections</span><span class="p">(</span><span class="n">service</span><span class="o">=</span><span class="n">service</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">extracted_files</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">extracted_files</span> <span class="o">=</span> <span class="n">extracted_files</span>
+        <span class="c1"># self.retrieve_service_collections(service=service)</span>
 
 <div class="viewcode-block" id="PDSODE_Extractor.retrieve_service_collections"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.PDSODE_Extractor.retrieve_service_collections">[docs]</a>    <span class="k">def</span> <span class="nf">retrieve_service_collections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">service</span><span class="p">:</span>  <span class="c1"># set extractor service to input optional service keyword argument</span>
@@ -426,9 +457,24 @@ title="Open an issue"
                         <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">iiptset_valid_target</span><span class="p">:</span>
                             <span class="n">targets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
 
+            <span class="c1"># set source schema</span>
+            <span class="n">source_schema</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">extra_params</span><span class="p">[</span><span class="s1">&#39;source_schema&#39;</span><span class="p">]</span>
+
+            <span class="c1"># set STAC extensions</span>
+            <span class="n">stac_extensions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">extra_params</span><span class="p">[</span><span class="s1">&#39;stac_extensions&#39;</span><span class="p">]</span>
+
+            <span class="c1"># set reference target</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">targets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">source_collection</span> <span class="o">=</span> <span class="n">SourceCollectionModel</span><span class="p">(</span><span class="n">collection_id</span><span class="o">=</span><span class="n">collection_id</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="p">,</span>
-                                                          <span class="n">n_products</span><span class="o">=</span><span class="n">n_products</span><span class="p">,</span> <span class="n">targets</span><span class="o">=</span><span class="n">targets</span><span class="p">)</span>
+                <span class="n">source_collection</span> <span class="o">=</span> <span class="n">SourceCollectionModel</span><span class="p">(</span>
+                    <span class="n">collection_id</span><span class="o">=</span><span class="n">collection_id</span><span class="p">,</span>
+                    <span class="n">service</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="p">,</span>
+                    <span class="n">source_schema</span><span class="o">=</span><span class="n">source_schema</span><span class="p">,</span>
+                    <span class="n">n_products</span><span class="o">=</span><span class="n">n_products</span><span class="p">,</span>
+                    <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span>
+                    <span class="n">stac_extensions</span><span class="o">=</span><span class="n">stac_extensions</span>
+                <span class="p">)</span>
             <span class="k">except</span><span class="p">:</span>
                 <span class="n">source_collection</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -441,10 +487,42 @@ title="Open an issue"
             <span class="bp">self</span><span class="o">.</span><span class="n">retrieve_service_collections</span><span class="p">(</span><span class="n">service</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">service_collections</span></div>
 
-    <span class="c1">#</span>
-    <span class="c1"># def extract_collection_metadata(self, collection_id, service=None):</span>
-    <span class="c1">#     &quot;&quot;&quot;Extract collection metadata into source collection file.&quot;&quot;&quot;</span>
-    <span class="c1">#     pass</span>
+<div class="viewcode-block" id="PDSODE_Extractor.retrieve_collection_metadata"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.PDSODE_Extractor.retrieve_collection_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">retrieve_collection_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection_id</span><span class="p">):</span>
+        <span class="c1"># if service:  # set extractor service to input optional service keyword argument</span>
+        <span class="c1">#     self.set_service(service)</span>
+
+        <span class="c1"># form query to retrieve all</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">query</span><span class="o">=</span><span class="s1">&#39;iipy&#39;</span><span class="p">,</span>
+            <span class="n">output</span><span class="o">=</span><span class="s1">&#39;JSON&#39;</span><span class="p">,</span>
+            <span class="c1"># odemetadb=&#39;mars&#39;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># execute query</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Retrieving `</span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1">` collection metadata from PDS ODE REST API service...&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">closing</span><span class="p">(</span><span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">query</span><span class="p">))</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;PDS ODE REST API query </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1"> error: url=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">, query=</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># parse response into the list of SourceCollectionModel objects, `self.service_collections`.</span>
+        <span class="n">iiptset_dicts</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;ODEResults&#39;</span><span class="p">][</span><span class="s1">&#39;IIPTSets&#39;</span><span class="p">][</span><span class="s1">&#39;IIPTSet&#39;</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">iiptset_dict</span> <span class="ow">in</span> <span class="n">iiptset_dicts</span><span class="p">:</span>
+            <span class="n">this_collection_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">iiptset_dict</span><span class="p">[</span><span class="s2">&quot;IHID&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">iiptset_dict</span><span class="p">[</span><span class="s2">&quot;IID&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">iiptset_dict</span><span class="p">[</span><span class="s2">&quot;PT&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="k">if</span> <span class="n">this_collection_id</span> <span class="o">==</span> <span class="n">collection_id</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="c1"># collection_metadata = PDSODE_IIPTSet(**iiptset_dict)</span>
+                    <span class="n">pdsode_collection_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;iiptset&#39;</span><span class="p">:</span> <span class="n">iiptset_dict</span><span class="p">,</span> <span class="s1">&#39;stac_extensions&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">extra_params</span><span class="p">[</span><span class="s1">&#39;stac_extensions&#39;</span><span class="p">]</span> <span class="p">}</span>
+                    <span class="c1"># TODO: should be &#39;stac_extensions&#39;: self.collection.stac_extensions</span>
+                    <span class="c1"># print(pdsode_collection_dict)</span>
+                    <span class="n">collection_metadata</span> <span class="o">=</span> <span class="n">PDSODE_Collection</span><span class="p">(</span><span class="o">**</span><span class="n">pdsode_collection_dict</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">collection_metadata</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">pdsode_collection_dict</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="PDSODE_Extractor.get_collection_metadata"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.PDSODE_Extractor.get_collection_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">get_collection_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection_id</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SourceCollectionModel</span><span class="p">:</span>
         <span class="c1"># if service:  # set extractor service to input optional service keyword argument</span>
@@ -453,19 +531,36 @@ title="Open an issue"
             <span class="k">if</span> <span class="n">service_collection</span><span class="o">.</span><span class="n">collection_id</span> <span class="o">==</span> <span class="n">collection_id</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">service_collection</span></div>
 
-<div class="viewcode-block" id="PDSODE_Extractor.read_collection_metadata"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.PDSODE_Extractor.read_collection_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">read_collection_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection_metadata_file_path</span><span class="p">):</span> <span class="c1"># -&gt; SourceCollectionMetadata:</span>
+<div class="viewcode-block" id="PDSODE_Extractor.read_collection_metadata"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.PDSODE_Extractor.read_collection_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">read_collection_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection_metadata_file_path</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span> <span class="c1"># -&gt; SourceCollectionMetadata:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">collection_metadata_file_path</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">extracted_files</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">collection_metadata_file_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extracted_files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Could not derive `collection_metadata_file_path`.&#39;</span><span class="p">)</span>
+
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">collection_metadata_file_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">data</span></div>
+            <span class="n">metadata_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">collection_metadata</span> <span class="o">=</span> <span class="n">PDSODE_Collection</span><span class="p">(</span><span class="o">**</span><span class="n">metadata_dict</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">metadata_dict</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">collection_metadata</span></div>
 
 <div class="viewcode-block" id="PDSODE_Extractor.reset_reader_iterator"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.PDSODE_Extractor.reset_reader_iterator">[docs]</a>    <span class="k">def</span> <span class="nf">reset_reader_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_idx</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">products</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">product_idx</span> <span class="o">=</span> <span class="mi">0</span></div>
 
-<div class="viewcode-block" id="PDSODE_Extractor.read_next_product_metadata"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.PDSODE_Extractor.read_next_product_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">read_product_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PDSODE_Extractor.read_product_metadata"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.PDSODE_Extractor.read_product_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">read_product_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># TODO: add `collection_metadata_file_path` keyword argument.</span>
         <span class="sd">&quot;&quot;&quot;Iterator reader returning the next product metadata from extracted collection files.</span>
+
+<span class="sd">        Use ``self.reset_reader_iterator()`` to reset reader iterator.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">products</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_idx</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_extracted_files</span><span class="p">:</span>
                 <span class="n">file_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extracted_files</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">file_idx</span><span class="p">]</span>
@@ -474,8 +569,13 @@ title="Open an issue"
 
                 <span class="c1"># store source products metadata in the list of SourceProduct.</span>
                 <span class="k">for</span> <span class="n">metadata_dict</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;ODEResults&#39;</span><span class="p">][</span><span class="s1">&#39;Products&#39;</span><span class="p">][</span><span class="s1">&#39;Product&#39;</span><span class="p">]:</span>
-                    <span class="n">product_metadata</span> <span class="o">=</span> <span class="n">PDSODE_Product</span><span class="p">(</span><span class="o">**</span><span class="n">metadata_dict</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">products</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">product_metadata</span><span class="p">)</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">product_metadata</span> <span class="o">=</span> <span class="n">PDSODE_Product</span><span class="p">(</span><span class="o">**</span><span class="n">metadata_dict</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">products</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">product_metadata</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="n">metadata_dict</span><span class="p">)</span>
+                        <span class="k">return</span> <span class="kc">None</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;No more product metadata to read.&#39;</span><span class="p">)</span>
 
@@ -491,7 +591,7 @@ title="Open an issue"
 
 
 <div class="viewcode-block" id="PDSODE_Extractor.extract"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.PDSODE_Extractor.extract">[docs]</a>    <span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection_id</span><span class="p">,</span> <span class="n">output_dir_path</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Extract collection files required to retrieve collection and product metadata.</span>
+        <span class="sd">&quot;&quot;&quot;Extract source collection files required to retrieve collection and product metadata.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">service</span><span class="p">:</span>  <span class="c1"># set extractor service to input optional service keyword argument</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_service</span><span class="p">(</span><span class="n">service</span><span class="p">)</span>
@@ -502,17 +602,21 @@ title="Open an issue"
 
         <span class="c1"># Extract and save collection meta.</span>
         <span class="c1">#</span>
-        <span class="n">collection_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_collection_metadata</span><span class="p">(</span><span class="n">collection_id</span><span class="p">)</span>
+        <span class="n">collection_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">retrieve_collection_metadata</span><span class="p">(</span><span class="n">collection_id</span><span class="p">)</span>
+        <span class="c1"># collection_metadata = extractor.retrieve_collection_metadata(&#39;MRO_HIRISE_RDRV11&#39;)</span>
 
         <span class="n">collection_file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_dir_path</span><span class="p">,</span> <span class="n">collection_id</span><span class="p">,</span> <span class="n">collection_id</span><span class="o">+</span><span class="s1">&#39;.json&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">Path</span><span class="o">.</span><span class="n">is_file</span><span class="p">(</span><span class="n">collection_file_path</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Extracted </span><span class="si">{</span><span class="n">collection_file_path</span><span class="si">}</span><span class="s1"> file already exists. Use `overwrite=True` to overwrite existing files.&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Source collection </span><span class="si">{</span><span class="n">collection_file_path</span><span class="si">}</span><span class="s1"> file already exists. Use `overwrite=True` to overwrite existing files.&#39;</span><span class="p">)</span>
                 <span class="k">return</span>
 
         <span class="n">Path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">collection_file_path</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">collection_file_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">collection_metadata</span><span class="o">.</span><span class="n">json</span><span class="p">(),</span> <span class="n">file</span><span class="p">)</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">collection_metadata</span><span class="o">.</span><span class="n">json</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span>
+
+        <span class="c1"># report written collection metadata file</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">collection_file_path</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">n_extracted_files</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extracted_files</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">collection_file_path</span><span class="p">)]</span>
@@ -527,11 +631,18 @@ title="Open an issue"
         <span class="n">iiptset</span> <span class="o">=</span> <span class="n">collection_id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
 
         <span class="c1"># set `target` query parameter</span>
-        <span class="n">target</span> <span class="o">=</span> <span class="n">collection_metadata</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="c1"># if isinstance(collection_metadata.iiptset.ValidTargets.ValidTarget, str):</span>
+        <span class="c1">#     target = collection_metadata.iiptset.ValidTargets.ValidTarget</span>
+        <span class="c1"># elif isinstance(collection_metadata.iiptset.ValidTargets.ValidTarget, list):</span>
+        <span class="c1">#     target = collection_metadata.iiptset.ValidTargets.ValidTarget[0]</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">collection_metadata</span><span class="o">.</span><span class="n">iiptset</span><span class="o">.</span><span class="n">ODEMetaDB</span>
+        <span class="c1"># TODO: handle multiple=target collections. Eg: this (using `ODEMetaDB`) excludes &#39;DEIMOS&#39; or &#39;PHOBOS&#39;</span>
+        <span class="c1">#  data products for the MEX/HRSC/RDRV4 set.</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;`target` ODE API query param = &#39;</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
 
         <span class="c1"># set default ODE API query</span>
         <span class="n">query</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
-            <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span>
+            <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span> <span class="c1"># mandatory (or `odemetadb` instead?)</span>
             <span class="n">query</span><span class="o">=</span><span class="s1">&#39;product&#39;</span><span class="p">,</span>
             <span class="n">results</span><span class="o">=</span><span class="s1">&#39;copmf&#39;</span><span class="p">,</span>  <span class="c1"># warning: this impacts the results metadata</span>
             <span class="n">output</span><span class="o">=</span><span class="s1">&#39;JSON&#39;</span><span class="p">,</span>
@@ -543,8 +654,8 @@ title="Open an issue"
         <span class="p">)</span>
 
         <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">n_products</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">collection_metadata</span><span class="o">.</span><span class="n">n_products</span><span class="p">,</span> <span class="n">extract_limit</span><span class="p">)</span>  <span class="c1"># temporary for testing purpose</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Extracting </span><span class="si">{</span><span class="n">n_products</span><span class="si">}</span><span class="s1"> products metadata...&#39;</span><span class="p">)</span>
+        <span class="n">n_products</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">collection_metadata</span><span class="o">.</span><span class="n">iiptset</span><span class="o">.</span><span class="n">NumberProducts</span><span class="p">,</span> <span class="n">extract_limit</span><span class="p">)</span>  <span class="c1"># temporary for testing purpose</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Extracting metadata of </span><span class="si">{</span><span class="n">n_products</span><span class="si">}</span><span class="s1"> products...&#39;</span><span class="p">)</span>
         <span class="k">while</span> <span class="n">offset</span> <span class="o">&lt;</span> <span class="n">n_products</span><span class="p">:</span>
             <span class="c1"># update query `offset` parameter</span>
             <span class="n">query</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">offset</span>
@@ -588,15 +699,15 @@ title="Open an issue"
 <div class="viewcode-block" id="WFS_Extractor"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.WFS_Extractor">[docs]</a><span class="k">class</span> <span class="nc">WFS_Extractor</span><span class="p">(</span><span class="n">AbstractExtractor</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;WFS_Extractor class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">service</span><span class="o">=</span><span class="n">service</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>  <span class="n">collection</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span> <span class="n">collection</span><span class="o">=</span><span class="n">collection</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="n">service</span><span class="p">)</span>
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="EPNTAP_Extractor"><a class="viewcode-back" href="../../crawler_api.html#crawler.extractor.EPNTAP_Extractor">[docs]</a><span class="k">class</span> <span class="nc">EPNTAP_Extractor</span><span class="p">(</span><span class="n">AbstractExtractor</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;EPNTAP_Extractor class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">service</span><span class="o">=</span><span class="n">service</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">collection</span><span class="o">=</span><span class="n">collection</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="n">service</span><span class="p">)</span>
         <span class="k">pass</span></div>
 
 
