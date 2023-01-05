@@ -446,7 +446,7 @@ class PDSODE_STAC(AbstractTransformer):
                     href=href,
                     title=title,
                     description=description,
-                    media_type=media_type,
+                    type=media_type,
                     roles=roles
                 )
 

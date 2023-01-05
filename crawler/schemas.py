@@ -385,7 +385,7 @@ def get_schema_json(name: str, object_type: str) -> Optional[BaseModel]:
         return None
 
 def create_schema_object(metadata: dict, name: str, object_type: str) -> Optional[BaseModel]:
-    """Create a collection or item metadata object from an input metadata dictionary and a metadata schema name.
+    """Create a collection or item metadata object from an input metadata dictionary and schema name.
     """
     if name in METADATA_SCHEMAS.keys():
         if object_type in METADATA_SCHEMAS[name].keys():
