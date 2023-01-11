@@ -124,6 +124,13 @@ class PDSSP_STAC_SSYS_Properties(BaseModel):
     ssys_processing_level: Optional[str] = Field(alias='ssys:processing_level')
     ssys_product_type: Optional[str] = Field(alias='ssys:product_type')
 
+class PDSSP_STAC_Processing_Properties(BaseModel):
+    processing_expression: Optional[object] = Field(alias='processing:expression')
+    processing_lineage: Optional[str] = Field(alias='processing:lineage')
+    processing_level: Optional[str] = Field(alias='processing:level')
+    processing_facility: Optional[str] = Field(alias='processing:facility')
+    processing_software: Optional[dict] = Field(alias='processing:software')
+
 class PDSSP_WFS_Layer(BaseModel):
     pass
 

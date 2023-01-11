@@ -42,7 +42,7 @@ class Ingestor:
         self.headers = {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'User-Agent': 'stac2resto',
+            'User-Agent': 'pdssp-crawler',
             'Authorization': 'Bearer ' + auth_token
         }
 

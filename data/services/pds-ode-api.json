@@ -16,6 +16,6 @@
     "url":"https://oderest.rsl.wustl.edu/live2",
     "extra_params": {
       "source_schema": "PDSODE",
-      "stac_extensions": ["ssys"]
+      "stac_extensions": ["ssys", "processing"]
     }
 }

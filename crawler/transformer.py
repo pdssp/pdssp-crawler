@@ -161,11 +161,15 @@ class AbstractTransformer:
     def get_properties(self, source_metadata: BaseModel) -> BaseModel:  # PDSSP_STAC_Properties
         pass
 
+    # EXTENSIONS
+
     def get_extension_properties(self, source_metadata: BaseModel, stac_extension, object_type='item') -> BaseModel:
         if stac_extension == 'ssys':
             return self.get_ssys_properties(source_metadata, object_type=object_type)
         elif stac_extension == 'proj':
             return self.get_proj_properties(source_metadata, object_type=object_type)
+        elif stac_extension == 'processing':
+            return self.get_processing_properties(source_metadata, object_type=object_type)
         else:
             raise Exception(f'Undefined {stac_extension} STAC extension.')
 
@@ -174,27 +178,36 @@ class AbstractTransformer:
             return self.get_ssys_fields(source_metadata, object_type=object_type)
         elif stac_extension == 'proj':
             return self.get_proj_fields(source_metadata, object_type=object_type)
+        elif stac_extension == 'processing':
+            return self.get_processing_fields(source_metadata, object_type=object_type)
         else:
             raise Exception(f'Undefined {stac_extension} STAC extension.')
 
-    def get_ssys_properties(self, source_metadata: BaseModel, object_type='item') -> BaseModel:
+    def _default_ext_properties(self, source_metadata: BaseModel, object_type='item') -> BaseModel:
         if object_type == 'item':
             return {}
         elif object_type == 'collection':
             return {}
         else:
             raise InvalidModelObjectTypeError(object_type)
+
+    def get_ssys_properties(self, source_metadata: BaseModel, object_type='item') -> BaseModel:
+        self._default_ext_properties(source_metadata, object_type=object_type)
 
     def get_ssys_fields(self, source_metadata: BaseModel, object_type='item') -> dict:
         return {}
 
     def get_proj_properties(self, source_metadata: BaseModel, object_type='item') -> BaseModel:
-        if object_type == 'item':
-            pass
-        elif object_type == 'collection':
-            pass
-        else:
-            raise InvalidModelObjectTypeError(object_type)
+        self._default_ext_properties(source_metadata, object_type=object_type)
+
+    def get_proj_fields(self, source_metadata: BaseModel, object_type='item') -> dict:
+        return {}
+
+    def get_processing_properties(self, source_metadata: BaseModel, object_type='item') -> BaseModel:
+        self._default_ext_properties(source_metadata, object_type=object_type)
+
+    def get_processing_fields(self, source_metadata: BaseModel, object_type='item') -> dict:
+        return {}
 
     def get_stac_collection_dict(self, source_metadata, stac_extensions=[]) -> dict:
         if not stac_extensions:
@@ -325,6 +338,10 @@ class AbstractTransformer:
         # set STAC collection and items extensions
         if not stac_extensions:
             stac_extensions = stac_collection_metadata.stac_extensions
+            print()
+            print('retrieve STAC extensions from collection metadata.')
+            print(stac_extensions)
+            print()
 
         stac_collection = pystac.Collection(
             id=stac_collection_id,
@@ -524,8 +541,14 @@ class PDSODE_STAC(AbstractTransformer):
         for stac_extension in stac_extensions:
             properties_dict.update(self.get_extension_properties(source_metadata, stac_extension, object_type='item'))
 
-        # if source_metadata.pdsid == 'ESP_012603_1300_RED':
-        #     print('stop')
+        # add source metadata; fields for which value type is either a float, int or str.
+        # field names are prefixed using lower-case schema name, to avoid possible conflicts with STAC Common Metadata.
+        source_metadata_dict = source_metadata.dict(exclude_unset=True, exclude_none=True)
+        filtered_metadata_dict = {}
+        for key in source_metadata_dict.keys():
+            if isinstance(source_metadata_dict[key], (float, int, str)):
+                filtered_metadata_dict['pdsode:'+key] = source_metadata_dict[key]
+        properties_dict.update(filtered_metadata_dict)
 
         return properties_dict
 
@@ -558,14 +581,44 @@ class PDSODE_STAC(AbstractTransformer):
             raise InvalidModelObjectTypeError(object_type)
         return ssys_fields
 
-    def get_proj_properties(self, source_metadata: BaseModel, object_type='item') -> dict:
+    def get_processing_properties(self, source_metadata: BaseModel, object_type='item') -> BaseModel:
         if object_type == 'item':
-            pass
+            # derive processing level from PDSODE Data_Set_Id field
+            processing_level = ''
+            dataset_id = source_metadata.Data_Set_Id
+            for token in dataset_id.split('-'):
+                try:
+                    void = int(token)
+                    processing_level = token
+                    break
+                except:
+                    # handle mixed processing level description, eg: 2/3
+                    subtokens = token.split('/')
+                    if len(subtokens) > 1:
+                        try:
+                            void = int(subtokens[0])
+                            processing_level = token
+                            break
+                        except:
+                            pass
+
+            processing_properties = schemas.PDSSP_STAC_Processing_Properties(
+                **{
+                    'processing:expression': None,
+                    'processing:lineage': '',
+                    'processing:level': processing_level,
+                    'processing:facility': '',
+                    'processing:software': {}
+                }
+            )
         elif object_type == 'collection':
-            pass
+            processing_properties = schemas.PDSSP_STAC_SSYS_Properties(**{'ssys:targets':[source_metadata.iiptset.ODEMetaDB.upper()]})
         else:
             raise InvalidModelObjectTypeError(object_type)
+        return processing_properties.dict(by_alias=True)  # exclude_unset=True ?
 
+    def get_processing_fields(self, source_metadata: BaseModel, object_type='item') -> dict:
+        return {}
 
 class EPNTAP_STAC(AbstractTransformer):
     def __init__(self, collection=None, source_schema=None, destination_schema='PDSSP_STAC'):

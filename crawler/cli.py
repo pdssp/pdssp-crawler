@@ -36,6 +36,10 @@ def config():
     click.echo(f'Destination (PDSSP) STAC API Catalog URL : {STAC_CATALOG_ENDPOINT}')
     click.echo()
 
+@cli.command()
+def initds():
+    """Initialise data store."""
+    Crawler().reset_datastore()
 
 @cli.command()
 @click.option('--id', type=click.STRING, help='Collection ID filter.', default='')
