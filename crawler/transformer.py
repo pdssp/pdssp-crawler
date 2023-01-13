@@ -433,7 +433,7 @@ class AbstractTransformer:
 
         # save STAC catalog files
         print(f'Writing STAC JSON files in {stac_catalog_dirpath} directory...')
-        Path.mkdir(stac_catalog_dirpath, parents=True, exist_ok=overwrite)
+        Path.mkdir(stac_catalog_dirpath, parents=True, exist_ok=True) # exist_ok=overwrite ?
         stac_catalog.normalize_hrefs(str(stac_catalog_dirpath))
         stac_catalog.save(catalog_type=pystac.CatalogType.SELF_CONTAINED)
 

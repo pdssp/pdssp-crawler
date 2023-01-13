@@ -15,6 +15,8 @@ from crawler.crawler import Crawler
 from crawler.extractor import Extractor
 import crawler.schemas
 
+from datetime import datetime  # temporary
+
 package_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 VERSION = open(os.path.join(package_path, 'VERSION')).read().strip()
 
@@ -33,7 +35,7 @@ def config():
     click.echo(f'(External) services registry directory   : {LOCAL_REGISTRY_DIRECTORY}')
     click.echo(f'Source collections data directory        : {SOURCE_DATA_DIR}')
     click.echo(f'STAC collections data directory          : {STAC_DATA_DIR}')
-    click.echo(f'Destination (PDSSP) STAC API Catalog URL : {STAC_CATALOG_ENDPOINT}')
+    click.echo(f'Destination (PDSSP) STAC API Catalog URL : {STAC_CATALOG_PARENT_ENDPOINT}')
     click.echo()
 
 @cli.command()
@@ -45,14 +47,19 @@ def initds():
 @click.option('--id', type=click.STRING, help='Collection ID filter.', default='')
 @click.option('--service-type', type=click.STRING, help='Service type filter.', default='')
 @click.option('--target', type=click.STRING, help='Target filter.', default='')
-@click.option('--extracted/--no-extracted', help='Filter to return only transformed collections', default=None)
-@click.option('--transformed/--no-transformed', help='Filter to return only transformed collections', default=None)
-@click.option('--ingested/--no-ingested', help='Filter to return only ingested collections', default=None)
+@click.option('--extracted', 'extracted', flag_value=True, help='Filter to return only extracted collections.', default=None)
+@click.option('--not-extracted', 'extracted', flag_value=False, help='Filter to return collections not yet extracted.', default=None)
+@click.option('--transformed', 'transformed', flag_value=True, help='Filter to return only transformed collections.', default=None)
+@click.option('--not-transformed', 'transformed', flag_value=False, help='Filter to return collections not yet transformed.', default=None)
+@click.option('--ingested', 'ingested', flag_value=True, help='Filter to return only ingested collections.', default=None)
+@click.option('--not-ingested', 'ingested', flag_value=False, help='Filter to return collections not yet ingested.', default=None)
 def collections(id, service_type, target, extracted, transformed, ingested):
     """Show source collections available in the data store.
 
     Returned source collections can optionally be filtered by identifier, service type, target, and whether or it has been
-    extracted, transformed or ingested.
+    extracted, transformed or ingested. For example, to return Mars collections not yet ingested but extracted, run::
+
+        crawler collections --target=mars --not-ingested --extracted
     """
     Crawler().list_source_collections(
         collection_id=id,
@@ -67,9 +74,12 @@ def collections(id, service_type, target, extracted, transformed, ingested):
 @click.option('--id', type=click.STRING, help='Collection ID filter.', default='')
 @click.option('--service-type', type=click.STRING, help='Service type filter.', default='')
 @click.option('--target', type=click.STRING, help='Target filter.', default='')
-@click.option('--extracted/--no-extracted', help='Filter to return only transformed collections', default=None)
-@click.option('--transformed/--no-transformed', help='Filter to return only transformed collections', default=None)
-@click.option('--ingested/--no-ingested', help='Filter to return only ingested collections', default=None)
+@click.option('--extracted', 'extracted', flag_value=True, help='Filter to return only extracted collections.', default=None)
+@click.option('--not-extracted', 'extracted', flag_value=False, help='Filter to return collections not yet extracted.', default=None)
+@click.option('--transformed', 'transformed', flag_value=True, help='Filter to return only transformed collections.', default=None)
+@click.option('--not-transformed', 'transformed', flag_value=False, help='Filter to return collections not yet transformed.', default=None)
+@click.option('--ingested', 'ingested', flag_value=True, help='Filter to return only ingested collections.', default=None)
+@click.option('--not-ingested', 'ingested', flag_value=False, help='Filter to return collections not yet ingested.', default=None)
 @click.option('--overwrite/--no-overwrite', help='Overwrite existing source collection files.', default=False)
 def process(id, service_type, target, extracted, transformed, ingested, overwrite):
     """Process all or a filtered selection of source collections.
@@ -81,8 +91,13 @@ def process(id, service_type, target, extracted, transformed, ingested, overwrit
     Note that all STAC collections are grouped into a single STAC catalog, with one catalog per target body. Ingestion
     of all collections could be done at once when they all have been transformed.
     """
+    d1=datetime.utcnow()
+    print(f'start time : {d1}')
     Crawler().process_collections(collection_id=id, service_type=service_type, target=target, extracted=extracted,
                                   transformed=transformed, ingested=ingested, overwrite=overwrite)
+    d2=datetime.utcnow()
+    print(f'stop time  : {d2}')
+    print(f'delta time : {d2-d1}')
 
 @cli.command()
 @click.option('--id', type=click.STRING, help='Collection ID.', default='')

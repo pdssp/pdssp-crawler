@@ -38,14 +38,18 @@ pip install -r pdssp-crawler/docs/requirements.txt
 
 ## Configuration
 
-The configuration mechanism will be improved in the next versions. For now, edit the [crawler/config.py](pdssp-crawler/crawler/config.py) file to change the following variables :
+
+The configuration mechanism will be improved in the next versions. For now:
+
+1. Create the _incoming source_ and the _outgoing STAC_ directories in your working directories.
+2. Edit the [crawler/config.py](pdssp-crawler/crawler/config.py) file to change the following variables accordingly. In the following example, `/Users/nmanaud/workspace/pdssp` is the working directory and the source and STAC data directories are respectively named `crawler-data` and `pdssp-stac-repo`. 
 
 ```python
 SOURCE_DATA_DIR = '/Users/nmanaud/workspace/pdssp/crawler-data'
 STAC_DATA_DIR = '/Users/nmanaud/workspace/pdssp/pdssp-stac-repo'
 PDSSP_REGISTRY_ENDPOINT = 'https://pdssp.ias.universite-paris-saclay.fr/registry/services'
 LOCAL_REGISTRY_DIRECTORY = '/Users/nmanaud/workspace/pdssp/pdssp-crawler/data/services'
-STAC_CATALOG_ENDPOINT = 'https://pdssp.ias.universite-paris-saclay.fr/catalog'
+STAC_CATALOG_PARENT_ENDPOINT = 'https://pdssp.ias.universite-paris-saclay.fr'
 ```
 
 Set the `RESTO_ADMIN_AUTH_TOKEN` environment variable, required for ingestion POST request to PDSSP Catalog STAC API (RESTO).
@@ -56,12 +60,42 @@ Airflow configutation [TBD]
 
 ### Crawler CLI
 
-For example:
+List CLI commands and get help:
+
+```shell
+crawler --help
+```
+
+Initialise data store with available source collections (run once):
+
+```shell
+crawler initds
+```
+
+Display/filter source collections status:
+
+```shell
+crawler collections --target=mars
+```
+
+Extract, transform and ingest:
 
 ```shell
 crawler extract --id='MRO_HIRISE_RDRV11'
+crawler transform --id='MRO_HIRISE_RDRV11'
+crawler ingest --id='MRO_HIRISE_RDRV11'
+```
+or just:
+
+```shell
+crawler ingest --id='MRO_HIRISE_RDRV11'
 ```
 
+Process all source collections associated to Mars:
+
+```shell
+crawler process --target=mars
+```
 
 See [Crawler CLI Reference](https://pdssp.github.io/pdssp-crawler/crawler_cli.html)
 

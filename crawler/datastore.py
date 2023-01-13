@@ -66,6 +66,7 @@ class DataStore:
     def list_source_collections(self, collection_id='', service_type=None, target=None, extracted=None, transformed=None, ingested=None):
         """Display all, or a filtered list of source collections indexed in the data store.
         """
+        print('ds list ingested', ingested)
         collections = self.get_source_collections(collection_id=collection_id, service_type=service_type,
                                                      target=target, extracted=extracted, transformed=transformed, ingested=ingested)
 
@@ -99,7 +100,6 @@ class DataStore:
     def get_source_collections(self, collection_id='', service_type=None, target=None, extracted=None, transformed=None, ingested=None) -> [SourceCollectionModel]:
         """Returns source collections matching input filters.
         """
-
         # set initial list of filtered source collections
         filtered_collections = copy.copy(self.source_collections)
 
@@ -121,29 +121,50 @@ class DataStore:
             source_collections = []
             for collection in filtered_collections:
                 if target.lower() in collection.target.lower():
-                    source_collections.append(collection)
+                    source_collections.append(collection)  # add if extracted
             filtered_collections = source_collections
 
-        if extracted:
-            source_collections = []
-            for collection in filtered_collections:
-                if collection.extracted:
-                    source_collections.append(collection)
-            filtered_collections = source_collections
+        if extracted is not None:
+            if extracted:
+                source_collections = []
+                for collection in filtered_collections:
+                    if collection.extracted:
+                        source_collections.append(collection)  # add if not extracted
+                filtered_collections = source_collections
+            else:
+                source_collections = []
+                for collection in filtered_collections:
+                    if not collection.extracted:
+                        source_collections.append(collection)
+                filtered_collections = source_collections
 
-        if transformed:
-            source_collections = []
-            for collection in filtered_collections:
-                if collection.transformed:
-                    source_collections.append(collection)
-            filtered_collections = source_collections
+        if transformed is not None:
+            if transformed:
+                source_collections = []
+                for collection in filtered_collections:
+                    if collection.transformed:
+                        source_collections.append(collection)  # add if transformed
+                filtered_collections = source_collections
+            else:
+                source_collections = []
+                for collection in filtered_collections:
+                    if not collection.transformed:
+                        source_collections.append(collection)  # add if not transformed
+                filtered_collections = source_collections
 
-        if ingested:
-            source_collections = []
-            for collection in filtered_collections:
-                if collection.ingested:
-                    source_collections.append(collection)
-            filtered_collections = source_collections
+        if ingested is not None:
+            if ingested:
+                source_collections = []
+                for collection in filtered_collections:
+                    if collection.ingested:
+                        source_collections.append(collection)  # add if ingested
+                filtered_collections = source_collections
+            else:
+                source_collections = []
+                for collection in filtered_collections:
+                    if not collection.ingested:
+                        source_collections.append(collection)  # add if not ingested
+                filtered_collections = source_collections
 
         return filtered_collections
 
