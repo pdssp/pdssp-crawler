@@ -402,12 +402,20 @@ title="Open an issue"
 <div class="viewcode-block" id="PDSSP_STAC_SSYS_Properties"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.PDSSP_STAC_SSYS_Properties">[docs]</a><span class="k">class</span> <span class="nc">PDSSP_STAC_SSYS_Properties</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="n">ssys_targets</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;ssys:targets&#39;</span><span class="p">)</span>
     <span class="n">ssys_solar_longitude</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;ssys:solar_longitude&#39;</span><span class="p">)</span>
+    <span class="n">ssys_solar_distance</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;ssys:solar_distance&#39;</span><span class="p">)</span>
     <span class="n">ssys_incidence_angle</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;ssys:incidence_angle&#39;</span><span class="p">)</span>
     <span class="n">ssys_emission_angle</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;ssys:emission_angle&#39;</span><span class="p">)</span>
-    <span class="n">ssys_phase_angle</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;ssys:phase_angle&#39;</span><span class="p">)</span>
-    <span class="n">ssys_spatial_resolution</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;ssys:spatial_resolution&#39;</span><span class="p">)</span>
-    <span class="n">ssys_processing_level</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;ssys:processing_level&#39;</span><span class="p">)</span>
-    <span class="n">ssys_product_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;ssys:product_type&#39;</span><span class="p">)</span></div>
+    <span class="n">ssys_phase_angle</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;ssys:phase_angle&#39;</span><span class="p">)</span></div>
+    <span class="c1"># ssys_spatial_resolution: Optional[float] = Field(alias=&#39;ssys:spatial_resolution&#39;)</span>
+    <span class="c1"># ssys_processing_level: Optional[str] = Field(alias=&#39;ssys:processing_level&#39;)</span>
+    <span class="c1"># ssys_product_type: Optional[str] = Field(alias=&#39;ssys:product_type&#39;)</span>
+
+<div class="viewcode-block" id="PDSSP_STAC_Processing_Properties"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.PDSSP_STAC_Processing_Properties">[docs]</a><span class="k">class</span> <span class="nc">PDSSP_STAC_Processing_Properties</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">processing_expression</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">object</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;processing:expression&#39;</span><span class="p">)</span>
+    <span class="n">processing_lineage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;processing:lineage&#39;</span><span class="p">)</span>
+    <span class="n">processing_level</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;processing:level&#39;</span><span class="p">)</span>
+    <span class="n">processing_facility</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;processing:facility&#39;</span><span class="p">)</span>
+    <span class="n">processing_software</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;processing:software&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PDSSP_WFS_Layer"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.PDSSP_WFS_Layer">[docs]</a><span class="k">class</span> <span class="nc">PDSSP_WFS_Layer</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="k">pass</span></div>
@@ -484,99 +492,198 @@ title="Open an issue"
     <span class="sd">&quot;&quot;&quot;Product target (example: Mars).&quot;&quot;&quot;</span>
 
     <span class="n">Product_version_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="sd">&quot;&quot;&quot;Product version&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Product version.&quot;&quot;&quot;</span>
 
     <span class="n">Observation_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="sd">&quot;&quot;&quot;Identifies a scientific observation within a data set.&quot;&quot;&quot;</span>
 
-    <span class="n">Product_files</span><span class="p">:</span> <span class="n">PDSODE_Product_file_key</span>
-    <span class="sd">&quot;&quot;&quot;Associated product files.&quot;&quot;&quot;</span>
+    <span class="n">Observation_number</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Monotonically increasing ordinal counter of the EDRs generated for a particular OBSERVATION_ID.&quot;&quot;&quot;</span>
+
+    <span class="n">Observation_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Identifies the general type of an observation.&quot;&quot;&quot;</span>
+
+    <span class="n">Producer_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Producer id.&quot;&quot;&quot;</span>
+
+    <span class="n">Producer_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Producer name.&quot;&quot;&quot;</span>
+
+    <span class="n">Product_release_date</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Product release date.&quot;&quot;&quot;</span>
+
+    <span class="n">Activity_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Label Activity id&quot;&quot;&quot;</span>
+
+    <span class="n">Predicted_dust_opacity</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Predicted dust opacity.&quot;&quot;&quot;</span>
+
+    <span class="n">Predicted_dust_opacity_text</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Predicted dust opacity text.&quot;&quot;&quot;</span>
+
+    <span class="n">Observation_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Observation time (mid-point between the start and end of the observation).&quot;&quot;&quot;</span>
+
+    <span class="n">SpaceCraft_clock_start_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Spacecraft clock start.&quot;&quot;&quot;</span>
+
+    <span class="n">SpaceCraft_clock_stop_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Spacecraft clock stop.&quot;&quot;&quot;</span>
+
+    <span class="n">Stop_orbit_number</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Stop orbit number.&quot;&quot;&quot;</span>
+
+    <span class="n">UTC_start_time</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># defined as mandatory for all observational data products</span>
+    <span class="sd">&quot;&quot;&quot;Observation start time in UTC.&quot;&quot;&quot;</span>
+
+    <span class="n">UTC_stop_time</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># defined as mandatory for all observational data products</span>
+    <span class="sd">&quot;&quot;&quot;Observation stop time in UTC.&quot;&quot;&quot;</span>
+
+    <span class="n">Emission_angle</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Emission angle.&quot;&quot;&quot;</span>
+
+    <span class="n">Emission_angle_text</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Emission angle text from the product label.&quot;&quot;&quot;</span>
+
+    <span class="n">Phase_angle</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Phase angle.&quot;&quot;&quot;</span>
+
+    <span class="n">Phase_angle_text</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Phase angle text from the product label.&quot;&quot;&quot;</span>
+
+    <span class="n">Incidence_angle</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Incidence angle.&quot;&quot;&quot;</span>
+
+    <span class="n">Incidence_angle_text</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Incidence angle text from the product label.&quot;&quot;&quot;</span>
+
+    <span class="n">Map_resolution</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Map resolution.&quot;&quot;&quot;</span>
+
+    <span class="n">Map_resolution_text</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Map resolution text from the product label.&quot;&quot;&quot;</span>
+
+    <span class="n">Map_scale</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Map scale.&quot;&quot;&quot;</span>
+
+    <span class="n">Map_scale_text</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Map scale text from the product label.&quot;&quot;&quot;</span>
+
+    <span class="n">Solar_distance</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Solar distance.&quot;&quot;&quot;</span>
+
+    <span class="n">Solar_distance_text</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Solar distance text from the product label.&quot;&quot;&quot;</span>
+
+    <span class="n">Solar_longitude</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Solar longitude.&quot;&quot;&quot;</span>
+
+    <span class="n">Center_georeferenced</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;T if the product has a footprint center.&quot;&quot;&quot;</span>
+
+    <span class="n">Center_latitude</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Planetocentric footprint center latitude.&quot;&quot;&quot;</span>
+
+    <span class="n">Center_longitude</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Longitude 0-360 center longitude.&quot;&quot;&quot;</span>
+
+    <span class="n">Center_latitude_text</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Text found in the center latitude label keyword if the center latitude is not a valid number.&quot;&quot;&quot;</span>
+
+    <span class="n">Center_longitude_text</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Text found in the center longitude label keyword if the center longitude is not a valid number.&quot;&quot;&quot;</span>
+
+    <span class="n">BB_georeferenced</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;T if the product has a footprint bounding box.&quot;&quot;&quot;</span>
+
+    <span class="n">Easternmost_longitude</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Longitude 0-360 Easternmost longitude of the footprint.&quot;&quot;&quot;</span>
+
+    <span class="n">Maximum_latitude</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Planetocentric maximum latitude of the footprint.&quot;&quot;&quot;</span>
+
+    <span class="n">Minimum_latitude</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Planetocentric minimum latitude of the footprint.&quot;&quot;&quot;</span>
+
+    <span class="n">Westernmost_longitude</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Longitude 0-360 Westernmost longitude of the footprint.&quot;&quot;&quot;</span>
+
+    <span class="n">Easternmost_longitude_text</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Text found in the easternmost longitude label keyword if the easternmost longitude is not a valid number.&quot;&quot;&quot;</span>
+
+    <span class="n">Maximum_latitude_text</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Text found in the maximum latitude label keyword if the maximum latitude is not a valid number.&quot;&quot;&quot;</span>
+
+    <span class="n">Minimum_latitude_text</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Text found in the minimum latitude label keyword if the minimum latitude is not a valid number.&quot;&quot;&quot;</span>
+
+    <span class="n">Westernmost_longitude_text</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Text found in the westernmost longitude label keyword if the westernmost longitude is not a valid number.&quot;&quot;&quot;</span>
+
+    <span class="n">Footprint_geometry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Cylindrical projected planetocentric, longitude 0-360 product footprint in WKT format. Only if there is</span>
+<span class="sd">     a valid footprint. Note - this is a cylindrical projected footprint. The footprint has been split into multiple</span>
+<span class="sd">     polygons when crossing the 0/360 longitude line and any footprints that cross the poles have been adjusted to add</span>
+<span class="sd">     points to and around the pole. It is meant for use in cylindrical projects and is not appropriate for spherical</span>
+<span class="sd">     displays.&quot;&quot;&quot;</span>
 
     <span class="n">Footprint_C0_geometry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="n">UTC_start_time</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">UTC_stop_time</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">Solar_longitude</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-    <span class="n">Incidence_angle</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-    <span class="n">Emission_angle</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-    <span class="n">Phase_angle</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-    <span class="n">Map_resolution</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-    <span class="n">Map_scale</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span></div>
+    <span class="sd">&quot;&quot;&quot;Planetocentric, longitude -180-180 product footprint in WKT format. Only if there is a valid footprint. Note -</span>
+<span class="sd">    this is a cylindrical projected footprint. The footprint has been split into multiple polygons when crossing the</span>
+<span class="sd">    -180/180 longitude line and any footprints that cross the poles have been adjusted to add points to and around the</span>
+<span class="sd">    pole. It is meant for use in cylindrical projects and is not appropriate for spherical displays.&quot;&quot;&quot;</span>
 
-    <span class="c1">#</span>
-    <span class="c1"># &quot;BB_georeferenced&quot;: &quot;True&quot;,</span>
-    <span class="c1"># &quot;Center_georeferenced&quot;: &quot;True&quot;,</span>
-    <span class="c1"># &quot;Center_latitude&quot;: &quot;-14.285&quot;,</span>
-    <span class="c1"># &quot;Center_longitude&quot;: &quot;240.051&quot;,</span>
-    <span class="c1"># &quot;Comment&quot;: &quot;Pit crater chain south of Arsia Mons&quot;,</span>
-    <span class="c1"># &quot;Data_Set_Id&quot;: &quot;MRO-M-HIRISE-3-RDR-V1.1&quot;,</span>
-    <span class="c1"># &quot;Description&quot;: &quot;HiRISE projected and mosaicked product  HiRISE RDR V1.1 files has map projection data embedded in the header - please see SIS for more details.&quot;,</span>
-    <span class="c1"># &quot;Easternmost_longitude&quot;: &quot;240.114&quot;,</span>
-    <span class="c1"># &quot;Emission_angle&quot;: &quot;3.713668&quot;,</span>
-    <span class="c1"># &quot;External_url&quot;: &quot;http://www.uahirise.org/ESP_012600_1655&quot;,</span>
-    <span class="c1"># &quot;External_url2&quot;: &quot;jpip://hijpip.lpl.arizona.edu:8064/PDS/RDR/ESP/ORB_012600_012699/ESP_012600_1655/ESP_012600_1655_RED.JP2&quot;,</span>
-    <span class="c1"># &quot;FilesURL&quot;: &quot;https://ode.rsl.wustl.edu/mars/productfiles.aspx?product_id=ESP_012600_1655_RED&amp;product_idGeo=13005453&quot;,</span>
-    <span class="c1"># &quot;Footprint_C0_geometry&quot;: &quot;POLYGON ((-119.886 -14.4381, -119.973 -14.4483, -120.012 -14.132, -119.925 -14.1218, -119.886 -14.4381))&quot;,</span>
-    <span class="c1"># &quot;Footprint_geometry&quot;: &quot;POLYGON ((240.114 -14.4381, 240.027 -14.4483, 239.988 -14.132, 240.075 -14.1218, 240.114 -14.4381))&quot;,</span>
-    <span class="c1"># &quot;Footprint_GL_geometry&quot;: &quot;POLYGON ((240.114 -14.4381, 240.027 -14.4483, 239.988 -14.132, 240.075 -14.1218, 240.114 -14.4381))&quot;,</span>
-    <span class="c1"># &quot;Footprint_NP_geometry&quot;: &quot;MULTIPOLYGON EMPTY&quot;,</span>
-    <span class="c1"># &quot;Footprint_souce&quot;: &quot;PDS Archive Index Table&quot;,</span>
-    <span class="c1"># &quot;Footprint_SP_geometry&quot;: &quot;MULTIPOLYGON EMPTY&quot;,</span>
-    <span class="c1"># &quot;Footprints_cross_meridian&quot;: &quot;False&quot;,</span>
-    <span class="c1"># &quot;ihid&quot;: &quot;MRO&quot;,</span>
-    <span class="c1"># &quot;iid&quot;: &quot;HIRISE&quot;,</span>
-    <span class="c1"># &quot;Incidence_angle&quot;: &quot;49.904166&quot;,</span>
-    <span class="c1"># &quot;LabelFileName&quot;: &quot;esp_012600_1655_red.lbl&quot;,</span>
-    <span class="c1"># &quot;LabelURL&quot;: &quot;https://hirise.lpl.arizona.edu/PDS/RDR/ESP/ORB_012600_012699/ESP_012600_1655/ESP_012600_1655_RED.LBL&quot;,</span>
-    <span class="c1"># &quot;Map_resolution&quot;: &quot;118528.17278819&quot;,</span>
-    <span class="c1"># &quot;Map_scale&quot;: &quot;0.5&quot;,</span>
-    <span class="c1"># &quot;Maximum_latitude&quot;: &quot;-14.1218&quot;,</span>
-    <span class="c1"># &quot;Minimum_latitude&quot;: &quot;-14.4483&quot;,</span>
-    <span class="c1"># &quot;Observation_id&quot;: &quot;ESP_012600_1655&quot;,</span>
-    <span class="c1"># &quot;Observation_time&quot;: &quot;2009-04-04T07:13:46.356&quot;,</span>
-    <span class="c1"># &quot;ODE_notes&quot;: {</span>
-    <span class="c1">#     &quot;ODE_note&quot;: [</span>
-    <span class="c1">#         &quot;NOTE: Product Type set by ODE&quot;,</span>
-    <span class="c1">#         &quot;NOTE: Label keyword Orbit number value used for start orbit number value&quot;,</span>
-    <span class="c1">#         &quot;NOTE: Label keyword Orbit number value used for stop orbit number value&quot;,</span>
-    <span class="c1">#         &quot;NOTE: Map Resolution set from label map projection object&quot;,</span>
-    <span class="c1">#         &quot;NOTE: Map scale from the label map projection object&quot;,</span>
-    <span class="c1">#         &quot;NOTE: Observation time set to mid-point between start time and stop time&quot;,</span>
-    <span class="c1">#         &quot;NOTE: Index Record:&quot;,</span>
-    <span class="c1">#         &quot;\&quot;MROHR_0001\&quot;,\&quot;RDR/ESP/ORB_012600_012699/ESP_012600_1655/ESP_012600_1655_RED.JP2  \&quot;,\&quot;MRO\&quot;,\&quot;HIRISE\&quot;,\&quot;ESP_012600_1655\&quot;,\&quot;ESP_012600_1655_RED  \&quot;,\&quot;1  \&quot;,\&quot;MARS                            \&quot;, 12600,\&quot;Extended Science Phase        \&quot;,\&quot;Pit crater chain south of Arsia Mons                                       \&quot;,\&quot;2009-04-04T07:13:43     \&quot;,\&quot;923296444:63762 \&quot;,\&quot;2009-04-04T07:13:43     \&quot;,\&quot;923296445:06824 \&quot;,\&quot;2009-04-04T07:13:49     \&quot;,\&quot;923296451:03746 \&quot;, 38702, 14754, 3.71414,49.9040, 53.5430, 252.320,3656.72, 252.623,  270.0000,  163.7660,  -21.6699,  187.9300,  -14.2643,  240.3150,   1.38343,   240.167,   15.4747,\&quot;YES\&quot;,  -14.4483,  -14.1218,  239.9880,  240.1140, 0.50,118528.000,\&quot;EQUIRECTANGULAR    \&quot;,-10.0, 180.000,  -1673830.0,  -7002200.0,  -14.4381,  240.1140,  -14.4483,  240.0270,  -14.1320,  239.9880,  -14.1218,  240.0750&quot;,</span>
-    <span class="c1">#         &quot;NOTE: HIRISE location data updated from index table entry&quot;</span>
-    <span class="c1">#     ]</span>
-    <span class="c1"># },</span>
-    <span class="c1"># &quot;pdsid&quot;: &quot;ESP_012600_1655_RED&quot;,</span>
-    <span class="c1"># &quot;PDSVolume_Id&quot;: &quot;MROHR_0001&quot;,</span>
-    <span class="c1"># &quot;Phase_angle&quot;: &quot;53.549941&quot;,</span>
-    <span class="c1"># &quot;Pole_state&quot;: &quot;none&quot;,</span>
-    <span class="c1"># &quot;Producer_id&quot;: &quot;UA&quot;,</span>
-    <span class="c1"># &quot;Product_creation_time&quot;: &quot;2009-08-18T00:14:05.000&quot;,</span>
-    <span class="c1"># &quot;Product_files&quot;: {</span>
-    <span class="c1">#     &quot;Product_file&quot;: [</span>
-    <span class="c1">#         {</span>
-    <span class="c1">#             &quot;Description&quot;: &quot;MAP PROJECTION FILE&quot;,</span>
-    <span class="c1">#             &quot;FileName&quot;: &quot;DSMAP.CAT&quot;,</span>
-    <span class="c1">#             &quot;KBytes&quot;: &quot;7&quot;,</span>
-    <span class="c1">#             &quot;Type&quot;: &quot;Referenced&quot;,</span>
-    <span class="c1">#             &quot;URL&quot;: &quot;https://hirise.lpl.arizona.edu/PDS/CATALOG/DSMAP.CAT&quot;</span>
-    <span class="c1">#         },</span>
-    <span class="c1">#</span>
-    <span class="c1"># &quot;Product_version_id&quot;: &quot;1.0&quot;,</span>
-    <span class="c1"># &quot;ProductURL&quot;: &quot;https://ode.rsl.wustl.edu/mars/indexproductpage.aspx?product_id=ESP_012600_1655_RED&amp;product_idGeo=13005453&quot;,</span>
-    <span class="c1"># &quot;pt&quot;: &quot;RDRV11&quot;,</span>
-    <span class="c1"># &quot;RelativePathtoVol&quot;: &quot;rdr\\esp\\orb_012600_012699\\esp_012600_1655\\&quot;,</span>
-    <span class="c1"># &quot;Solar_longitude&quot;: &quot;240.166542&quot;,</span>
-    <span class="c1"># &quot;Solar_time&quot;: &quot;15.47471&quot;,</span>
-    <span class="c1"># &quot;SpaceCraft_clock_start_count&quot;: &quot;923296445:06824&quot;,</span>
-    <span class="c1"># &quot;SpaceCraft_clock_stop_count&quot;: &quot;923296451:03746&quot;,</span>
-    <span class="c1"># &quot;Start_orbit_number&quot;: &quot;12600&quot;,</span>
-    <span class="c1"># &quot;Stop_orbit_number&quot;: &quot;12600&quot;,</span>
-    <span class="c1"># &quot;Target_name&quot;: &quot;MARS&quot;,</span>
-    <span class="c1"># &quot;UTC_start_time&quot;: &quot;2009-04-04T07:13:43.380&quot;,</span>
-    <span class="c1"># &quot;UTC_stop_time&quot;: &quot;2009-04-04T07:13:49.333&quot;,</span>
-    <span class="c1"># &quot;Westernmost_longitude&quot;: &quot;239.988&quot;</span>
+    <span class="n">Footprint_GL_geometry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Planetocentric, longitude 0-360 product footprint in WKT format. Only if there is a valid footprint. This is</span>
+<span class="sd">    not a projected footprint.&quot;&quot;&quot;</span>
 
+    <span class="n">Footprint_NP_geometry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Stereographic south polar projected footprint in WKT format. Only if there is a valid footprint. This footprint</span>
+<span class="sd">    has been projected into meters in stereographic north polar projection.&quot;&quot;&quot;</span>
+
+    <span class="n">Footprint_SP_geometry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Stereographic south polar projected footprint in WKT format. Only if there is a valid footprint. This footprint</span>
+<span class="sd">    has been projected into meters in stereographic south polar projection.&quot;&quot;&quot;</span>
+
+    <span class="n">Footprints_cross_meridian</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;T if the footprint crosses the 0/360 longitude line (anti-meridian).&quot;&quot;&quot;</span>
+
+    <span class="n">Pole_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;String of &quot;none&quot;, &quot;north&quot;, or &quot;south&quot;.&quot;&quot;&quot;</span>
+
+    <span class="n">Footprint_souce</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;A brief description of where the footprint came from.&quot;&quot;&quot;</span>
+
+    <span class="c1"># USGS_Sites</span>
+
+    <span class="n">Comment</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Any associated comment.&quot;&quot;&quot;</span>
+
+    <span class="n">Description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Label description&quot;&quot;&quot;</span>
+
+    <span class="c1"># ODE_notes</span>
+
+    <span class="n">External_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;URL to an external reference to the product. Product type specific but usually something like the HiRISE site.&quot;&quot;&quot;</span>
+
+    <span class="n">External_url2</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;URL to an external reference to the product. Product type specific but usually something like the HiRISE site.&quot;&quot;&quot;</span>
+
+    <span class="n">External_url3</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;URL to an external reference to the product. Product type specific but usually something like the HiRISE site.&quot;&quot;&quot;</span>
+
+    <span class="n">FilesURL</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+
+    <span class="n">ProductURL</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+
+    <span class="n">LabelURL</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+
+    <span class="n">Product_files</span><span class="p">:</span> <span class="n">PDSODE_Product_file_key</span>
+    <span class="sd">&quot;&quot;&quot;Associated product files.&quot;&quot;&quot;</span></div>
 
 <div class="viewcode-block" id="EPNTAP_Collection"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.EPNTAP_Collection">[docs]</a><span class="k">class</span> <span class="nc">EPNTAP_Collection</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="k">pass</span></div>
@@ -670,7 +777,7 @@ title="Open an issue"
         <span class="k">return</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="create_schema_object"><a class="viewcode-back" href="../../crawler_api.html#crawler.schemas.create_schema_object">[docs]</a><span class="k">def</span> <span class="nf">create_schema_object</span><span class="p">(</span><span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">object_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Create a collection or item metadata object from an input metadata dictionary and a metadata schema name.</span>
+    <span class="sd">&quot;&quot;&quot;Create a collection or item metadata object from an input metadata dictionary and schema name.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">METADATA_SCHEMAS</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">object_type</span> <span class="ow">in</span> <span class="n">METADATA_SCHEMAS</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>

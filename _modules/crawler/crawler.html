@@ -297,7 +297,7 @@ title="Open an issue"
     <span class="n">STAC_DATA_DIR</span><span class="p">,</span>
     <span class="n">PDSSP_REGISTRY_ENDPOINT</span><span class="p">,</span>
     <span class="n">LOCAL_REGISTRY_DIRECTORY</span><span class="p">,</span>
-    <span class="n">STAC_CATALOG_ENDPOINT</span><span class="p">,</span>
+    <span class="n">STAC_CATALOG_PARENT_ENDPOINT</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
@@ -382,6 +382,18 @@ title="Open an issue"
                                                      <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span> <span class="n">extracted</span><span class="o">=</span><span class="n">extracted</span><span class="p">,</span> <span class="n">transformed</span><span class="o">=</span><span class="n">transformed</span><span class="p">,</span> <span class="n">ingested</span><span class="o">=</span><span class="n">ingested</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="Crawler.process_collections"><a class="viewcode-back" href="../../crawler_api.html#crawler.crawler.Crawler.process_collections">[docs]</a>    <span class="k">def</span> <span class="nf">process_collections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection_id</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">service_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">extracted</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">transformed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ingested</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Process all or a filtered selection of collections.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">source_collections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_source_collections</span><span class="p">(</span><span class="n">collection_id</span><span class="o">=</span><span class="n">collection_id</span><span class="p">,</span> <span class="n">service_type</span><span class="o">=</span><span class="n">service_type</span><span class="p">,</span>
+                                                         <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span> <span class="n">extracted</span><span class="o">=</span><span class="n">extracted</span><span class="p">,</span> <span class="n">transformed</span><span class="o">=</span><span class="n">transformed</span><span class="p">,</span>
+                                                         <span class="n">ingested</span><span class="o">=</span><span class="n">ingested</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">source_collection</span> <span class="ow">in</span> <span class="n">source_collections</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Processing </span><span class="si">{</span><span class="n">source_collection</span><span class="o">.</span><span class="n">collection_id</span><span class="si">}</span><span class="s1"> collection...&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">extract_collection</span><span class="p">(</span><span class="n">source_collection</span><span class="o">.</span><span class="n">collection_id</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transform_collection</span><span class="p">(</span><span class="n">source_collection</span><span class="o">.</span><span class="n">collection_id</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ingest_collection</span><span class="p">(</span><span class="n">source_collection</span><span class="o">.</span><span class="n">collection_id</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Crawler.extract_collection"><a class="viewcode-back" href="../../crawler_api.html#crawler.crawler.Crawler.extract_collection">[docs]</a>    <span class="k">def</span> <span class="nf">extract_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Extract source collection file(s) from the &quot;data catalog&quot; service associated to a given collection identifier.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -392,10 +404,10 @@ title="Open an issue"
             <span class="k">return</span>
 
         <span class="k">if</span> <span class="n">collection</span><span class="o">.</span><span class="n">extracted</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1"> collection already extracted:&#39;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;- Source collection file(s): </span><span class="si">{</span><span class="n">collection</span><span class="o">.</span><span class="n">extracted_files</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>  <span class="c1"># extracted_data_dir ???</span>
-            <span class="nb">print</span><span class="p">()</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span> <span class="c1"># quit unless input overwrite</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1"> collection already extracted:&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;- Source collection file(s): </span><span class="si">{</span><span class="n">collection</span><span class="o">.</span><span class="n">extracted_files</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>  <span class="c1"># extracted_data_dir ???</span>
+                <span class="nb">print</span><span class="p">()</span>
                 <span class="k">return</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Extracting </span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1"> source collection files...&#39;</span><span class="p">)</span>
@@ -428,13 +440,13 @@ title="Open an issue"
             <span class="k">return</span>
 
         <span class="k">if</span> <span class="n">collection</span><span class="o">.</span><span class="n">transformed</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1"> already transformed:&#39;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;- STAC collection file: </span><span class="si">{</span><span class="n">collection</span><span class="o">.</span><span class="n">stac_dir</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span> <span class="c1"># quit unless input overwrite</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1"> already transformed:&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;- STAC collection file: </span><span class="si">{</span><span class="n">collection</span><span class="o">.</span><span class="n">stac_dir</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="k">return</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">collection</span><span class="o">.</span><span class="n">extracted</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1"> source collection not extracted to source collection file(s).&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1"> source collection not extracted as source collection file(s).&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">extract_collection</span><span class="p">(</span><span class="n">collection_id</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">collection</span><span class="o">.</span><span class="n">extracted</span><span class="p">:</span>
@@ -473,23 +485,26 @@ title="Open an issue"
             <span class="k">return</span>
 
         <span class="k">if</span> <span class="n">collection</span><span class="o">.</span><span class="n">ingested</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1"> already ingested:&#39;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;- STAC collection file: </span><span class="si">{</span><span class="n">collection</span><span class="o">.</span><span class="n">stac_dir</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;- STAC collection URL: </span><span class="si">{</span><span class="n">collection</span><span class="o">.</span><span class="n">stac_url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">update</span><span class="p">:</span>  <span class="c1"># quit unless input update is True</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1"> already ingested:&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;- STAC collection file: </span><span class="si">{</span><span class="n">collection</span><span class="o">.</span><span class="n">stac_dir</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;- STAC collection URL: </span><span class="si">{</span><span class="n">collection</span><span class="o">.</span><span class="n">stac_url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="k">return</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">collection</span><span class="o">.</span><span class="n">transformed</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1"> source collection not transformed to STAC catalog or collection file.&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">transform_collection</span><span class="p">(</span><span class="n">collection_id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transform_collection</span><span class="p">(</span><span class="n">collection_id</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">update</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">collection</span><span class="o">.</span><span class="n">transformed</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Ingesting </span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1"> STAC catalog...&#39;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;- STAC catalog dir: </span><span class="si">{</span><span class="n">collection</span><span class="o">.</span><span class="n">stac_dir</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="c1"># ingestor = Ingestor(stac_api_parent_url=STAC_CATALOG_PARENT_ENDPOINT)  # requires RESTO_ADMIN_AUTH_TOKEN env variable</span>
+            <span class="c1"># stac_collection_file = f&#39;{collection.stac_dir}/collection.json&#39;</span>
+            <span class="c1"># ingestor.ingest(stac_file=stac_collection_file, update_if_exists=update, ingest_strategy=&#39;catalog&#39;)</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">ingestor</span> <span class="o">=</span> <span class="n">Ingestor</span><span class="p">(</span><span class="n">stac_api_url</span><span class="o">=</span><span class="n">STAC_CATALOG_ENDPOINT</span><span class="p">)</span> <span class="c1"># requires RESTO_ADMIN_AUTH_TOKEN env variable</span>
+                <span class="n">ingestor</span> <span class="o">=</span> <span class="n">Ingestor</span><span class="p">(</span><span class="n">stac_api_parent_url</span><span class="o">=</span><span class="n">STAC_CATALOG_PARENT_ENDPOINT</span><span class="p">)</span> <span class="c1"># requires RESTO_ADMIN_AUTH_TOKEN env variable</span>
                 <span class="n">stac_collection_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">collection</span><span class="o">.</span><span class="n">stac_dir</span><span class="si">}</span><span class="s1">/collection.json&#39;</span>
-                <span class="n">ingestor</span><span class="o">.</span><span class="n">ingest</span><span class="p">(</span><span class="n">stac_file</span><span class="o">=</span><span class="n">stac_collection_file</span><span class="p">,</span> <span class="n">update_if_exists</span><span class="o">=</span><span class="n">update</span><span class="p">,</span> <span class="n">ingest_strategy</span><span class="o">=</span><span class="s1">&#39;catalog&#39;</span><span class="p">)</span>
+                <span class="n">ingestor</span><span class="o">.</span><span class="n">ingest</span><span class="p">(</span><span class="n">stac_file</span><span class="o">=</span><span class="n">stac_collection_file</span><span class="p">,</span> <span class="n">update_if_exists</span><span class="o">=</span><span class="n">update</span><span class="p">,</span> <span class="n">ingest_strategy</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Could not ingest </span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1"> source collection.&#39;</span><span class="p">)</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
@@ -499,8 +514,6 @@ title="Open an issue"
             <span class="n">collection</span><span class="o">.</span><span class="n">ingested</span> <span class="o">=</span> <span class="n">ingestor</span><span class="o">.</span><span class="n">ingested</span>
             <span class="n">collection</span><span class="o">.</span><span class="n">stac_url</span> <span class="o">=</span> <span class="n">ingestor</span><span class="o">.</span><span class="n">stac_url</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">datastore</span><span class="o">.</span><span class="n">save_source_collections</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Could not transform </span><span class="si">{</span><span class="n">collection_id</span><span class="si">}</span><span class="s1"> source collection.&#39;</span><span class="p">)</span>
 

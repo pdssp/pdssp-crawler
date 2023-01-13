@@ -354,6 +354,16 @@ title="Print to PDF"
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#crawler-initds">
+     initds
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#crawler-process">
+     process
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#crawler-registry">
      registry
     </a>
@@ -415,6 +425,16 @@ title="Print to PDF"
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#crawler-initds">
+     initds
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#crawler-process">
+     process
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#crawler-registry">
      registry
     </a>
@@ -461,7 +481,10 @@ title="Print to PDF"
 <h3>collections<a class="headerlink" href="#crawler-collections" title="Permalink to this headline">#</a></h3>
 <p>Show source collections available in the data store.</p>
 <p>Returned source collections can optionally be filtered by identifier, service type, target, and whether or it has been
-extracted, transformed or ingested.</p>
+extracted, transformed or ingested. For example, to return Mars collections not yet ingested but extracted, run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">crawler</span> <span class="n">collections</span> <span class="o">--</span><span class="n">target</span><span class="o">=</span><span class="n">mars</span> <span class="o">--</span><span class="ow">not</span><span class="o">-</span><span class="n">ingested</span> <span class="o">--</span><span class="n">extracted</span>
+</pre></div>
+</div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crawler collections <span class="o">[</span>OPTIONS<span class="o">]</span>
 </pre></div>
 </div>
@@ -486,20 +509,38 @@ extracted, transformed or ingested.</p>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-crawler-collections-extracted">
-<span id="cmdoption-crawler-collections-no-extracted"></span><span class="sig-name descname"><span class="pre">--extracted</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-extracted</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crawler-collections-extracted" title="Permalink to this definition">#</a></dt>
-<dd><p>Filter to return only transformed collections</p>
+<span class="sig-name descname"><span class="pre">--extracted</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crawler-collections-extracted" title="Permalink to this definition">#</a></dt>
+<dd><p>Filter to return only extracted collections.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crawler-collections-not-extracted">
+<span class="sig-name descname"><span class="pre">--not-extracted</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crawler-collections-not-extracted" title="Permalink to this definition">#</a></dt>
+<dd><p>Filter to return collections not yet extracted.</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-crawler-collections-transformed">
-<span id="cmdoption-crawler-collections-no-transformed"></span><span class="sig-name descname"><span class="pre">--transformed</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-transformed</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crawler-collections-transformed" title="Permalink to this definition">#</a></dt>
-<dd><p>Filter to return only transformed collections</p>
+<span class="sig-name descname"><span class="pre">--transformed</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crawler-collections-transformed" title="Permalink to this definition">#</a></dt>
+<dd><p>Filter to return only transformed collections.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crawler-collections-not-transformed">
+<span class="sig-name descname"><span class="pre">--not-transformed</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crawler-collections-not-transformed" title="Permalink to this definition">#</a></dt>
+<dd><p>Filter to return collections not yet transformed.</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-crawler-collections-ingested">
-<span id="cmdoption-crawler-collections-no-ingested"></span><span class="sig-name descname"><span class="pre">--ingested</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-ingested</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crawler-collections-ingested" title="Permalink to this definition">#</a></dt>
-<dd><p>Filter to return only ingested collections</p>
+<span class="sig-name descname"><span class="pre">--ingested</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crawler-collections-ingested" title="Permalink to this definition">#</a></dt>
+<dd><p>Filter to return only ingested collections.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crawler-collections-not-ingested">
+<span class="sig-name descname"><span class="pre">--not-ingested</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crawler-collections-not-ingested" title="Permalink to this definition">#</a></dt>
+<dd><p>Filter to return collections not yet ingested.</p>
 </dd></dl>
 
 </section>
@@ -547,6 +588,86 @@ extracted, transformed or ingested.</p>
 <dt class="sig sig-object std" id="cmdoption-crawler-ingest-update">
 <span id="cmdoption-crawler-ingest-no-update"></span><span class="sig-name descname"><span class="pre">--update</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-update</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crawler-ingest-update" title="Permalink to this definition">#</a></dt>
 <dd><p>Update destination STAC collection if exists</p>
+</dd></dl>
+
+</section>
+<section id="crawler-initds">
+<h3>initds<a class="headerlink" href="#crawler-initds" title="Permalink to this headline">#</a></h3>
+<p>Initialise data store.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crawler initds <span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+</section>
+<section id="crawler-process">
+<h3>process<a class="headerlink" href="#crawler-process" title="Permalink to this headline">#</a></h3>
+<p>Process all or a filtered selection of source collections.</p>
+<p>Use options to filter source collections from the data store. If you’re unsure about the filtering result, first use
+the <cite>collections</cite> command to preview the list of source collections given your input filters.</p>
+<p>Source collections will currently be processed sequentially, going through extraction, transformation and ingestion.
+Note that all STAC collections are grouped into a single STAC catalog, with one catalog per target body. Ingestion
+of all collections could be done at once when they all have been transformed.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crawler process <span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crawler-process-id">
+<span class="sig-name descname"><span class="pre">--id</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;id&gt;</span></span><a class="headerlink" href="#cmdoption-crawler-process-id" title="Permalink to this definition">#</a></dt>
+<dd><p>Collection ID filter.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crawler-process-service-type">
+<span class="sig-name descname"><span class="pre">--service-type</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;service_type&gt;</span></span><a class="headerlink" href="#cmdoption-crawler-process-service-type" title="Permalink to this definition">#</a></dt>
+<dd><p>Service type filter.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crawler-process-target">
+<span class="sig-name descname"><span class="pre">--target</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;target&gt;</span></span><a class="headerlink" href="#cmdoption-crawler-process-target" title="Permalink to this definition">#</a></dt>
+<dd><p>Target filter.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crawler-process-extracted">
+<span class="sig-name descname"><span class="pre">--extracted</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crawler-process-extracted" title="Permalink to this definition">#</a></dt>
+<dd><p>Filter to return only extracted collections.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crawler-process-not-extracted">
+<span class="sig-name descname"><span class="pre">--not-extracted</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crawler-process-not-extracted" title="Permalink to this definition">#</a></dt>
+<dd><p>Filter to return collections not yet extracted.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crawler-process-transformed">
+<span class="sig-name descname"><span class="pre">--transformed</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crawler-process-transformed" title="Permalink to this definition">#</a></dt>
+<dd><p>Filter to return only transformed collections.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crawler-process-not-transformed">
+<span class="sig-name descname"><span class="pre">--not-transformed</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crawler-process-not-transformed" title="Permalink to this definition">#</a></dt>
+<dd><p>Filter to return collections not yet transformed.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crawler-process-ingested">
+<span class="sig-name descname"><span class="pre">--ingested</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crawler-process-ingested" title="Permalink to this definition">#</a></dt>
+<dd><p>Filter to return only ingested collections.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crawler-process-not-ingested">
+<span class="sig-name descname"><span class="pre">--not-ingested</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crawler-process-not-ingested" title="Permalink to this definition">#</a></dt>
+<dd><p>Filter to return collections not yet ingested.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crawler-process-overwrite">
+<span id="cmdoption-crawler-process-no-overwrite"></span><span class="sig-name descname"><span class="pre">--overwrite</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-overwrite</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crawler-process-overwrite" title="Permalink to this definition">#</a></dt>
+<dd><p>Overwrite existing source collection files.</p>
 </dd></dl>
 
 </section>

@@ -550,6 +550,12 @@ title="Print to PDF"
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="crawler.crawler.Crawler.process_collections">
+<span class="sig-name descname"><span class="pre">process_collections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">service_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extracted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transformed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ingested</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/crawler/crawler.html#Crawler.process_collections"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.crawler.Crawler.process_collections" title="Permalink to this definition">#</a></dt>
+<dd><p>Process all or a filtered selection of collections.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="crawler.crawler.Crawler.reset_datastore">
 <span class="sig-name descname"><span class="pre">reset_datastore</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crawler/crawler.html#Crawler.reset_datastore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.crawler.Crawler.reset_datastore" title="Permalink to this definition">#</a></dt>
 <dd><p>Reset data store using retrieved collections from internal and external data catalog services.</p>
@@ -2087,11 +2093,52 @@ compliant to the following schemas/models:</p>
 <span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Observation Id&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
 <span class="w">      </span><span class="p">},</span><span class="w"></span>
-<span class="w">      </span><span class="nt">&quot;Product_files&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="nt">&quot;$ref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#/definitions/PDSODE_Product_file_key&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Observation_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Observation Number&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
 <span class="w">      </span><span class="p">},</span><span class="w"></span>
-<span class="w">      </span><span class="nt">&quot;Footprint_C0_geometry&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Footprint C0 Geometry&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Observation_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Observation Type&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Producer_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Producer Id&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Producer_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Producer Name&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Product_release_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Product Release Date&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Activity_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Activity Id&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Predicted_dust_opacity&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Predicted Dust Opacity&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Predicted_dust_opacity_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Predicted Dust Opacity Text&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Observation_time&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Observation Time&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;SpaceCraft_clock_start_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Spacecraft Clock Start Count&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;SpaceCraft_clock_stop_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Spacecraft Clock Stop Count&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Stop_orbit_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Stop Orbit Number&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
 <span class="w">      </span><span class="p">},</span><span class="w"></span>
 <span class="w">      </span><span class="nt">&quot;UTC_start_time&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
@@ -2102,29 +2149,180 @@ compliant to the following schemas/models:</p>
 <span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Utc Stop Time&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
 <span class="w">      </span><span class="p">},</span><span class="w"></span>
-<span class="w">      </span><span class="nt">&quot;Solar_longitude&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Solar Longitude&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Emission_angle&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Emission Angle&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Emission_angle_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Emission Angle Text&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Phase_angle&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Phase Angle&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Phase_angle_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Phase Angle Text&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="w"></span>
 <span class="w">      </span><span class="p">},</span><span class="w"></span>
 <span class="w">      </span><span class="nt">&quot;Incidence_angle&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Incidence Angle&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="w"></span>
 <span class="w">      </span><span class="p">},</span><span class="w"></span>
-<span class="w">      </span><span class="nt">&quot;Emission_angle&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Emission Angle&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="p">},</span><span class="w"></span>
-<span class="w">      </span><span class="nt">&quot;Phase_angle&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Phase Angle&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Incidence_angle_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Incidence Angle Text&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="w"></span>
 <span class="w">      </span><span class="p">},</span><span class="w"></span>
 <span class="w">      </span><span class="nt">&quot;Map_resolution&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Map Resolution&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="w"></span>
 <span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Map_resolution_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Map Resolution Text&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
 <span class="w">      </span><span class="nt">&quot;Map_scale&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Map Scale&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Map_scale_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Map Scale Text&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Solar_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Solar Distance&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Solar_distance_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Solar Distance Text&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Solar_longitude&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Solar Longitude&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Center_georeferenced&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Center Georeferenced&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Center_latitude&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Center Latitude&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Center_longitude&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Center Longitude&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Center_latitude_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Center Latitude Text&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Center_longitude_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Center Longitude Text&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;BB_georeferenced&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Bb Georeferenced&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Easternmost_longitude&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Easternmost Longitude&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Maximum_latitude&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Maximum Latitude&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Minimum_latitude&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Minimum Latitude&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Westernmost_longitude&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Westernmost Longitude&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Easternmost_longitude_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Easternmost Longitude Text&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Maximum_latitude_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Maximum Latitude Text&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Minimum_latitude_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Minimum Latitude Text&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Westernmost_longitude_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Westernmost Longitude Text&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Footprint_geometry&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Footprint Geometry&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Footprint_C0_geometry&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Footprint C0 Geometry&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Footprint_GL_geometry&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Footprint Gl Geometry&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Footprint_NP_geometry&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Footprint Np Geometry&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Footprint_SP_geometry&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Footprint Sp Geometry&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Footprints_cross_meridian&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Footprints Cross Meridian&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Pole_state&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Pole State&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Footprint_souce&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Footprint Souce&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Comment&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Comment&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Description&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Description&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;External_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;External Url&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;External_url2&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;External Url2&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;External_url3&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;External Url3&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;FilesURL&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Filesurl&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;ProductURL&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Producturl&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;LabelURL&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Labelurl&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;Product_files&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;$ref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#/definitions/PDSODE_Product_file_key&quot;</span><span class="w"></span>
 <span class="w">      </span><span class="p">}</span><span class="w"></span>
 <span class="w">   </span><span class="p">},</span><span class="w"></span>
 <span class="w">   </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
@@ -2139,9 +2337,9 @@ compliant to the following schemas/models:</p>
 <span class="w">      </span><span class="s2">&quot;LabelFileName&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">      </span><span class="s2">&quot;Product_creation_time&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">      </span><span class="s2">&quot;Target_name&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="s2">&quot;Product_files&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">      </span><span class="s2">&quot;UTC_start_time&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="s2">&quot;UTC_stop_time&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="s2">&quot;UTC_stop_time&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="s2">&quot;Product_files&quot;</span><span class="w"></span>
 <span class="w">   </span><span class="p">],</span><span class="w"></span>
 <span class="w">   </span><span class="nt">&quot;definitions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">      </span><span class="nt">&quot;PDSODE_Product_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
@@ -2200,25 +2398,73 @@ compliant to the following schemas/models:</p>
 </details></p><dl class="field-list simple">
 <dt class="field-odd">Fields</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Activity_id" title="crawler.schemas.PDSODE_Product.Activity_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Activity_id</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.BB_georeferenced" title="crawler.schemas.PDSODE_Product.BB_georeferenced"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BB_georeferenced</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Center_georeferenced" title="crawler.schemas.PDSODE_Product.Center_georeferenced"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Center_georeferenced</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Center_latitude" title="crawler.schemas.PDSODE_Product.Center_latitude"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Center_latitude</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Center_latitude_text" title="crawler.schemas.PDSODE_Product.Center_latitude_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Center_latitude_text</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Center_longitude" title="crawler.schemas.PDSODE_Product.Center_longitude"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Center_longitude</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Center_longitude_text" title="crawler.schemas.PDSODE_Product.Center_longitude_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Center_longitude_text</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Comment" title="crawler.schemas.PDSODE_Product.Comment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Comment</span> <span class="pre">(Optional[str])</span></code></a></p></li>
 <li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Data_Set_Id" title="crawler.schemas.PDSODE_Product.Data_Set_Id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Data_Set_Id</span> <span class="pre">(str)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Description" title="crawler.schemas.PDSODE_Product.Description"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Description</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Easternmost_longitude" title="crawler.schemas.PDSODE_Product.Easternmost_longitude"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Easternmost_longitude</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Easternmost_longitude_text" title="crawler.schemas.PDSODE_Product.Easternmost_longitude_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Easternmost_longitude_text</span> <span class="pre">(Optional[str])</span></code></a></p></li>
 <li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Emission_angle" title="crawler.schemas.PDSODE_Product.Emission_angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Emission_angle</span> <span class="pre">(Optional[float])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Emission_angle_text" title="crawler.schemas.PDSODE_Product.Emission_angle_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Emission_angle_text</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.External_url" title="crawler.schemas.PDSODE_Product.External_url"><code class="xref py py-obj docutils literal notranslate"><span class="pre">External_url</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.External_url2" title="crawler.schemas.PDSODE_Product.External_url2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">External_url2</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.External_url3" title="crawler.schemas.PDSODE_Product.External_url3"><code class="xref py py-obj docutils literal notranslate"><span class="pre">External_url3</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.FilesURL" title="crawler.schemas.PDSODE_Product.FilesURL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FilesURL</span> <span class="pre">(Optional[str])</span></code></a></p></li>
 <li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Footprint_C0_geometry" title="crawler.schemas.PDSODE_Product.Footprint_C0_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Footprint_C0_geometry</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Footprint_GL_geometry" title="crawler.schemas.PDSODE_Product.Footprint_GL_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Footprint_GL_geometry</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Footprint_NP_geometry" title="crawler.schemas.PDSODE_Product.Footprint_NP_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Footprint_NP_geometry</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Footprint_SP_geometry" title="crawler.schemas.PDSODE_Product.Footprint_SP_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Footprint_SP_geometry</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Footprint_geometry" title="crawler.schemas.PDSODE_Product.Footprint_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Footprint_geometry</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Footprint_souce" title="crawler.schemas.PDSODE_Product.Footprint_souce"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Footprint_souce</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Footprints_cross_meridian" title="crawler.schemas.PDSODE_Product.Footprints_cross_meridian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Footprints_cross_meridian</span> <span class="pre">(Optional[str])</span></code></a></p></li>
 <li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Incidence_angle" title="crawler.schemas.PDSODE_Product.Incidence_angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Incidence_angle</span> <span class="pre">(Optional[float])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Incidence_angle_text" title="crawler.schemas.PDSODE_Product.Incidence_angle_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Incidence_angle_text</span> <span class="pre">(Optional[float])</span></code></a></p></li>
 <li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.LabelFileName" title="crawler.schemas.PDSODE_Product.LabelFileName"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LabelFileName</span> <span class="pre">(str)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.LabelURL" title="crawler.schemas.PDSODE_Product.LabelURL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LabelURL</span> <span class="pre">(Optional[str])</span></code></a></p></li>
 <li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Label_Product_Type" title="crawler.schemas.PDSODE_Product.Label_Product_Type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Label_Product_Type</span> <span class="pre">(Optional[str])</span></code></a></p></li>
 <li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Map_resolution" title="crawler.schemas.PDSODE_Product.Map_resolution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Map_resolution</span> <span class="pre">(Optional[float])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Map_resolution_text" title="crawler.schemas.PDSODE_Product.Map_resolution_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Map_resolution_text</span> <span class="pre">(Optional[float])</span></code></a></p></li>
 <li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Map_scale" title="crawler.schemas.PDSODE_Product.Map_scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Map_scale</span> <span class="pre">(Optional[float])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Map_scale_text" title="crawler.schemas.PDSODE_Product.Map_scale_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Map_scale_text</span> <span class="pre">(Optional[float])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Maximum_latitude" title="crawler.schemas.PDSODE_Product.Maximum_latitude"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Maximum_latitude</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Maximum_latitude_text" title="crawler.schemas.PDSODE_Product.Maximum_latitude_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Maximum_latitude_text</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Minimum_latitude" title="crawler.schemas.PDSODE_Product.Minimum_latitude"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Minimum_latitude</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Minimum_latitude_text" title="crawler.schemas.PDSODE_Product.Minimum_latitude_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Minimum_latitude_text</span> <span class="pre">(Optional[str])</span></code></a></p></li>
 <li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Observation_id" title="crawler.schemas.PDSODE_Product.Observation_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Observation_id</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Observation_number" title="crawler.schemas.PDSODE_Product.Observation_number"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Observation_number</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Observation_time" title="crawler.schemas.PDSODE_Product.Observation_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Observation_time</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Observation_type" title="crawler.schemas.PDSODE_Product.Observation_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Observation_type</span> <span class="pre">(Optional[str])</span></code></a></p></li>
 <li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.PDSVolume_Id" title="crawler.schemas.PDSODE_Product.PDSVolume_Id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PDSVolume_Id</span> <span class="pre">(str)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Phase_angle" title="crawler.schemas.PDSODE_Product.Phase_angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Phase_angle</span> <span class="pre">(Optional[float])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Phase_angle_text" title="crawler.schemas.PDSODE_Product.Phase_angle_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Phase_angle_text</span> <span class="pre">(Optional[float])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Pole_state" title="crawler.schemas.PDSODE_Product.Pole_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Pole_state</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Predicted_dust_opacity" title="crawler.schemas.PDSODE_Product.Predicted_dust_opacity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Predicted_dust_opacity</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Predicted_dust_opacity_text" title="crawler.schemas.PDSODE_Product.Predicted_dust_opacity_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Predicted_dust_opacity_text</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Producer_id" title="crawler.schemas.PDSODE_Product.Producer_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Producer_id</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Producer_name" title="crawler.schemas.PDSODE_Product.Producer_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Producer_name</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.ProductURL" title="crawler.schemas.PDSODE_Product.ProductURL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ProductURL</span> <span class="pre">(Optional[str])</span></code></a></p></li>
 <li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Product_creation_time" title="crawler.schemas.PDSODE_Product.Product_creation_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Product_creation_time</span> <span class="pre">(str)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Product_files" title="crawler.schemas.PDSODE_Product.Product_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Product_files</span> <span class="pre">(crawler.schemas.PDSODE_Product_file_key)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Product_release_date" title="crawler.schemas.PDSODE_Product.Product_release_date"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Product_release_date</span> <span class="pre">(Optional[str])</span></code></a></p></li>
 <li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Product_version_id" title="crawler.schemas.PDSODE_Product.Product_version_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Product_version_id</span> <span class="pre">(Optional[str])</span></code></a></p></li>
 <li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.RelativePathtoVol" title="crawler.schemas.PDSODE_Product.RelativePathtoVol"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RelativePathtoVol</span> <span class="pre">(str)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Solar_distance" title="crawler.schemas.PDSODE_Product.Solar_distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Solar_distance</span> <span class="pre">(Optional[float])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Solar_distance_text" title="crawler.schemas.PDSODE_Product.Solar_distance_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Solar_distance_text</span> <span class="pre">(Optional[float])</span></code></a></p></li>
 <li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Solar_longitude" title="crawler.schemas.PDSODE_Product.Solar_longitude"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Solar_longitude</span> <span class="pre">(Optional[float])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.SpaceCraft_clock_start_count" title="crawler.schemas.PDSODE_Product.SpaceCraft_clock_start_count"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpaceCraft_clock_start_count</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.SpaceCraft_clock_stop_count" title="crawler.schemas.PDSODE_Product.SpaceCraft_clock_stop_count"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpaceCraft_clock_stop_count</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Stop_orbit_number" title="crawler.schemas.PDSODE_Product.Stop_orbit_number"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Stop_orbit_number</span> <span class="pre">(Optional[str])</span></code></a></p></li>
 <li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Target_name" title="crawler.schemas.PDSODE_Product.Target_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Target_name</span> <span class="pre">(str)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.UTC_start_time" title="crawler.schemas.PDSODE_Product.UTC_start_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UTC_start_time</span> <span class="pre">(str)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.UTC_stop_time" title="crawler.schemas.PDSODE_Product.UTC_stop_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UTC_stop_time</span> <span class="pre">(str)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Westernmost_longitude" title="crawler.schemas.PDSODE_Product.Westernmost_longitude"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Westernmost_longitude</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.Westernmost_longitude_text" title="crawler.schemas.PDSODE_Product.Westernmost_longitude_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Westernmost_longitude_text</span> <span class="pre">(Optional[str])</span></code></a></p></li>
 <li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.ihid" title="crawler.schemas.PDSODE_Product.ihid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ihid</span> <span class="pre">(str)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.iid" title="crawler.schemas.PDSODE_Product.iid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iid</span> <span class="pre">(str)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#crawler.schemas.PDSODE_Product.ode_id" title="crawler.schemas.PDSODE_Product.ode_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ode_id</span> <span class="pre">(str)</span></code></a></p></li>
@@ -2228,31 +2474,186 @@ compliant to the following schemas/models:</p>
 </dd>
 </dl>
 <dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Activity_id">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Activity_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Activity_id" title="Permalink to this definition">#</a></dt>
+<dd><p>Label Activity id</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.BB_georeferenced">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BB_georeferenced</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.BB_georeferenced" title="Permalink to this definition">#</a></dt>
+<dd><p>T if the product has a footprint bounding box.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Center_georeferenced">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Center_georeferenced</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Center_georeferenced" title="Permalink to this definition">#</a></dt>
+<dd><p>T if the product has a footprint center.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Center_latitude">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Center_latitude</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Center_latitude" title="Permalink to this definition">#</a></dt>
+<dd><p>Planetocentric footprint center latitude.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Center_latitude_text">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Center_latitude_text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Center_latitude_text" title="Permalink to this definition">#</a></dt>
+<dd><p>Text found in the center latitude label keyword if the center latitude is not a valid number.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Center_longitude">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Center_longitude</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Center_longitude" title="Permalink to this definition">#</a></dt>
+<dd><p>Longitude 0-360 center longitude.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Center_longitude_text">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Center_longitude_text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Center_longitude_text" title="Permalink to this definition">#</a></dt>
+<dd><p>Text found in the center longitude label keyword if the center longitude is not a valid number.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Comment">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Comment</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Comment" title="Permalink to this definition">#</a></dt>
+<dd><p>Any associated comment.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Data_Set_Id">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Data_Set_Id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Data_Set_Id" title="Permalink to this definition">#</a></dt>
 <dd><p>PDS Data Set Id.</p>
 </dd></dl>
 
 <dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Description">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Description</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Description" title="Permalink to this definition">#</a></dt>
+<dd><p>Label description</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Easternmost_longitude">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Easternmost_longitude</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Easternmost_longitude" title="Permalink to this definition">#</a></dt>
+<dd><p>Longitude 0-360 Easternmost longitude of the footprint.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Easternmost_longitude_text">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Easternmost_longitude_text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Easternmost_longitude_text" title="Permalink to this definition">#</a></dt>
+<dd><p>Text found in the easternmost longitude label keyword if the easternmost longitude is not a valid number.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Emission_angle">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Emission_angle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Emission_angle" title="Permalink to this definition">#</a></dt>
+<dd><p>Emission angle.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Emission_angle_text">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Emission_angle_text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Emission_angle_text" title="Permalink to this definition">#</a></dt>
+<dd><p>Emission angle text from the product label.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.External_url">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">External_url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.External_url" title="Permalink to this definition">#</a></dt>
+<dd><p>URL to an external reference to the product. Product type specific but usually something like the HiRISE site.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.External_url2">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">External_url2</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.External_url2" title="Permalink to this definition">#</a></dt>
+<dd><p>URL to an external reference to the product. Product type specific but usually something like the HiRISE site.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.External_url3">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">External_url3</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.External_url3" title="Permalink to this definition">#</a></dt>
+<dd><p>URL to an external reference to the product. Product type specific but usually something like the HiRISE site.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.FilesURL">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">FilesURL</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.FilesURL" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Footprint_C0_geometry">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Footprint_C0_geometry</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Footprint_C0_geometry" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Planetocentric, longitude -180-180 product footprint in WKT format. Only if there is a valid footprint. Note -
+this is a cylindrical projected footprint. The footprint has been split into multiple polygons when crossing the
+-180/180 longitude line and any footprints that cross the poles have been adjusted to add points to and around the
+pole. It is meant for use in cylindrical projects and is not appropriate for spherical displays.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Footprint_GL_geometry">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Footprint_GL_geometry</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Footprint_GL_geometry" title="Permalink to this definition">#</a></dt>
+<dd><p>Planetocentric, longitude 0-360 product footprint in WKT format. Only if there is a valid footprint. This is
+not a projected footprint.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Footprint_NP_geometry">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Footprint_NP_geometry</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Footprint_NP_geometry" title="Permalink to this definition">#</a></dt>
+<dd><p>Stereographic south polar projected footprint in WKT format. Only if there is a valid footprint. This footprint
+has been projected into meters in stereographic north polar projection.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Footprint_SP_geometry">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Footprint_SP_geometry</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Footprint_SP_geometry" title="Permalink to this definition">#</a></dt>
+<dd><p>Stereographic south polar projected footprint in WKT format. Only if there is a valid footprint. This footprint
+has been projected into meters in stereographic south polar projection.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Footprint_geometry">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Footprint_geometry</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Footprint_geometry" title="Permalink to this definition">#</a></dt>
+<dd><p>Cylindrical projected planetocentric, longitude 0-360 product footprint in WKT format. Only if there is
+a valid footprint. Note - this is a cylindrical projected footprint. The footprint has been split into multiple
+polygons when crossing the 0/360 longitude line and any footprints that cross the poles have been adjusted to add
+points to and around the pole. It is meant for use in cylindrical projects and is not appropriate for spherical
+displays.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Footprint_souce">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Footprint_souce</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Footprint_souce" title="Permalink to this definition">#</a></dt>
+<dd><p>A brief description of where the footprint came from.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Footprints_cross_meridian">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Footprints_cross_meridian</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Footprints_cross_meridian" title="Permalink to this definition">#</a></dt>
+<dd><p>T if the footprint crosses the 0/360 longitude line (anti-meridian).</p>
+</dd></dl>
 
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Incidence_angle">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Incidence_angle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Incidence_angle" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Incidence angle.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Incidence_angle_text">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Incidence_angle_text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Incidence_angle_text" title="Permalink to this definition">#</a></dt>
+<dd><p>Incidence angle text from the product label.</p>
+</dd></dl>
 
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.LabelFileName">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LabelFileName</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.LabelFileName" title="Permalink to this definition">#</a></dt>
 <dd><p>The file name of the product label.</p>
 </dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.LabelURL">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LabelURL</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.LabelURL" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Label_Product_Type">
@@ -2263,17 +2664,73 @@ compliant to the following schemas/models:</p>
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Map_resolution">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Map_resolution</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Map_resolution" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Map resolution.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Map_resolution_text">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Map_resolution_text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Map_resolution_text" title="Permalink to this definition">#</a></dt>
+<dd><p>Map resolution text from the product label.</p>
+</dd></dl>
 
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Map_scale">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Map_scale</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Map_scale" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Map scale.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Map_scale_text">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Map_scale_text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Map_scale_text" title="Permalink to this definition">#</a></dt>
+<dd><p>Map scale text from the product label.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Maximum_latitude">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Maximum_latitude</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Maximum_latitude" title="Permalink to this definition">#</a></dt>
+<dd><p>Planetocentric maximum latitude of the footprint.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Maximum_latitude_text">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Maximum_latitude_text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Maximum_latitude_text" title="Permalink to this definition">#</a></dt>
+<dd><p>Text found in the maximum latitude label keyword if the maximum latitude is not a valid number.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Minimum_latitude">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Minimum_latitude</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Minimum_latitude" title="Permalink to this definition">#</a></dt>
+<dd><p>Planetocentric minimum latitude of the footprint.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Minimum_latitude_text">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Minimum_latitude_text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Minimum_latitude_text" title="Permalink to this definition">#</a></dt>
+<dd><p>Text found in the minimum latitude label keyword if the minimum latitude is not a valid number.</p>
+</dd></dl>
 
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Observation_id">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Observation_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Observation_id" title="Permalink to this definition">#</a></dt>
 <dd><p>Identifies a scientific observation within a data set.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Observation_number">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Observation_number</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Observation_number" title="Permalink to this definition">#</a></dt>
+<dd><p>Monotonically increasing ordinal counter of the EDRs generated for a particular OBSERVATION_ID.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Observation_time">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Observation_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Observation_time" title="Permalink to this definition">#</a></dt>
+<dd><p>Observation time (mid-point between the start and end of the observation).</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Observation_type">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Observation_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Observation_type" title="Permalink to this definition">#</a></dt>
+<dd><p>Identifies the general type of an observation.</p>
 </dd></dl>
 
 <dl class="py attribute pydantic_field">
@@ -2285,6 +2742,48 @@ compliant to the following schemas/models:</p>
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Phase_angle">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Phase_angle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Phase_angle" title="Permalink to this definition">#</a></dt>
+<dd><p>Phase angle.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Phase_angle_text">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Phase_angle_text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Phase_angle_text" title="Permalink to this definition">#</a></dt>
+<dd><p>Phase angle text from the product label.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Pole_state">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Pole_state</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Pole_state" title="Permalink to this definition">#</a></dt>
+<dd><p>String of “none”, “north”, or “south”.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Predicted_dust_opacity">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Predicted_dust_opacity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Predicted_dust_opacity" title="Permalink to this definition">#</a></dt>
+<dd><p>Predicted dust opacity.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Predicted_dust_opacity_text">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Predicted_dust_opacity_text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Predicted_dust_opacity_text" title="Permalink to this definition">#</a></dt>
+<dd><p>Predicted dust opacity text.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Producer_id">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Producer_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Producer_id" title="Permalink to this definition">#</a></dt>
+<dd><p>Producer id.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Producer_name">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Producer_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Producer_name" title="Permalink to this definition">#</a></dt>
+<dd><p>Producer name.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.ProductURL">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ProductURL</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.ProductURL" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute pydantic_field">
@@ -2300,9 +2799,15 @@ compliant to the following schemas/models:</p>
 </dd></dl>
 
 <dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Product_release_date">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Product_release_date</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Product_release_date" title="Permalink to this definition">#</a></dt>
+<dd><p>Product release date.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Product_version_id">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Product_version_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Product_version_id" title="Permalink to this definition">#</a></dt>
-<dd><p>Product version</p>
+<dd><p>Product version.</p>
 </dd></dl>
 
 <dl class="py attribute pydantic_field">
@@ -2312,9 +2817,40 @@ compliant to the following schemas/models:</p>
 </dd></dl>
 
 <dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Solar_distance">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Solar_distance</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Solar_distance" title="Permalink to this definition">#</a></dt>
+<dd><p>Solar distance.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Solar_distance_text">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Solar_distance_text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Solar_distance_text" title="Permalink to this definition">#</a></dt>
+<dd><p>Solar distance text from the product label.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Solar_longitude">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Solar_longitude</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Solar_longitude" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Solar longitude.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.SpaceCraft_clock_start_count">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SpaceCraft_clock_start_count</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.SpaceCraft_clock_start_count" title="Permalink to this definition">#</a></dt>
+<dd><p>Spacecraft clock start.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.SpaceCraft_clock_stop_count">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SpaceCraft_clock_stop_count</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.SpaceCraft_clock_stop_count" title="Permalink to this definition">#</a></dt>
+<dd><p>Spacecraft clock stop.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Stop_orbit_number">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Stop_orbit_number</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Stop_orbit_number" title="Permalink to this definition">#</a></dt>
+<dd><p>Stop orbit number.</p>
+</dd></dl>
 
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Target_name">
@@ -2325,12 +2861,26 @@ compliant to the following schemas/models:</p>
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.UTC_start_time">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">UTC_start_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.UTC_start_time" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Observation start time in UTC.</p>
+</dd></dl>
 
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.UTC_stop_time">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">UTC_stop_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.UTC_stop_time" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Observation stop time in UTC.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Westernmost_longitude">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Westernmost_longitude</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Westernmost_longitude" title="Permalink to this definition">#</a></dt>
+<dd><p>Longitude 0-360 Westernmost longitude of the footprint.</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.Westernmost_longitude_text">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Westernmost_longitude_text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#crawler.schemas.PDSODE_Product.Westernmost_longitude_text" title="Permalink to this definition">#</a></dt>
+<dd><p>Text found in the westernmost longitude label keyword if the westernmost longitude is not a valid number.</p>
+</dd></dl>
 
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="crawler.schemas.PDSODE_Product.ihid">
@@ -3250,6 +3800,76 @@ compliant to the following schemas/models:</p>
 </dd></dl>
 
 <dl class="py class pydantic_model">
+<dt class="sig sig-object py" id="crawler.schemas.PDSSP_STAC_Processing_Properties">
+<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">crawler.schemas.</span></span><span class="sig-name descname"><span class="pre">PDSSP_STAC_Processing_Properties</span></span><a class="reference internal" href="_modules/crawler/schemas.html#PDSSP_STAC_Processing_Properties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.schemas.PDSSP_STAC_Processing_Properties" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p><details  class="autodoc_pydantic_collapsable_json">
+<summary>Show JSON schema</summary><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PDSSP_STAC_Processing_Properties&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;processing:expression&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Processing:Expression&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;processing:lineage&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Processing:Lineage&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;processing:level&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Processing:Level&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;processing:facility&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Processing:Facility&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;processing:software&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Processing:Software&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">   </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</details></p><dl class="field-list simple">
+<dt class="field-odd">Fields</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#crawler.schemas.PDSSP_STAC_Processing_Properties.processing_expression" title="crawler.schemas.PDSSP_STAC_Processing_Properties.processing_expression"><code class="xref py py-obj docutils literal notranslate"><span class="pre">processing_expression</span> <span class="pre">(Optional[object])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSSP_STAC_Processing_Properties.processing_facility" title="crawler.schemas.PDSSP_STAC_Processing_Properties.processing_facility"><code class="xref py py-obj docutils literal notranslate"><span class="pre">processing_facility</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSSP_STAC_Processing_Properties.processing_level" title="crawler.schemas.PDSSP_STAC_Processing_Properties.processing_level"><code class="xref py py-obj docutils literal notranslate"><span class="pre">processing_level</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSSP_STAC_Processing_Properties.processing_lineage" title="crawler.schemas.PDSSP_STAC_Processing_Properties.processing_lineage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">processing_lineage</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSSP_STAC_Processing_Properties.processing_software" title="crawler.schemas.PDSSP_STAC_Processing_Properties.processing_software"><code class="xref py py-obj docutils literal notranslate"><span class="pre">processing_software</span> <span class="pre">(Optional[dict])</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSSP_STAC_Processing_Properties.processing_expression">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">processing_expression</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">object</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"> <span class="pre">(alias</span> <span class="pre">'processing:expression')</span></em><a class="headerlink" href="#crawler.schemas.PDSSP_STAC_Processing_Properties.processing_expression" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSSP_STAC_Processing_Properties.processing_facility">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">processing_facility</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"> <span class="pre">(alias</span> <span class="pre">'processing:facility')</span></em><a class="headerlink" href="#crawler.schemas.PDSSP_STAC_Processing_Properties.processing_facility" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSSP_STAC_Processing_Properties.processing_level">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">processing_level</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"> <span class="pre">(alias</span> <span class="pre">'processing:level')</span></em><a class="headerlink" href="#crawler.schemas.PDSSP_STAC_Processing_Properties.processing_level" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSSP_STAC_Processing_Properties.processing_lineage">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">processing_lineage</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"> <span class="pre">(alias</span> <span class="pre">'processing:lineage')</span></em><a class="headerlink" href="#crawler.schemas.PDSSP_STAC_Processing_Properties.processing_lineage" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="crawler.schemas.PDSSP_STAC_Processing_Properties.processing_software">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">processing_software</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"> <span class="pre">(alias</span> <span class="pre">'processing:software')</span></em><a class="headerlink" href="#crawler.schemas.PDSSP_STAC_Processing_Properties.processing_software" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class pydantic_model">
 <dt class="sig sig-object py" id="crawler.schemas.PDSSP_STAC_Properties">
 <em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">crawler.schemas.</span></span><span class="sig-name descname"><span class="pre">PDSSP_STAC_Properties</span></span><a class="reference internal" href="_modules/crawler/schemas.html#PDSSP_STAC_Properties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.schemas.PDSSP_STAC_Properties" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
@@ -3488,6 +4108,10 @@ rich text representation.</p>
 <span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ssys:Solar Longitude&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="w"></span>
 <span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;ssys:solar_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ssys:Solar Distance&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
 <span class="w">      </span><span class="nt">&quot;ssys:incidence_angle&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ssys:Incidence Angle&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="w"></span>
@@ -3499,18 +4123,6 @@ rich text representation.</p>
 <span class="w">      </span><span class="nt">&quot;ssys:phase_angle&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ssys:Phase Angle&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="p">},</span><span class="w"></span>
-<span class="w">      </span><span class="nt">&quot;ssys:spatial_resolution&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ssys:Spatial Resolution&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="p">},</span><span class="w"></span>
-<span class="w">      </span><span class="nt">&quot;ssys:processing_level&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ssys:Processing Level&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="p">},</span><span class="w"></span>
-<span class="w">      </span><span class="nt">&quot;ssys:product_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ssys:Product Type&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
 <span class="w">      </span><span class="p">}</span><span class="w"></span>
 <span class="w">   </span><span class="p">}</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
@@ -3522,10 +4134,8 @@ rich text representation.</p>
 <li><p><a class="reference internal" href="#crawler.schemas.PDSSP_STAC_SSYS_Properties.ssys_emission_angle" title="crawler.schemas.PDSSP_STAC_SSYS_Properties.ssys_emission_angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ssys_emission_angle</span> <span class="pre">(Optional[float])</span></code></a></p></li>
 <li><p><a class="reference internal" href="#crawler.schemas.PDSSP_STAC_SSYS_Properties.ssys_incidence_angle" title="crawler.schemas.PDSSP_STAC_SSYS_Properties.ssys_incidence_angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ssys_incidence_angle</span> <span class="pre">(Optional[float])</span></code></a></p></li>
 <li><p><a class="reference internal" href="#crawler.schemas.PDSSP_STAC_SSYS_Properties.ssys_phase_angle" title="crawler.schemas.PDSSP_STAC_SSYS_Properties.ssys_phase_angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ssys_phase_angle</span> <span class="pre">(Optional[float])</span></code></a></p></li>
-<li><p><a class="reference internal" href="#crawler.schemas.PDSSP_STAC_SSYS_Properties.ssys_processing_level" title="crawler.schemas.PDSSP_STAC_SSYS_Properties.ssys_processing_level"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ssys_processing_level</span> <span class="pre">(Optional[str])</span></code></a></p></li>
-<li><p><a class="reference internal" href="#crawler.schemas.PDSSP_STAC_SSYS_Properties.ssys_product_type" title="crawler.schemas.PDSSP_STAC_SSYS_Properties.ssys_product_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ssys_product_type</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#crawler.schemas.PDSSP_STAC_SSYS_Properties.ssys_solar_distance" title="crawler.schemas.PDSSP_STAC_SSYS_Properties.ssys_solar_distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ssys_solar_distance</span> <span class="pre">(Optional[float])</span></code></a></p></li>
 <li><p><a class="reference internal" href="#crawler.schemas.PDSSP_STAC_SSYS_Properties.ssys_solar_longitude" title="crawler.schemas.PDSSP_STAC_SSYS_Properties.ssys_solar_longitude"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ssys_solar_longitude</span> <span class="pre">(Optional[float])</span></code></a></p></li>
-<li><p><a class="reference internal" href="#crawler.schemas.PDSSP_STAC_SSYS_Properties.ssys_spatial_resolution" title="crawler.schemas.PDSSP_STAC_SSYS_Properties.ssys_spatial_resolution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ssys_spatial_resolution</span> <span class="pre">(Optional[float])</span></code></a></p></li>
 <li><p><a class="reference internal" href="#crawler.schemas.PDSSP_STAC_SSYS_Properties.ssys_targets" title="crawler.schemas.PDSSP_STAC_SSYS_Properties.ssys_targets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ssys_targets</span> <span class="pre">(Optional[list[str]])</span></code></a></p></li>
 </ul>
 </dd>
@@ -3546,23 +4156,13 @@ rich text representation.</p>
 <dd></dd></dl>
 
 <dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="crawler.schemas.PDSSP_STAC_SSYS_Properties.ssys_processing_level">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ssys_processing_level</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"> <span class="pre">(alias</span> <span class="pre">'ssys:processing_level')</span></em><a class="headerlink" href="#crawler.schemas.PDSSP_STAC_SSYS_Properties.ssys_processing_level" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="crawler.schemas.PDSSP_STAC_SSYS_Properties.ssys_product_type">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ssys_product_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"> <span class="pre">(alias</span> <span class="pre">'ssys:product_type')</span></em><a class="headerlink" href="#crawler.schemas.PDSSP_STAC_SSYS_Properties.ssys_product_type" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="crawler.schemas.PDSSP_STAC_SSYS_Properties.ssys_solar_distance">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ssys_solar_distance</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"> <span class="pre">(alias</span> <span class="pre">'ssys:solar_distance')</span></em><a class="headerlink" href="#crawler.schemas.PDSSP_STAC_SSYS_Properties.ssys_solar_distance" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="crawler.schemas.PDSSP_STAC_SSYS_Properties.ssys_solar_longitude">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ssys_solar_longitude</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"> <span class="pre">(alias</span> <span class="pre">'ssys:solar_longitude')</span></em><a class="headerlink" href="#crawler.schemas.PDSSP_STAC_SSYS_Properties.ssys_solar_longitude" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="crawler.schemas.PDSSP_STAC_SSYS_Properties.ssys_spatial_resolution">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ssys_spatial_resolution</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"> <span class="pre">(alias</span> <span class="pre">'ssys:spatial_resolution')</span></em><a class="headerlink" href="#crawler.schemas.PDSSP_STAC_SSYS_Properties.ssys_spatial_resolution" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute pydantic_field">
@@ -3685,7 +4285,7 @@ rich text representation.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="crawler.schemas.create_schema_object">
 <span class="sig-prename descclassname"><span class="pre">crawler.schemas.</span></span><span class="sig-name descname"><span class="pre">create_schema_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pydantic.main.BaseModel</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/crawler/schemas.html#create_schema_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.schemas.create_schema_object" title="Permalink to this definition">#</a></dt>
-<dd><p>Create a collection or item metadata object from an input metadata dictionary and a metadata schema name.</p>
+<dd><p>Create a collection or item metadata object from an input metadata dictionary and schema name.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -4228,7 +4828,7 @@ rich text representation.</p>
 </section>
 <section id="module-crawler.transformer">
 <span id="transformer-module"></span><h2><code class="docutils literal notranslate"><span class="pre">transformer</span></code> module<a class="headerlink" href="#module-crawler.transformer" title="Permalink to this headline">#</a></h2>
-<p>Transformator module.</p>
+<p>Transformer module.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="crawler.transformer.AbstractTransformer">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">crawler.transformer.</span></span><span class="sig-name descname"><span class="pre">AbstractTransformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_schema</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination_schema</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'PDSSP_STAC'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crawler/transformer.html#AbstractTransformer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.transformer.AbstractTransformer" title="Permalink to this definition">#</a></dt>
@@ -4289,6 +4889,21 @@ rich text representation.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="crawler.transformer.AbstractTransformer.get_processing_fields">
+<span class="sig-name descname"><span class="pre">get_processing_fields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pydantic.main.BaseModel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'item'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/crawler/transformer.html#AbstractTransformer.get_processing_fields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.transformer.AbstractTransformer.get_processing_fields" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="crawler.transformer.AbstractTransformer.get_processing_properties">
+<span class="sig-name descname"><span class="pre">get_processing_properties</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pydantic.main.BaseModel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'item'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pydantic.main.BaseModel</span></span></span><a class="reference internal" href="_modules/crawler/transformer.html#AbstractTransformer.get_processing_properties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.transformer.AbstractTransformer.get_processing_properties" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="crawler.transformer.AbstractTransformer.get_proj_fields">
+<span class="sig-name descname"><span class="pre">get_proj_fields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pydantic.main.BaseModel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'item'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/crawler/transformer.html#AbstractTransformer.get_proj_fields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.transformer.AbstractTransformer.get_proj_fields" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="crawler.transformer.AbstractTransformer.get_proj_properties">
 <span class="sig-name descname"><span class="pre">get_proj_properties</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pydantic.main.BaseModel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'item'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pydantic.main.BaseModel</span></span></span><a class="reference internal" href="_modules/crawler/transformer.html#AbstractTransformer.get_proj_properties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.transformer.AbstractTransformer.get_proj_properties" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
@@ -4302,6 +4917,12 @@ rich text representation.</p>
 <dt class="sig sig-object py" id="crawler.transformer.AbstractTransformer.get_providers">
 <span class="sig-name descname"><span class="pre">get_providers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pydantic.main.BaseModel</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">pydantic.main.BaseModel</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/crawler/transformer.html#AbstractTransformer.get_providers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.transformer.AbstractTransformer.get_providers" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="crawler.transformer.AbstractTransformer.get_resto_keywords">
+<span class="sig-name descname"><span class="pre">get_resto_keywords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pydantic.main.BaseModel</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/crawler/transformer.html#AbstractTransformer.get_resto_keywords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.transformer.AbstractTransformer.get_resto_keywords" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns RESTO-specific STAC Items keywords.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="crawler.transformer.AbstractTransformer.get_ssys_fields">
@@ -4578,8 +5199,13 @@ rich text representation.</p>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="crawler.transformer.PDSODE_STAC.get_proj_properties">
-<span class="sig-name descname"><span class="pre">get_proj_properties</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pydantic.main.BaseModel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'item'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/crawler/transformer.html#PDSODE_STAC.get_proj_properties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.transformer.PDSODE_STAC.get_proj_properties" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="crawler.transformer.PDSODE_STAC.get_processing_fields">
+<span class="sig-name descname"><span class="pre">get_processing_fields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pydantic.main.BaseModel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'item'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/crawler/transformer.html#PDSODE_STAC.get_processing_fields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.transformer.PDSODE_STAC.get_processing_fields" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="crawler.transformer.PDSODE_STAC.get_processing_properties">
+<span class="sig-name descname"><span class="pre">get_processing_properties</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pydantic.main.BaseModel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'item'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pydantic.main.BaseModel</span></span></span><a class="reference internal" href="_modules/crawler/transformer.html#PDSODE_STAC.get_processing_properties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.transformer.PDSODE_STAC.get_processing_properties" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -4591,6 +5217,22 @@ rich text representation.</p>
 <dt class="sig sig-object py" id="crawler.transformer.PDSODE_STAC.get_providers">
 <span class="sig-name descname"><span class="pre">get_providers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pydantic.main.BaseModel</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">pydantic.main.BaseModel</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/crawler/transformer.html#PDSODE_STAC.get_providers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.transformer.PDSODE_STAC.get_providers" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="crawler.transformer.PDSODE_STAC.get_resto_keywords">
+<span class="sig-name descname"><span class="pre">get_resto_keywords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pydantic.main.BaseModel</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/crawler/transformer.html#PDSODE_STAC.get_resto_keywords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.transformer.PDSODE_STAC.get_resto_keywords" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns RESTO-specific STAC item _keywords property.</p>
+<p>For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;_keywords&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;season:summer&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Summer&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;season&quot;</span>
+    <span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="crawler.transformer.PDSODE_STAC.get_ssys_fields">
@@ -4632,6 +5274,12 @@ rich text representation.</p>
 <p>Custom error that is raised when invalid schema name is passed.</p>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="crawler.transformer.utc_to_iso">
+<span class="sig-prename descclassname"><span class="pre">crawler.transformer.</span></span><span class="sig-name descname"><span class="pre">utc_to_iso</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">utc_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timespec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crawler/transformer.html#utc_to_iso"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.transformer.utc_to_iso" title="Permalink to this definition">#</a></dt>
+<dd><p>Convert UTC time string to ISO format string (STAC standard).</p>
+</dd></dl>
+
 </section>
 <section id="module-crawler.ingestor">
 <span id="ingestor-module"></span><h2><code class="docutils literal notranslate"><span class="pre">ingestor</span></code> module<a class="headerlink" href="#module-crawler.ingestor" title="Permalink to this headline">#</a></h2>
@@ -4643,7 +5291,7 @@ rich text representation.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="crawler.ingestor.Ingestor">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">crawler.ingestor.</span></span><span class="sig-name descname"><span class="pre">Ingestor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stac_api_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auth_token</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_collection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crawler/ingestor.html#Ingestor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.ingestor.Ingestor" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">crawler.ingestor.</span></span><span class="sig-name descname"><span class="pre">Ingestor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stac_api_parent_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auth_token</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_collection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crawler/ingestor.html#Ingestor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.ingestor.Ingestor" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Ingestion of STAC catalog or collection into destination STAC API service (eg: PDSSP RESTO).</p>
 <dl class="py method">
@@ -4665,6 +5313,12 @@ rich text representation.</p>
 <dt class="sig sig-object py" id="crawler.ingestor.Ingestor.delete_feature">
 <span class="sig-name descname"><span class="pre">delete_feature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feature_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crawler/ingestor.html#Ingestor.delete_feature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.ingestor.Ingestor.delete_feature" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="crawler.ingestor.Ingestor.get_target_stac_api_url">
+<span class="sig-name descname"><span class="pre">get_target_stac_api_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crawler/ingestor.html#Ingestor.get_target_stac_api_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.ingestor.Ingestor.get_target_stac_api_url" title="Permalink to this definition">#</a></dt>
+<dd><p>Return STAC API endpoint for a given target name.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="crawler.ingestor.Ingestor.ingest">
@@ -4693,6 +5347,11 @@ what is ingested i.e. ‘catalog’, ‘feature’, ‘both’ or ‘none’.</p
 <dl class="py method">
 <dt class="sig sig-object py" id="crawler.ingestor.Ingestor.set_source_collection">
 <span class="sig-name descname"><span class="pre">set_source_collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_collection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crawler/ingestor.html#Ingestor.set_source_collection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.ingestor.Ingestor.set_source_collection" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="crawler.ingestor.Ingestor.set_stac_api_url">
+<span class="sig-name descname"><span class="pre">set_stac_api_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stac_object_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crawler/ingestor.html#Ingestor.set_stac_api_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crawler.ingestor.Ingestor.set_stac_api_url" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">

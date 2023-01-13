@@ -283,7 +283,7 @@ title="Open an issue"
               <div>
                 
   <h1>Source code for crawler.transformer</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Transformator module.&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;Transformer module.&quot;&quot;&quot;</span>
 
 <span class="c1"># import</span>
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
@@ -300,6 +300,26 @@ title="Open an issue"
 
 <span class="kn">import</span> <span class="nn">pystac</span>
 
+<span class="kn">from</span> <span class="nn">pymarsseason</span> <span class="kn">import</span> <span class="n">PyMarsSeason</span><span class="p">,</span> <span class="n">Hemisphere</span>
+<span class="kn">from</span> <span class="nn">astropy.time</span> <span class="kn">import</span> <span class="n">Time</span>
+
+
+<div class="viewcode-block" id="utc_to_iso"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.utc_to_iso">[docs]</a><span class="k">def</span> <span class="nf">utc_to_iso</span><span class="p">(</span><span class="n">utc_time</span><span class="p">,</span> <span class="n">timespec</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert UTC time string to ISO format string (STAC standard).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># set valid datatime formats</span>
+    <span class="n">valid_formats</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%S&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%S.</span><span class="si">%f</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%S.</span><span class="si">%f</span><span class="s1">Z&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">valid_format</span> <span class="ow">in</span> <span class="n">valid_formats</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">utc_time</span><span class="p">,</span> <span class="n">valid_format</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="n">timespec</span><span class="o">=</span><span class="n">timespec</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">continue</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="Transformer"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.Transformer">[docs]</a><span class="k">def</span> <span class="nf">Transformer</span><span class="p">(</span><span class="n">collection</span><span class="p">:</span> <span class="n">SourceCollectionModel</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">source_schema</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">destination_schema</span><span class="o">=</span><span class="s1">&#39;PDSSP_STAC&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Transformer function serving as Transformer objects factory.</span>
@@ -446,11 +466,15 @@ title="Open an issue"
 <div class="viewcode-block" id="AbstractTransformer.get_properties"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_properties">[docs]</a>    <span class="k">def</span> <span class="nf">get_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseModel</span><span class="p">:</span>  <span class="c1"># PDSSP_STAC_Properties</span>
         <span class="k">pass</span></div>
 
+    <span class="c1"># EXTENSIONS</span>
+
 <div class="viewcode-block" id="AbstractTransformer.get_extension_properties"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_extension_properties">[docs]</a>    <span class="k">def</span> <span class="nf">get_extension_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">stac_extension</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseModel</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">stac_extension</span> <span class="o">==</span> <span class="s1">&#39;ssys&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ssys_properties</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="n">object_type</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">stac_extension</span> <span class="o">==</span> <span class="s1">&#39;proj&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_proj_properties</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="n">object_type</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">stac_extension</span> <span class="o">==</span> <span class="s1">&#39;processing&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_processing_properties</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="n">object_type</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Undefined </span><span class="si">{</span><span class="n">stac_extension</span><span class="si">}</span><span class="s1"> STAC extension.&#39;</span><span class="p">)</span></div>
 
@@ -459,27 +483,40 @@ title="Open an issue"
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ssys_fields</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="n">object_type</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">stac_extension</span> <span class="o">==</span> <span class="s1">&#39;proj&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_proj_fields</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="n">object_type</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">stac_extension</span> <span class="o">==</span> <span class="s1">&#39;processing&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_processing_fields</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="n">object_type</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Undefined </span><span class="si">{</span><span class="n">stac_extension</span><span class="si">}</span><span class="s1"> STAC extension.&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="AbstractTransformer.get_ssys_properties"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_ssys_properties">[docs]</a>    <span class="k">def</span> <span class="nf">get_ssys_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseModel</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_default_ext_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseModel</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;item&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">{}</span>
         <span class="k">elif</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;collection&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">{}</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InvalidModelObjectTypeError</span><span class="p">(</span><span class="n">object_type</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="n">InvalidModelObjectTypeError</span><span class="p">(</span><span class="n">object_type</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AbstractTransformer.get_ssys_properties"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_ssys_properties">[docs]</a>    <span class="k">def</span> <span class="nf">get_ssys_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseModel</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_default_ext_properties</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="n">object_type</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="AbstractTransformer.get_ssys_fields"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_ssys_fields">[docs]</a>    <span class="k">def</span> <span class="nf">get_ssys_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">{}</span></div>
 
 <div class="viewcode-block" id="AbstractTransformer.get_proj_properties"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_proj_properties">[docs]</a>    <span class="k">def</span> <span class="nf">get_proj_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseModel</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;item&#39;</span><span class="p">:</span>
-            <span class="k">pass</span>
-        <span class="k">elif</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;collection&#39;</span><span class="p">:</span>
-            <span class="k">pass</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InvalidModelObjectTypeError</span><span class="p">(</span><span class="n">object_type</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_default_ext_properties</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="n">object_type</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AbstractTransformer.get_proj_fields"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_proj_fields">[docs]</a>    <span class="k">def</span> <span class="nf">get_proj_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{}</span></div>
+
+<div class="viewcode-block" id="AbstractTransformer.get_processing_properties"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_processing_properties">[docs]</a>    <span class="k">def</span> <span class="nf">get_processing_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseModel</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_default_ext_properties</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="n">object_type</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AbstractTransformer.get_processing_fields"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_processing_fields">[docs]</a>    <span class="k">def</span> <span class="nf">get_processing_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{}</span></div>
+
+<div class="viewcode-block" id="AbstractTransformer.get_resto_keywords"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_resto_keywords">[docs]</a>    <span class="k">def</span> <span class="nf">get_resto_keywords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns RESTO-specific STAC Items keywords.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{}</span></div>
 
 <div class="viewcode-block" id="AbstractTransformer.get_stac_collection_dict"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.AbstractTransformer.get_stac_collection_dict">[docs]</a>    <span class="k">def</span> <span class="nf">get_stac_collection_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">,</span> <span class="n">stac_extensions</span><span class="o">=</span><span class="p">[])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">stac_extensions</span><span class="p">:</span>
@@ -573,7 +610,7 @@ title="Open an issue"
                 <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">title</span><span class="p">()</span><span class="si">}</span><span class="s1"> STAC Catalog holding one or several PDSSP-compliant data products collections.&#39;</span><span class="p">,</span>
                 <span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;This catalog was generated by the PDSSSP Crawler on </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">,</span>
                 <span class="n">stac_extensions</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ssys&#39;</span><span class="p">],</span>
-                <span class="n">extra_fields</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;ssys:targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">upper</span><span class="p">()]}</span>
+                <span class="n">extra_fields</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;ssys:targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">lower</span><span class="p">()]}</span>
             <span class="p">)</span>
 
         <span class="c1"># check that input source collection haven&#39;t been transformed and exists in destination STAC catalog.</span>
@@ -593,7 +630,11 @@ title="Open an issue"
 
         <span class="c1"># read and transform source collection metadata, into destination `PDSSP_STAC_Collection` metadata.</span>
         <span class="n">source_collection_metadata</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">read_collection_metadata</span><span class="p">()</span>
-        <span class="n">stac_collection_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform_source_metadata</span><span class="p">(</span><span class="n">source_collection_metadata</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;collection&#39;</span><span class="p">,</span> <span class="n">stac_extensions</span><span class="o">=</span><span class="n">stac_extensions</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">source_collection_metadata</span><span class="p">:</span>
+            <span class="n">stac_collection_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform_source_metadata</span><span class="p">(</span><span class="n">source_collection_metadata</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;collection&#39;</span><span class="p">,</span> <span class="n">stac_extensions</span><span class="o">=</span><span class="n">stac_extensions</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;WARNING: Could not transform `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">collection_id</span><span class="si">}</span><span class="s1">` source collection metadata.&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
 
         <span class="c1"># create destination PySTAC Collection object</span>
         <span class="c1">#</span>
@@ -626,9 +667,12 @@ title="Open an issue"
         <span class="c1">#</span>
         <span class="k">while</span> <span class="n">extractor</span><span class="o">.</span><span class="n">file_idx</span> <span class="o">&lt;</span> <span class="n">extractor</span><span class="o">.</span><span class="n">n_extracted_files</span><span class="p">:</span>  <span class="c1"># TODO: improve mechanism to loop over all products.</span>
             <span class="n">source_product_metadata</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">read_product_metadata</span><span class="p">()</span>
-            <span class="n">stac_item_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform_source_metadata</span><span class="p">(</span><span class="n">source_product_metadata</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">,</span> <span class="n">stac_extensions</span><span class="o">=</span><span class="n">stac_extensions</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">source_product_metadata</span><span class="p">:</span>
+                <span class="n">stac_item_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform_source_metadata</span><span class="p">(</span><span class="n">source_product_metadata</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">,</span> <span class="n">stac_extensions</span><span class="o">=</span><span class="n">stac_extensions</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;WARNING: Could not transform product metadata in `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">collection_id</span><span class="si">}</span><span class="s1">` source collection.&#39;</span><span class="p">)</span>
+                <span class="k">continue</span>
 
-            <span class="c1"># print(stac_item_metadata.properties[&#39;datetime&#39;])</span>
             <span class="c1"># create PySTAC Item</span>
             <span class="n">stac_item</span> <span class="o">=</span> <span class="n">pystac</span><span class="o">.</span><span class="n">Item</span><span class="p">(</span>
                 <span class="nb">id</span><span class="o">=</span><span class="n">stac_item_metadata</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
@@ -636,9 +680,8 @@ title="Open an issue"
                 <span class="n">geometry</span><span class="o">=</span><span class="n">stac_item_metadata</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span>
                 <span class="n">bbox</span><span class="o">=</span><span class="n">stac_item_metadata</span><span class="o">.</span><span class="n">bbox</span><span class="p">,</span>
                 <span class="n">datetime</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">stac_item_metadata</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;datetime&#39;</span><span class="p">]),</span>
-                <span class="n">properties</span><span class="o">=</span><span class="n">stac_item_metadata</span><span class="o">.</span><span class="n">properties</span><span class="p">,</span>  <span class="c1"># .dict(exclude_unset=True), # include={&#39;datetime&#39;, &#39;platform&#39;, &#39;start_datetime&#39;}),</span>
-                <span class="c1"># assets=stac_assets,</span>
-                <span class="n">extra_fields</span><span class="o">=</span><span class="n">stac_item_metadata</span><span class="o">.</span><span class="n">extra_fields</span><span class="p">,</span>  <span class="c1"># {&#39;ssys:targets&#39;: stac_item_metadata.ssys_targets},</span>
+                <span class="n">properties</span><span class="o">=</span><span class="n">stac_item_metadata</span><span class="o">.</span><span class="n">properties</span><span class="p">,</span>
+                <span class="n">extra_fields</span><span class="o">=</span><span class="n">stac_item_metadata</span><span class="o">.</span><span class="n">extra_fields</span><span class="p">,</span>  <span class="c1"># eg: {&#39;ssys:targets&#39;: stac_item_metadata.ssys_targets},</span>
                 <span class="n">collection</span><span class="o">=</span><span class="n">stac_collection_id</span>
             <span class="p">)</span>
 
@@ -658,6 +701,15 @@ title="Open an issue"
             <span class="c1"># add item to PySTAC Collection</span>
             <span class="n">stac_collection</span><span class="o">.</span><span class="n">add_item</span><span class="p">(</span><span class="n">stac_item</span><span class="p">)</span>
 
+        <span class="c1"># Return if no STAC items in collection</span>
+        <span class="n">n_items</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">stac_collection</span><span class="o">.</span><span class="n">links</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">link</span><span class="o">.</span><span class="n">rel</span> <span class="o">==</span> <span class="s1">&#39;item&#39;</span><span class="p">:</span>
+                <span class="n">n_items</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">n_items</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;WARNING: No valid STAC Items in </span><span class="si">{</span><span class="n">stac_collection_id</span><span class="si">}</span><span class="s1"> collection.&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
         <span class="c1"># update collection extent from items</span>
         <span class="n">stac_collection</span><span class="o">.</span><span class="n">update_extent_from_items</span><span class="p">()</span>
 
@@ -666,7 +718,7 @@ title="Open an issue"
 
         <span class="c1"># save STAC catalog files</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Writing STAC JSON files in </span><span class="si">{</span><span class="n">stac_catalog_dirpath</span><span class="si">}</span><span class="s1"> directory...&#39;</span><span class="p">)</span>
-        <span class="n">Path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">stac_catalog_dirpath</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
+        <span class="n">Path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">stac_catalog_dirpath</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># exist_ok=overwrite ?</span>
         <span class="n">stac_catalog</span><span class="o">.</span><span class="n">normalize_hrefs</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">stac_catalog_dirpath</span><span class="p">))</span>
         <span class="n">stac_catalog</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">catalog_type</span><span class="o">=</span><span class="n">pystac</span><span class="o">.</span><span class="n">CatalogType</span><span class="o">.</span><span class="n">SELF_CONTAINED</span><span class="p">)</span>
 
@@ -731,7 +783,7 @@ title="Open an issue"
                     <span class="n">href</span><span class="o">=</span><span class="n">href</span><span class="p">,</span>
                     <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
                     <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
-                    <span class="n">media_type</span><span class="o">=</span><span class="n">media_type</span><span class="p">,</span>
+                    <span class="nb">type</span><span class="o">=</span><span class="n">media_type</span><span class="p">,</span>
                     <span class="n">roles</span><span class="o">=</span><span class="n">roles</span>
                 <span class="p">)</span>
 
@@ -795,12 +847,11 @@ title="Open an issue"
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="PDSODE_STAC.get_properties"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.PDSODE_STAC.get_properties">[docs]</a>    <span class="k">def</span> <span class="nf">get_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">stac_extensions</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ssys&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="n">datetime_format</span> <span class="o">=</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%S.</span><span class="si">%f</span><span class="s1">&#39;</span>
         <span class="n">properties</span> <span class="o">=</span> <span class="n">schemas</span><span class="o">.</span><span class="n">PDSSP_STAC_Properties</span><span class="p">(</span>
-            <span class="n">datetime</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">UTC_start_time</span><span class="p">,</span> <span class="n">datetime_format</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="n">timespec</span><span class="o">=</span><span class="s1">&#39;milliseconds&#39;</span><span class="p">),</span>
-            <span class="n">created</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">Product_creation_time</span><span class="p">,</span> <span class="n">datetime_format</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
-            <span class="n">start_datetime</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">UTC_start_time</span><span class="p">,</span> <span class="n">datetime_format</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
-            <span class="n">end_datetime</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">UTC_stop_time</span><span class="p">,</span> <span class="n">datetime_format</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+            <span class="n">datetime</span><span class="o">=</span><span class="n">utc_to_iso</span><span class="p">(</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">UTC_start_time</span><span class="p">,</span> <span class="n">timespec</span><span class="o">=</span><span class="s1">&#39;milliseconds&#39;</span><span class="p">),</span>
+            <span class="n">created</span><span class="o">=</span><span class="n">utc_to_iso</span><span class="p">(</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">Product_creation_time</span><span class="p">,</span> <span class="n">timespec</span><span class="o">=</span><span class="s1">&#39;milliseconds&#39;</span><span class="p">),</span>
+            <span class="n">start_datetime</span><span class="o">=</span><span class="n">utc_to_iso</span><span class="p">(</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">UTC_start_time</span><span class="p">,</span> <span class="n">timespec</span><span class="o">=</span><span class="s1">&#39;milliseconds&#39;</span><span class="p">),</span>
+            <span class="n">end_datetime</span><span class="o">=</span><span class="n">utc_to_iso</span><span class="p">(</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">UTC_stop_time</span><span class="p">,</span> <span class="n">timespec</span><span class="o">=</span><span class="s1">&#39;milliseconds&#39;</span><span class="p">),</span>
             <span class="n">platform</span><span class="o">=</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">ihid</span><span class="p">,</span>
             <span class="n">instruments</span><span class="o">=</span><span class="p">[</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">iid</span><span class="p">],</span>
             <span class="n">gsd</span><span class="o">=</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">Map_scale</span>
@@ -809,48 +860,140 @@ title="Open an issue"
         <span class="k">for</span> <span class="n">stac_extension</span> <span class="ow">in</span> <span class="n">stac_extensions</span><span class="p">:</span>
             <span class="n">properties_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_extension_properties</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">,</span> <span class="n">stac_extension</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">))</span>
 
-        <span class="c1"># if source_metadata.pdsid == &#39;ESP_012603_1300_RED&#39;:</span>
-        <span class="c1">#     print(&#39;stop&#39;)</span>
+        <span class="c1"># add RESTO-specific &quot;_keyword&quot; properties (mars season)</span>
+        <span class="n">keywords_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_resto_keywords</span><span class="p">(</span><span class="n">source_metadata</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">keywords_dict</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">properties_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">keywords_dict</span><span class="p">)</span>
+            
+        <span class="c1"># Add source metadata; fields for which value type is either a float, int or str</span>
+        <span class="c1"># (field names are prefixed using lower-case schema name, to avoid possible conflicts with STAC Common Metadata).</span>
+        <span class="n">source_metadata_dict</span> <span class="o">=</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">filtered_metadata_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">source_metadata_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source_metadata_dict</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
+                <span class="n">filtered_metadata_dict</span><span class="p">[</span><span class="s1">&#39;pdsode:&#39;</span><span class="o">+</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">source_metadata_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">properties_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">filtered_metadata_dict</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">properties_dict</span></div>
 
 <div class="viewcode-block" id="PDSODE_STAC.get_ssys_properties"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.PDSODE_STAC.get_ssys_properties">[docs]</a>    <span class="k">def</span> <span class="nf">get_ssys_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;item&#39;</span><span class="p">:</span>
+            <span class="c1"># If target is Mars, then compute solar longitude if not available</span>
+            <span class="c1"># Mars solar longitude and season</span>
+            <span class="n">solar_longitude</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="s1">&#39;Solar_longitude&#39;</span> <span class="ow">in</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">__fields__</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">Solar_longitude</span><span class="p">:</span>
+                    <span class="c1"># set to source solar longitude, if available</span>
+                    <span class="n">solar_longitude</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">Solar_longitude</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">solar_longitude</span><span class="p">:</span>
+                <span class="c1"># derive solar longitude from UTC start time</span>
+                <span class="n">utc_time</span> <span class="o">=</span> <span class="n">utc_to_iso</span><span class="p">(</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">UTC_start_time</span><span class="p">,</span> <span class="n">timespec</span><span class="o">=</span><span class="s1">&#39;milliseconds&#39;</span><span class="p">)</span>
+                <span class="n">season</span> <span class="o">=</span> <span class="n">PyMarsSeason</span><span class="p">()</span><span class="o">.</span><span class="n">compute_season_from_time</span><span class="p">(</span><span class="n">Time</span><span class="p">(</span><span class="n">utc_time</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;isot&#39;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="s1">&#39;utc&#39;</span><span class="p">))</span>
+                <span class="n">solar_longitude</span> <span class="o">=</span> <span class="n">season</span><span class="p">[</span><span class="s1">&#39;ls&#39;</span><span class="p">]</span>
+
             <span class="n">ssys_properties</span> <span class="o">=</span> <span class="n">schemas</span><span class="o">.</span><span class="n">PDSSP_STAC_SSYS_Properties</span><span class="p">(</span>
                 <span class="o">**</span><span class="p">{</span>
-                    <span class="s1">&#39;ssys:targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">Target_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()],</span>
-                    <span class="s1">&#39;ssys:solar_longitude&#39;</span><span class="p">:</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">Solar_longitude</span><span class="p">,</span>
+                    <span class="s1">&#39;ssys:targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">Target_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()],</span>
+                    <span class="s1">&#39;ssys:solar_longitude&#39;</span><span class="p">:</span> <span class="n">solar_longitude</span><span class="p">,</span>
+                    <span class="s1">&#39;ssys:solar_distance&#39;</span><span class="p">:</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">Solar_distance</span><span class="p">,</span>
                     <span class="s1">&#39;ssys:incidence_angle&#39;</span><span class="p">:</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">Incidence_angle</span><span class="p">,</span>
                     <span class="s1">&#39;ssys:emission_angle&#39;</span><span class="p">:</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">Emission_angle</span><span class="p">,</span>
                     <span class="s1">&#39;ssys:phase_angle&#39;</span><span class="p">:</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">Phase_angle</span><span class="p">,</span>
-                    <span class="s1">&#39;ssys:spatial_resolution&#39;</span><span class="p">:</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">Map_scale</span><span class="p">,</span>
-                    <span class="s1">&#39;ssys:processing_level&#39;</span><span class="p">:</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">pt</span><span class="p">,</span>
-                    <span class="s1">&#39;ssys:product_type&#39;</span><span class="p">:</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">pt</span>
+                    <span class="c1"># &#39;ssys:season&#39;: season_str.title()</span>
+                    <span class="c1"># &#39;ssys:product_type&#39;: source_metadata.pt,</span>
+                    <span class="c1"># &#39;ssys:spatial_resolution&#39;: source_metadata.Map_scale,</span>
                 <span class="p">}</span>
             <span class="p">)</span>
         <span class="k">elif</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;collection&#39;</span><span class="p">:</span>
-            <span class="n">ssys_properties</span> <span class="o">=</span> <span class="n">schemas</span><span class="o">.</span><span class="n">PDSSP_STAC_SSYS_Properties</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s1">&#39;ssys:targets&#39;</span><span class="p">:[</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">iiptset</span><span class="o">.</span><span class="n">ODEMetaDB</span><span class="o">.</span><span class="n">upper</span><span class="p">()]})</span>
+            <span class="n">ssys_properties</span> <span class="o">=</span> <span class="n">schemas</span><span class="o">.</span><span class="n">PDSSP_STAC_SSYS_Properties</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s1">&#39;ssys:targets&#39;</span><span class="p">:[</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">iiptset</span><span class="o">.</span><span class="n">ODEMetaDB</span><span class="o">.</span><span class="n">lower</span><span class="p">()]})</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">InvalidModelObjectTypeError</span><span class="p">(</span><span class="n">object_type</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">ssys_properties</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">by_alias</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># exclude_unset=True ?</span></div>
+        <span class="k">return</span> <span class="n">ssys_properties</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">by_alias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PDSODE_STAC.get_ssys_fields"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.PDSODE_STAC.get_ssys_fields">[docs]</a>    <span class="k">def</span> <span class="nf">get_ssys_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;item&#39;</span><span class="p">:</span>
             <span class="n">ssys_fields</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">elif</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;collection&#39;</span><span class="p">:</span>
-            <span class="n">ssys_fields</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;ssys:targets&#39;</span><span class="p">:</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">iiptset</span><span class="o">.</span><span class="n">ODEMetaDB</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="p">}</span>
+            <span class="n">ssys_fields</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;ssys:targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">iiptset</span><span class="o">.</span><span class="n">ODEMetaDB</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="p">}</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">InvalidModelObjectTypeError</span><span class="p">(</span><span class="n">object_type</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ssys_fields</span></div>
 
-<div class="viewcode-block" id="PDSODE_STAC.get_proj_properties"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.PDSODE_STAC.get_proj_properties">[docs]</a>    <span class="k">def</span> <span class="nf">get_proj_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<div class="viewcode-block" id="PDSODE_STAC.get_processing_properties"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.PDSODE_STAC.get_processing_properties">[docs]</a>    <span class="k">def</span> <span class="nf">get_processing_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseModel</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;item&#39;</span><span class="p">:</span>
-            <span class="k">pass</span>
-        <span class="k">elif</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;collection&#39;</span><span class="p">:</span>
-            <span class="k">pass</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InvalidModelObjectTypeError</span><span class="p">(</span><span class="n">object_type</span><span class="p">)</span></div></div>
+            <span class="c1"># derive processing level from PDSODE Data_Set_Id field</span>
+            <span class="n">processing_level</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">dataset_id</span> <span class="o">=</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">Data_Set_Id</span>
+            <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">dataset_id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">void</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+                    <span class="n">processing_level</span> <span class="o">=</span> <span class="n">token</span>
+                    <span class="k">break</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="c1"># handle mixed processing level description, eg: 2/3</span>
+                    <span class="n">subtokens</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">subtokens</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">void</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">subtokens</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                            <span class="n">processing_level</span> <span class="o">=</span> <span class="n">token</span>
+                            <span class="k">break</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="k">pass</span>
 
+            <span class="n">processing_properties</span> <span class="o">=</span> <span class="n">schemas</span><span class="o">.</span><span class="n">PDSSP_STAC_Processing_Properties</span><span class="p">(</span>
+                <span class="o">**</span><span class="p">{</span>
+                    <span class="c1"># &#39;processing:expression&#39;: None,</span>
+                    <span class="c1"># &#39;processing:lineage&#39;: &#39;&#39;,</span>
+                    <span class="s1">&#39;processing:level&#39;</span><span class="p">:</span> <span class="n">processing_level</span><span class="p">,</span>
+                    <span class="c1"># &#39;processing:facility&#39;: &#39;&#39;,</span>
+                    <span class="c1"># &#39;processing:software&#39;: {}</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">object_type</span> <span class="o">==</span> <span class="s1">&#39;collection&#39;</span><span class="p">:</span>
+            <span class="n">processing_properties</span> <span class="o">=</span> <span class="n">schemas</span><span class="o">.</span><span class="n">PDSSP_STAC_Processing_Properties</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidModelObjectTypeError</span><span class="p">(</span><span class="n">object_type</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">processing_properties</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">by_alias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PDSODE_STAC.get_processing_fields"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.PDSODE_STAC.get_processing_fields">[docs]</a>    <span class="k">def</span> <span class="nf">get_processing_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">object_type</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{}</span></div>
+
+<div class="viewcode-block" id="PDSODE_STAC.get_resto_keywords"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.PDSODE_STAC.get_resto_keywords">[docs]</a>    <span class="k">def</span> <span class="nf">get_resto_keywords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_metadata</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns RESTO-specific STAC item _keywords property.</span>
+
+<span class="sd">        For example::</span>
+
+<span class="sd">            &quot;_keywords&quot;: [</span>
+<span class="sd">                {</span>
+<span class="sd">                    &quot;id&quot;: &quot;season:summer&quot;,</span>
+<span class="sd">                    &quot;title&quot;: &quot;Summer&quot;,</span>
+<span class="sd">                    &quot;type&quot;: &quot;season&quot;</span>
+<span class="sd">                }</span>
+<span class="sd">            ]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Add season keyword if target is &#39;mars&#39;.</span>
+        <span class="c1">#</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">source_metadata</span><span class="o">.</span><span class="n">Target_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">target</span> <span class="o">!=</span> <span class="s1">&#39;mars&#39;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;WARNING: Not computing Mars season.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">{}</span>
+
+        <span class="c1"># init season keyword dict</span>
+        <span class="n">season_keyword</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;season&#39;</span><span class="p">}</span>
+
+        <span class="c1"># compute season</span>
+        <span class="n">utc_time</span> <span class="o">=</span> <span class="n">utc_to_iso</span><span class="p">(</span><span class="n">source_metadata</span><span class="o">.</span><span class="n">UTC_start_time</span><span class="p">,</span> <span class="n">timespec</span><span class="o">=</span><span class="s1">&#39;milliseconds&#39;</span><span class="p">)</span>
+        <span class="n">season</span> <span class="o">=</span> <span class="n">PyMarsSeason</span><span class="p">()</span><span class="o">.</span><span class="n">compute_season_from_time</span><span class="p">(</span><span class="n">Time</span><span class="p">(</span><span class="n">utc_time</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;isot&#39;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="s1">&#39;utc&#39;</span><span class="p">))</span>
+        <span class="n">season_str</span> <span class="o">=</span> <span class="n">season</span><span class="p">[</span><span class="n">Hemisphere</span><span class="o">.</span><span class="n">NORTH</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>  <span class="c1"># spring, summer, autumn, winter</span>
+        <span class="n">season_keyword</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;season:</span><span class="si">{</span><span class="n">season_str</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">season_keyword</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">season_str</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>  <span class="c1"># or &#39;Northern Hemisphere &#39; +</span>
+
+        <span class="c1"># add season keyword to &quot;_keywords&quot; dict</span>
+        <span class="n">keywords</span> <span class="o">=</span> <span class="p">[</span><span class="n">season_keyword</span><span class="p">]</span>
+        <span class="n">keywords_dict</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;_keywords&quot;</span><span class="p">:</span> <span class="n">keywords</span><span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">keywords_dict</span></div></div>
 
 <div class="viewcode-block" id="EPNTAP_STAC"><a class="viewcode-back" href="../../crawler_api.html#crawler.transformer.EPNTAP_STAC">[docs]</a><span class="k">class</span> <span class="nc">EPNTAP_STAC</span><span class="p">(</span><span class="n">AbstractTransformer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source_schema</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">destination_schema</span><span class="o">=</span><span class="s1">&#39;PDSSP_STAC&#39;</span><span class="p">):</span>

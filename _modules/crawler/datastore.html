@@ -351,6 +351,7 @@ title="Open an issue"
 <div class="viewcode-block" id="DataStore.list_source_collections"><a class="viewcode-back" href="../../crawler_api.html#crawler.datastore.DataStore.list_source_collections">[docs]</a>    <span class="k">def</span> <span class="nf">list_source_collections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection_id</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">service_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">extracted</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">transformed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ingested</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Display all, or a filtered list of source collections indexed in the data store.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ds list ingested&#39;</span><span class="p">,</span> <span class="n">ingested</span><span class="p">)</span>
         <span class="n">collections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_source_collections</span><span class="p">(</span><span class="n">collection_id</span><span class="o">=</span><span class="n">collection_id</span><span class="p">,</span> <span class="n">service_type</span><span class="o">=</span><span class="n">service_type</span><span class="p">,</span>
                                                      <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span> <span class="n">extracted</span><span class="o">=</span><span class="n">extracted</span><span class="p">,</span> <span class="n">transformed</span><span class="o">=</span><span class="n">transformed</span><span class="p">,</span> <span class="n">ingested</span><span class="o">=</span><span class="n">ingested</span><span class="p">)</span>
 
@@ -369,7 +370,7 @@ title="Open an issue"
             <span class="n">ingested_str</span> <span class="o">=</span> <span class="s1">&#39;Y&#39;</span> <span class="k">if</span> <span class="n">collection</span><span class="o">.</span><span class="n">ingested</span> <span class="k">else</span> <span class="s1">&#39;N&#39;</span>
             <span class="n">source_schema_str</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">source_schema</span> <span class="k">if</span> <span class="n">collection</span><span class="o">.</span><span class="n">source_schema</span> <span class="k">else</span> <span class="s1">&#39;UNDEFINED&#39;</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">collection</span><span class="o">.</span><span class="n">collection_id</span><span class="si">:</span><span class="s1">&lt;30</span><span class="si">}</span><span class="s1">  </span><span class="si">{</span><span class="n">collection</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span><span class="si">:</span><span class="s1">&lt;12</span><span class="si">}</span><span class="s1">  </span><span class="si">{</span><span class="n">source_schema_str</span><span class="si">:</span><span class="s1">&lt;13</span><span class="si">}</span><span class="s1">  &#39;</span>
-                  <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">collection</span><span class="o">.</span><span class="n">n_products</span><span class="si">:</span><span class="s1">&lt;15</span><span class="si">}</span><span class="s1">  </span><span class="si">{</span><span class="n">extracted_str</span><span class="si">:</span><span class="s1">&lt;10</span><span class="si">}</span><span class="s1">  </span><span class="si">{</span><span class="n">transformed_str</span><span class="si">:</span><span class="s1">&lt;12</span><span class="si">}</span><span class="s1">  </span><span class="si">{</span><span class="n">ingested_str</span><span class="si">:</span><span class="s1">&lt;9</span><span class="si">}</span><span class="s1">  </span><span class="si">{</span><span class="n">collection</span><span class="o">.</span><span class="n">target</span><span class="si">:</span><span class="s1">&lt;12</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                  <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">collection</span><span class="o">.</span><span class="n">n_products</span><span class="si">:</span><span class="s1">&lt;15</span><span class="si">}</span><span class="s1">  </span><span class="si">{</span><span class="n">extracted_str</span><span class="si">:</span><span class="s1">&lt;10</span><span class="si">}</span><span class="s1">  </span><span class="si">{</span><span class="n">transformed_str</span><span class="si">:</span><span class="s1">&lt;12</span><span class="si">}</span><span class="s1">  </span><span class="si">{</span><span class="n">ingested_str</span><span class="si">:</span><span class="s1">&lt;9</span><span class="si">}</span><span class="s1">  </span><span class="si">{</span><span class="n">collection</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">:</span><span class="s1">&lt;12</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="DataStore.get_source_collection"><a class="viewcode-back" href="../../crawler_api.html#crawler.datastore.DataStore.get_source_collection">[docs]</a>    <span class="k">def</span> <span class="nf">get_source_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SourceCollectionModel</span><span class="p">:</span>
@@ -384,7 +385,6 @@ title="Open an issue"
 <div class="viewcode-block" id="DataStore.get_source_collections"><a class="viewcode-back" href="../../crawler_api.html#crawler.datastore.DataStore.get_source_collections">[docs]</a>    <span class="k">def</span> <span class="nf">get_source_collections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection_id</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">service_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">extracted</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">transformed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ingested</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="n">SourceCollectionModel</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Returns source collections matching input filters.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="c1"># set initial list of filtered source collections</span>
         <span class="n">filtered_collections</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source_collections</span><span class="p">)</span>
 
@@ -406,29 +406,50 @@ title="Open an issue"
             <span class="n">source_collections</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">collection</span> <span class="ow">in</span> <span class="n">filtered_collections</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">target</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">collection</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
-                    <span class="n">source_collections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+                    <span class="n">source_collections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>  <span class="c1"># add if extracted</span>
             <span class="n">filtered_collections</span> <span class="o">=</span> <span class="n">source_collections</span>
 
-        <span class="k">if</span> <span class="n">extracted</span><span class="p">:</span>
-            <span class="n">source_collections</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">collection</span> <span class="ow">in</span> <span class="n">filtered_collections</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">collection</span><span class="o">.</span><span class="n">extracted</span><span class="p">:</span>
-                    <span class="n">source_collections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
-            <span class="n">filtered_collections</span> <span class="o">=</span> <span class="n">source_collections</span>
+        <span class="k">if</span> <span class="n">extracted</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">extracted</span><span class="p">:</span>
+                <span class="n">source_collections</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">collection</span> <span class="ow">in</span> <span class="n">filtered_collections</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">collection</span><span class="o">.</span><span class="n">extracted</span><span class="p">:</span>
+                        <span class="n">source_collections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>  <span class="c1"># add if not extracted</span>
+                <span class="n">filtered_collections</span> <span class="o">=</span> <span class="n">source_collections</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">source_collections</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">collection</span> <span class="ow">in</span> <span class="n">filtered_collections</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">collection</span><span class="o">.</span><span class="n">extracted</span><span class="p">:</span>
+                        <span class="n">source_collections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+                <span class="n">filtered_collections</span> <span class="o">=</span> <span class="n">source_collections</span>
 
-        <span class="k">if</span> <span class="n">transformed</span><span class="p">:</span>
-            <span class="n">source_collections</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">collection</span> <span class="ow">in</span> <span class="n">filtered_collections</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">collection</span><span class="o">.</span><span class="n">transformed</span><span class="p">:</span>
-                    <span class="n">source_collections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
-            <span class="n">filtered_collections</span> <span class="o">=</span> <span class="n">source_collections</span>
+        <span class="k">if</span> <span class="n">transformed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">transformed</span><span class="p">:</span>
+                <span class="n">source_collections</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">collection</span> <span class="ow">in</span> <span class="n">filtered_collections</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">collection</span><span class="o">.</span><span class="n">transformed</span><span class="p">:</span>
+                        <span class="n">source_collections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>  <span class="c1"># add if transformed</span>
+                <span class="n">filtered_collections</span> <span class="o">=</span> <span class="n">source_collections</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">source_collections</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">collection</span> <span class="ow">in</span> <span class="n">filtered_collections</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">collection</span><span class="o">.</span><span class="n">transformed</span><span class="p">:</span>
+                        <span class="n">source_collections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>  <span class="c1"># add if not transformed</span>
+                <span class="n">filtered_collections</span> <span class="o">=</span> <span class="n">source_collections</span>
 
-        <span class="k">if</span> <span class="n">ingested</span><span class="p">:</span>
-            <span class="n">source_collections</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">collection</span> <span class="ow">in</span> <span class="n">filtered_collections</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">collection</span><span class="o">.</span><span class="n">ingested</span><span class="p">:</span>
-                    <span class="n">source_collections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
-            <span class="n">filtered_collections</span> <span class="o">=</span> <span class="n">source_collections</span>
+        <span class="k">if</span> <span class="n">ingested</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ingested</span><span class="p">:</span>
+                <span class="n">source_collections</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">collection</span> <span class="ow">in</span> <span class="n">filtered_collections</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">collection</span><span class="o">.</span><span class="n">ingested</span><span class="p">:</span>
+                        <span class="n">source_collections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>  <span class="c1"># add if ingested</span>
+                <span class="n">filtered_collections</span> <span class="o">=</span> <span class="n">source_collections</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">source_collections</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">collection</span> <span class="ow">in</span> <span class="n">filtered_collections</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">collection</span><span class="o">.</span><span class="n">ingested</span><span class="p">:</span>
+                        <span class="n">source_collections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>  <span class="c1"># add if not ingested</span>
+                <span class="n">filtered_collections</span> <span class="o">=</span> <span class="n">source_collections</span>
 
         <span class="k">return</span> <span class="n">filtered_collections</span></div>
 
@@ -472,9 +493,9 @@ title="Open an issue"
             <span class="n">json_dict</span><span class="p">[</span><span class="s1">&#39;collections&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">collection</span><span class="o">.</span><span class="n">json</span><span class="p">(</span><span class="n">by_alias</span><span class="o">=</span><span class="kc">True</span><span class="p">)))</span>
 
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">collections_filepath</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">json_dict</span><span class="p">))</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">json_dict</span><span class="p">))</span></div>
 
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">collections</span><span class="p">)</span><span class="si">}</span><span class="s1"> collections saved in </span><span class="si">{</span><span class="n">collections_filepath</span><span class="si">}</span><span class="s1"> file.&#39;</span><span class="p">)</span></div>
+        <span class="c1"># print(f&#39;{len(collections)} collections saved in {collections_filepath} file.&#39;) TODO: To be logged instead.</span>
 
 <div class="viewcode-block" id="DataStore.load_collections"><a class="viewcode-back" href="../../crawler_api.html#crawler.datastore.DataStore.load_collections">[docs]</a>    <span class="k">def</span> <span class="nf">load_collections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
 
