@@ -12,7 +12,7 @@ from .config import (
     STAC_DATA_DIR,
     PDSSP_REGISTRY_ENDPOINT,
     LOCAL_REGISTRY_DIRECTORY,
-    STAC_CATALOG_ENDPOINT,
+    STAC_CATALOG_PARENT_ENDPOINT,
 )
 
 from pathlib import Path
@@ -97,6 +97,18 @@ class Crawler:
                                                      target=target, extracted=extracted, transformed=transformed, ingested=ingested)
 
 
+    def process_collections(self, collection_id='', service_type=None, target=None, extracted=None, transformed=None, ingested=None, overwrite=False) -> None:
+        """Process all or a filtered selection of collections.
+        """
+        source_collections = self.get_source_collections(collection_id=collection_id, service_type=service_type,
+                                                         target=target, extracted=extracted, transformed=transformed,
+                                                         ingested=ingested)
+        for source_collection in source_collections:
+            print(f'Processing {source_collection.collection_id} collection...')
+            self.extract_collection(source_collection.collection_id, overwrite=overwrite)
+            self.transform_collection(source_collection.collection_id, overwrite=overwrite)
+            self.ingest_collection(source_collection.collection_id, update=overwrite)
+
     def extract_collection(self, collection_id: str, overwrite=False) -> None:
         """Extract source collection file(s) from the "data catalog" service associated to a given collection identifier.
         """
@@ -107,10 +119,10 @@ class Crawler:
             return
 
         if collection.extracted:
-            print(f'{collection_id} collection already extracted:')
-            print(f'- Source collection file(s): {collection.extracted_files}')  # extracted_data_dir ???
-            print()
             if not overwrite: # quit unless input overwrite
+                print(f'{collection_id} collection already extracted:')
+                print(f'- Source collection file(s): {collection.extracted_files}')  # extracted_data_dir ???
+                print()
                 return
 
         print(f'Extracting {collection_id} source collection files...')
@@ -143,13 +155,13 @@ class Crawler:
             return
 
         if collection.transformed:
-            print(f'{collection_id} already transformed:')
-            print(f'- STAC collection file: {collection.stac_dir}')
             if not overwrite: # quit unless input overwrite
+                print(f'{collection_id} already transformed:')
+                print(f'- STAC collection file: {collection.stac_dir}')
                 return
 
         if not collection.extracted:
-            print(f'{collection_id} source collection not extracted to source collection file(s).')
+            print(f'{collection_id} source collection not extracted as source collection file(s).')
             self.extract_collection(collection_id, overwrite=overwrite)
 
         if collection.extracted:
@@ -188,23 +200,26 @@ class Crawler:
             return
 
         if collection.ingested:
-            print(f'{collection_id} already ingested:')
-            print(f'- STAC collection file: {collection.stac_dir}')
-            print(f'- STAC collection URL: {collection.stac_url}')
             if not update:  # quit unless input update is True
+                print(f'{collection_id} already ingested:')
+                print(f'- STAC collection file: {collection.stac_dir}')
+                print(f'- STAC collection URL: {collection.stac_url}')
                 return
 
         if not collection.transformed:
             print(f'{collection_id} source collection not transformed to STAC catalog or collection file.')
-            self.transform_collection(collection_id)
+            self.transform_collection(collection_id, overwrite=update)
 
         if collection.transformed:
             print(f'Ingesting {collection_id} STAC catalog...')
             print(f'- STAC catalog dir: {collection.stac_dir}')
+            # ingestor = Ingestor(stac_api_parent_url=STAC_CATALOG_PARENT_ENDPOINT)  # requires RESTO_ADMIN_AUTH_TOKEN env variable
+            # stac_collection_file = f'{collection.stac_dir}/collection.json'
+            # ingestor.ingest(stac_file=stac_collection_file, update_if_exists=update, ingest_strategy='catalog')
             try:
-                ingestor = Ingestor(stac_api_url=STAC_CATALOG_ENDPOINT) # requires RESTO_ADMIN_AUTH_TOKEN env variable
+                ingestor = Ingestor(stac_api_parent_url=STAC_CATALOG_PARENT_ENDPOINT) # requires RESTO_ADMIN_AUTH_TOKEN env variable
                 stac_collection_file = f'{collection.stac_dir}/collection.json'
-                ingestor.ingest(stac_file=stac_collection_file, update_if_exists=update, ingest_strategy='catalog')
+                ingestor.ingest(stac_file=stac_collection_file, update_if_exists=update, ingest_strategy='both')
             except Exception as e:
                 print(f'Could not ingest {collection_id} source collection.')
                 print(e)
@@ -214,8 +229,6 @@ class Crawler:
             collection.ingested = ingestor.ingested
             collection.stac_url = ingestor.stac_url
             self.datastore.save_source_collections(overwrite=True)
-
-
         else:
             print(f'Could not transform {collection_id} source collection.')
 

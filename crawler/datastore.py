@@ -84,7 +84,7 @@ class DataStore:
             ingested_str = 'Y' if collection.ingested else 'N'
             source_schema_str = collection.source_schema if collection.source_schema else 'UNDEFINED'
             print(f'{collection.collection_id:<30}  {collection.service.type.name:<12}  {source_schema_str:<13}  '
-                  f'{collection.n_products:<15}  {extracted_str:<10}  {transformed_str:<12}  {ingested_str:<9}  {collection.target:<12}')
+                  f'{collection.n_products:<15}  {extracted_str:<10}  {transformed_str:<12}  {ingested_str:<9}  {collection.target.lower():<12}')
         print()
 
     def get_source_collection(self, collection_id: str) -> SourceCollectionModel:
@@ -189,7 +189,7 @@ class DataStore:
         with open(collections_filepath, 'w') as f:
             f.write(json.dumps(json_dict))
 
-        print(f'{len(collections)} collections saved in {collections_filepath} file.')
+        # print(f'{len(collections)} collections saved in {collections_filepath} file.') TODO: To be logged instead.
 
     def load_collections(self, filepath):
 

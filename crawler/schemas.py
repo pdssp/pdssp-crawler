@@ -117,12 +117,13 @@ class PDSSP_STAC_Item(BaseModel):
 class PDSSP_STAC_SSYS_Properties(BaseModel):
     ssys_targets: Optional[list[str]] = Field(alias='ssys:targets')
     ssys_solar_longitude: Optional[float] = Field(alias='ssys:solar_longitude')
+    ssys_solar_distance: Optional[float] = Field(alias='ssys:solar_distance')
     ssys_incidence_angle: Optional[float] = Field(alias='ssys:incidence_angle')
     ssys_emission_angle: Optional[float] = Field(alias='ssys:emission_angle')
     ssys_phase_angle: Optional[float] = Field(alias='ssys:phase_angle')
-    ssys_spatial_resolution: Optional[float] = Field(alias='ssys:spatial_resolution')
-    ssys_processing_level: Optional[str] = Field(alias='ssys:processing_level')
-    ssys_product_type: Optional[str] = Field(alias='ssys:product_type')
+    # ssys_spatial_resolution: Optional[float] = Field(alias='ssys:spatial_resolution')
+    # ssys_processing_level: Optional[str] = Field(alias='ssys:processing_level')
+    # ssys_product_type: Optional[str] = Field(alias='ssys:product_type')
 
 class PDSSP_STAC_Processing_Properties(BaseModel):
     processing_expression: Optional[object] = Field(alias='processing:expression')
@@ -206,99 +207,198 @@ class PDSODE_Product(BaseModel):
     """Product target (example: Mars)."""
 
     Product_version_id: Optional[str]
-    """Product version"""
+    """Product version."""
 
     Observation_id: Optional[str]
     """Identifies a scientific observation within a data set."""
 
-    Product_files: PDSODE_Product_file_key
-    """Associated product files."""
+    Observation_number: Optional[str]
+    """Monotonically increasing ordinal counter of the EDRs generated for a particular OBSERVATION_ID."""
+
+    Observation_type: Optional[str]
+    """Identifies the general type of an observation."""
+
+    Producer_id: Optional[str]
+    """Producer id."""
+
+    Producer_name: Optional[str]
+    """Producer name."""
+
+    Product_release_date: Optional[str]
+    """Product release date."""
+
+    Activity_id: Optional[str]
+    """Label Activity id"""
+
+    Predicted_dust_opacity: Optional[str]
+    """Predicted dust opacity."""
+
+    Predicted_dust_opacity_text: Optional[str]
+    """Predicted dust opacity text."""
+
+    Observation_time: Optional[str]
+    """Observation time (mid-point between the start and end of the observation)."""
+
+    SpaceCraft_clock_start_count: Optional[str]
+    """Spacecraft clock start."""
+
+    SpaceCraft_clock_stop_count: Optional[str]
+    """Spacecraft clock stop."""
+
+    Stop_orbit_number: Optional[str]
+    """Stop orbit number."""
+
+    UTC_start_time: str  # defined as mandatory for all observational data products
+    """Observation start time in UTC."""
+
+    UTC_stop_time: str  # defined as mandatory for all observational data products
+    """Observation stop time in UTC."""
+
+    Emission_angle: Optional[float]
+    """Emission angle."""
+
+    Emission_angle_text: Optional[str]
+    """Emission angle text from the product label."""
+
+    Phase_angle: Optional[float]
+    """Phase angle."""
+
+    Phase_angle_text: Optional[float]
+    """Phase angle text from the product label."""
+
+    Incidence_angle: Optional[float]
+    """Incidence angle."""
+
+    Incidence_angle_text: Optional[float]
+    """Incidence angle text from the product label."""
+
+    Map_resolution: Optional[float]
+    """Map resolution."""
+
+    Map_resolution_text: Optional[float]
+    """Map resolution text from the product label."""
+
+    Map_scale: Optional[float]
+    """Map scale."""
+
+    Map_scale_text: Optional[float]
+    """Map scale text from the product label."""
+
+    Solar_distance: Optional[float]
+    """Solar distance."""
+
+    Solar_distance_text: Optional[float]
+    """Solar distance text from the product label."""
+
+    Solar_longitude: Optional[float]
+    """Solar longitude."""
+
+    Center_georeferenced: Optional[str]
+    """T if the product has a footprint center."""
+
+    Center_latitude: Optional[str]
+    """Planetocentric footprint center latitude."""
+
+    Center_longitude: Optional[str]
+    """Longitude 0-360 center longitude."""
+
+    Center_latitude_text: Optional[str]
+    """Text found in the center latitude label keyword if the center latitude is not a valid number."""
+
+    Center_longitude_text: Optional[str]
+    """Text found in the center longitude label keyword if the center longitude is not a valid number."""
+
+    BB_georeferenced: Optional[str]
+    """T if the product has a footprint bounding box."""
+
+    Easternmost_longitude: Optional[str]
+    """Longitude 0-360 Easternmost longitude of the footprint."""
+
+    Maximum_latitude: Optional[str]
+    """Planetocentric maximum latitude of the footprint."""
+
+    Minimum_latitude: Optional[str]
+    """Planetocentric minimum latitude of the footprint."""
+
+    Westernmost_longitude: Optional[str]
+    """Longitude 0-360 Westernmost longitude of the footprint."""
+
+    Easternmost_longitude_text: Optional[str]
+    """Text found in the easternmost longitude label keyword if the easternmost longitude is not a valid number."""
+
+    Maximum_latitude_text: Optional[str]
+    """Text found in the maximum latitude label keyword if the maximum latitude is not a valid number."""
+
+    Minimum_latitude_text: Optional[str]
+    """Text found in the minimum latitude label keyword if the minimum latitude is not a valid number."""
+
+    Westernmost_longitude_text: Optional[str]
+    """Text found in the westernmost longitude label keyword if the westernmost longitude is not a valid number."""
+
+    Footprint_geometry: Optional[str]
+    """Cylindrical projected planetocentric, longitude 0-360 product footprint in WKT format. Only if there is
+     a valid footprint. Note - this is a cylindrical projected footprint. The footprint has been split into multiple
+     polygons when crossing the 0/360 longitude line and any footprints that cross the poles have been adjusted to add
+     points to and around the pole. It is meant for use in cylindrical projects and is not appropriate for spherical
+     displays."""
 
     Footprint_C0_geometry: Optional[str]
-    UTC_start_time: str
-    UTC_stop_time: str
-    Solar_longitude: Optional[float]
-    Incidence_angle: Optional[float]
-    Emission_angle: Optional[float]
-    Phase_angle: Optional[float]
-    Map_resolution: Optional[float]
-    Map_scale: Optional[float]
+    """Planetocentric, longitude -180-180 product footprint in WKT format. Only if there is a valid footprint. Note -
+    this is a cylindrical projected footprint. The footprint has been split into multiple polygons when crossing the
+    -180/180 longitude line and any footprints that cross the poles have been adjusted to add points to and around the
+    pole. It is meant for use in cylindrical projects and is not appropriate for spherical displays."""
 
-    #
-    # "BB_georeferenced": "True",
-    # "Center_georeferenced": "True",
-    # "Center_latitude": "-14.285",
-    # "Center_longitude": "240.051",
-    # "Comment": "Pit crater chain south of Arsia Mons",
-    # "Data_Set_Id": "MRO-M-HIRISE-3-RDR-V1.1",
-    # "Description": "HiRISE projected and mosaicked product  HiRISE RDR V1.1 files has map projection data embedded in the header - please see SIS for more details.",
-    # "Easternmost_longitude": "240.114",
-    # "Emission_angle": "3.713668",
-    # "External_url": "http://www.uahirise.org/ESP_012600_1655",
-    # "External_url2": "jpip://hijpip.lpl.arizona.edu:8064/PDS/RDR/ESP/ORB_012600_012699/ESP_012600_1655/ESP_012600_1655_RED.JP2",
-    # "FilesURL": "https://ode.rsl.wustl.edu/mars/productfiles.aspx?product_id=ESP_012600_1655_RED&product_idGeo=13005453",
-    # "Footprint_C0_geometry": "POLYGON ((-119.886 -14.4381, -119.973 -14.4483, -120.012 -14.132, -119.925 -14.1218, -119.886 -14.4381))",
-    # "Footprint_geometry": "POLYGON ((240.114 -14.4381, 240.027 -14.4483, 239.988 -14.132, 240.075 -14.1218, 240.114 -14.4381))",
-    # "Footprint_GL_geometry": "POLYGON ((240.114 -14.4381, 240.027 -14.4483, 239.988 -14.132, 240.075 -14.1218, 240.114 -14.4381))",
-    # "Footprint_NP_geometry": "MULTIPOLYGON EMPTY",
-    # "Footprint_souce": "PDS Archive Index Table",
-    # "Footprint_SP_geometry": "MULTIPOLYGON EMPTY",
-    # "Footprints_cross_meridian": "False",
-    # "ihid": "MRO",
-    # "iid": "HIRISE",
-    # "Incidence_angle": "49.904166",
-    # "LabelFileName": "esp_012600_1655_red.lbl",
-    # "LabelURL": "https://hirise.lpl.arizona.edu/PDS/RDR/ESP/ORB_012600_012699/ESP_012600_1655/ESP_012600_1655_RED.LBL",
-    # "Map_resolution": "118528.17278819",
-    # "Map_scale": "0.5",
-    # "Maximum_latitude": "-14.1218",
-    # "Minimum_latitude": "-14.4483",
-    # "Observation_id": "ESP_012600_1655",
-    # "Observation_time": "2009-04-04T07:13:46.356",
-    # "ODE_notes": {
-    #     "ODE_note": [
-    #         "NOTE: Product Type set by ODE",
-    #         "NOTE: Label keyword Orbit number value used for start orbit number value",
-    #         "NOTE: Label keyword Orbit number value used for stop orbit number value",
-    #         "NOTE: Map Resolution set from label map projection object",
-    #         "NOTE: Map scale from the label map projection object",
-    #         "NOTE: Observation time set to mid-point between start time and stop time",
-    #         "NOTE: Index Record:",
-    #         "\"MROHR_0001\",\"RDR/ESP/ORB_012600_012699/ESP_012600_1655/ESP_012600_1655_RED.JP2  \",\"MRO\",\"HIRISE\",\"ESP_012600_1655\",\"ESP_012600_1655_RED  \",\"1  \",\"MARS                            \", 12600,\"Extended Science Phase        \",\"Pit crater chain south of Arsia Mons                                       \",\"2009-04-04T07:13:43     \",\"923296444:63762 \",\"2009-04-04T07:13:43     \",\"923296445:06824 \",\"2009-04-04T07:13:49     \",\"923296451:03746 \", 38702, 14754, 3.71414,49.9040, 53.5430, 252.320,3656.72, 252.623,  270.0000,  163.7660,  -21.6699,  187.9300,  -14.2643,  240.3150,   1.38343,   240.167,   15.4747,\"YES\",  -14.4483,  -14.1218,  239.9880,  240.1140, 0.50,118528.000,\"EQUIRECTANGULAR    \",-10.0, 180.000,  -1673830.0,  -7002200.0,  -14.4381,  240.1140,  -14.4483,  240.0270,  -14.1320,  239.9880,  -14.1218,  240.0750",
-    #         "NOTE: HIRISE location data updated from index table entry"
-    #     ]
-    # },
-    # "pdsid": "ESP_012600_1655_RED",
-    # "PDSVolume_Id": "MROHR_0001",
-    # "Phase_angle": "53.549941",
-    # "Pole_state": "none",
-    # "Producer_id": "UA",
-    # "Product_creation_time": "2009-08-18T00:14:05.000",
-    # "Product_files": {
-    #     "Product_file": [
-    #         {
-    #             "Description": "MAP PROJECTION FILE",
-    #             "FileName": "DSMAP.CAT",
-    #             "KBytes": "7",
-    #             "Type": "Referenced",
-    #             "URL": "https://hirise.lpl.arizona.edu/PDS/CATALOG/DSMAP.CAT"
-    #         },
-    #
-    # "Product_version_id": "1.0",
-    # "ProductURL": "https://ode.rsl.wustl.edu/mars/indexproductpage.aspx?product_id=ESP_012600_1655_RED&product_idGeo=13005453",
-    # "pt": "RDRV11",
-    # "RelativePathtoVol": "rdr\\esp\\orb_012600_012699\\esp_012600_1655\\",
-    # "Solar_longitude": "240.166542",
-    # "Solar_time": "15.47471",
-    # "SpaceCraft_clock_start_count": "923296445:06824",
-    # "SpaceCraft_clock_stop_count": "923296451:03746",
-    # "Start_orbit_number": "12600",
-    # "Stop_orbit_number": "12600",
-    # "Target_name": "MARS",
-    # "UTC_start_time": "2009-04-04T07:13:43.380",
-    # "UTC_stop_time": "2009-04-04T07:13:49.333",
-    # "Westernmost_longitude": "239.988"
+    Footprint_GL_geometry: Optional[str]
+    """Planetocentric, longitude 0-360 product footprint in WKT format. Only if there is a valid footprint. This is
+    not a projected footprint."""
 
+    Footprint_NP_geometry: Optional[str]
+    """Stereographic south polar projected footprint in WKT format. Only if there is a valid footprint. This footprint
+    has been projected into meters in stereographic north polar projection."""
+
+    Footprint_SP_geometry: Optional[str]
+    """Stereographic south polar projected footprint in WKT format. Only if there is a valid footprint. This footprint
+    has been projected into meters in stereographic south polar projection."""
+
+    Footprints_cross_meridian: Optional[str]
+    """T if the footprint crosses the 0/360 longitude line (anti-meridian)."""
+
+    Pole_state: Optional[str]
+    """String of "none", "north", or "south"."""
+
+    Footprint_souce: Optional[str]
+    """A brief description of where the footprint came from."""
+
+    # USGS_Sites
+
+    Comment: Optional[str]
+    """Any associated comment."""
+
+    Description: Optional[str]
+    """Label description"""
+
+    # ODE_notes
+
+    External_url: Optional[str]
+    """URL to an external reference to the product. Product type specific but usually something like the HiRISE site."""
+
+    External_url2: Optional[str]
+    """URL to an external reference to the product. Product type specific but usually something like the HiRISE site."""
+
+    External_url3: Optional[str]
+    """URL to an external reference to the product. Product type specific but usually something like the HiRISE site."""
+
+    FilesURL: Optional[str]
+    """"""
+
+    ProductURL: Optional[str]
+    """"""
+
+    LabelURL: Optional[str]
+    """"""
+
+    Product_files: PDSODE_Product_file_key
+    """Associated product files."""
 
 class EPNTAP_Collection(BaseModel):
     pass

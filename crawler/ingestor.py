@@ -18,8 +18,9 @@ INGEST_STRATEGIES = {
 class Ingestor:
     """Ingestion of STAC catalog or collection into destination STAC API service (eg: PDSSP RESTO).
     """
-    def __init__(self, stac_api_url='', auth_token='', source_collection=None):
-        self.stac_api_url = stac_api_url
+    def __init__(self, stac_api_parent_url='', auth_token='', source_collection=None):
+        self.stac_api_parent_url = stac_api_parent_url
+        self.stac_api_url = ''
         self.ingested = False
         self.stac_url = ''
         self.do_not_split_geom = True
@@ -27,12 +28,12 @@ class Ingestor:
         self.processed_features = []  # stac2resto `lookup_table`
 
         # set source_schema and collection properties
-        if stac_api_url and not source_collection:
-            self.stac_api_url = stac_api_url
-        elif source_collection and not stac_api_url:
+        if stac_api_parent_url and not source_collection:
+            self.stac_api_parent_url = stac_api_parent_url
+        elif source_collection and not stac_api_parent_url:
             self.set_source_collection(source_collection)
         else:
-            raise ValueError('Only one of the `stac_api_url` or `source_collection` input keyword arguments can be used.')
+            raise ValueError('Only one of the `stac_api_parent_url` or `source_collection` input keyword arguments can be used.')
 
         # set header: resto admin auth token is required for POST
         if not auth_token:
@@ -45,6 +46,27 @@ class Ingestor:
             'User-Agent': 'pdssp-crawler',
             'Authorization': 'Bearer ' + auth_token
         }
+
+    def get_target_stac_api_url(self, target):
+        """Return STAC API endpoint for a given target name.
+        """
+        target_stac_api_url = ''
+
+        # set endpoints url paths
+        target_stac_api_paths =  {
+            'mars': '/catalogs/mars',
+            'moon': '/catalogs/moon',
+            'titan': '/catalogs/titan'
+        }
+
+        if target in target_stac_api_paths.keys():
+            target_stac_api_url = self.stac_api_parent_url + target_stac_api_paths[target]
+
+        return target_stac_api_url
+
+    def set_stac_api_url(self, stac_object_dict):
+        target = stac_object_dict['ssys:targets'][0]
+        self.stac_api_url = self.get_target_stac_api_url(target)
 
     def set_source_collection(self, source_collection):
         self.source_collection = source_collection
@@ -63,7 +85,7 @@ class Ingestor:
         url = f'{self.stac_api_url}/catalogs'
         parent_id = None
         parent_path = '' if not parent_id else f'/{parent_id}'
-        print(f'Creating {catalog_id} catalog to {url}{parent_path}...')
+        # print(f'Creating {catalog_id} catalog to {url}{parent_path}...')
         ssl_verify = True
         response = requests.post(url, json=catalog_dict, params={"pid": parent_id}, headers=self.headers, verify=ssl_verify)
 
@@ -74,7 +96,7 @@ class Ingestor:
             # set ingestor status/attributes
             self.ingested = True
             self.stac_url = f'{url}{parent_path}/{catalog_id}'  # ?
-            # self.update_source_collection()
+            self.update_source_collection()
             # TODO: all collections belonging to the ingested catalog should be updated !
 
             return response.json()
@@ -109,7 +131,7 @@ class Ingestor:
         # POST request
         url = f'{self.stac_api_url}/collections'
         ssl_verify = True
-        print(f'Creating {collection_id} collection using `{COLLECTION_DEFAULT_MODEL}` model to {self.stac_api_url} ...')
+        # print(f'Creating {collection_id} collection using `{COLLECTION_DEFAULT_MODEL}` model to {self.stac_api_url} ...')
         response = requests.post(url, json=tmp_collection_dict, headers=self.headers, verify=ssl_verify)
 
         # handling response
@@ -209,7 +231,7 @@ class Ingestor:
 
         # Post request
         #
-        print(f'Creating {feature_id} feature in {collection_id} collection ...')
+        # print(f'Creating {feature_id} feature in {collection_id} collection ...')
         response = requests.post(url, json=feature_dict, params=params, headers=self.headers, verify=ssl_verify)
 
         # Handle response
@@ -310,6 +332,11 @@ class Ingestor:
         if not stac_object_dict or 'type' not in stac_object_dict.keys():
             raise Exception(f'Invalid STAC file: {stac_file}.')
 
+        # Set destination STAC URL endpoint from collection SSYS targets parameters
+        if self.stac_api_url == '':
+            self.set_stac_api_url(stac_object_dict)
+            print(f'Set STAC API URL: {self.stac_api_url}')
+
         if ingest_strategy not in INGEST_STRATEGIES.keys():
             raise Exception(f'Invalid `{ingest_strategy}` ingestion strategy. Allowed values are: {list(INGEST_STRATEGIES.keys())}')
         else:
@@ -349,13 +376,17 @@ class Ingestor:
 
             if link['rel'] in ['item', 'items'] and ingest_feature:
                 # print(child_path)
+                # print(f'before self.ingest(): {self.stac_api_url}')
                 self.ingest(stac_file=child_path, ingest_strategy=ingest_strategy, update_if_exists=update_if_exists)
+                # print(f'after self.ingest(): {self.stac_api_url}')
             elif link['rel'] == 'child':
                 print("------------------------------------------------------------------------------------")
                 print("Process %s" % child_path)
                 print("------------------------------------------------------------------------------------")
+                # print(f'before self.ingest(): {self.stac_api_url}')
                 self.ingest(stac_file=child_path, ingest_strategy=ingest_strategy, update_if_exists=update_if_exists)
+                # print(f'after self.ingest(): {self.stac_api_url}')
 
         if stac_object_dict['type'] == 'Collection':
-            # self.ingested = True
+            self.ingested = True
             self.stac_url = f'{self.stac_api_url}/collections/{stac_object_dict["id"]}'

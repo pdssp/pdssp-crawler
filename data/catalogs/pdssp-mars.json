@@ -1,0 +1,21 @@
+{
+    "id": "pdssp-mars",
+    "title":"PDSSP Mars Data Catalog",
+    "description":"This catalog contains Mars surface data products produced and curated by French research laboratories.",
+    "providers":[
+        {
+          "name": "Pôle de Données et Services Surfaces Planétaires (PDSSP)",
+          "roles": [
+            "provider",
+            "licensor"
+          ],
+          "url": "https://pdssp.github.io"
+        }
+    ],
+    "ssys:targets":["Mars"],
+    "type":"STAC",
+    "url":"https://pdssp.ias.universite-paris-saclay.fr/catalogs/mars",
+    "extra_params": {
+      "stac_extensions": ["ssys", "processing"]
+    }
+}

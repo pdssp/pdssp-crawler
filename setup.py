@@ -16,7 +16,8 @@ setup(
         'pydantic',
         'pyyaml',
         'geojson',
-        'shapely'
+        'shapely',
+        'pyMarsSeason @ git+https://github.com/pole-surfaces-planetaires/pymarsseason.git'
     ],
     entry_points='''
         [console_scripts]

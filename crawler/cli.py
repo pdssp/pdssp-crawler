@@ -9,7 +9,7 @@ from .config import (
     STAC_DATA_DIR,
     PDSSP_REGISTRY_ENDPOINT,
     LOCAL_REGISTRY_DIRECTORY,
-    STAC_CATALOG_ENDPOINT,
+    STAC_CATALOG_PARENT_ENDPOINT,
 )
 from crawler.crawler import Crawler
 from crawler.extractor import Extractor
@@ -63,6 +63,26 @@ def collections(id, service_type, target, extracted, transformed, ingested):
         ingested=ingested
     )
 
+@cli.command()
+@click.option('--id', type=click.STRING, help='Collection ID filter.', default='')
+@click.option('--service-type', type=click.STRING, help='Service type filter.', default='')
+@click.option('--target', type=click.STRING, help='Target filter.', default='')
+@click.option('--extracted/--no-extracted', help='Filter to return only transformed collections', default=None)
+@click.option('--transformed/--no-transformed', help='Filter to return only transformed collections', default=None)
+@click.option('--ingested/--no-ingested', help='Filter to return only ingested collections', default=None)
+@click.option('--overwrite/--no-overwrite', help='Overwrite existing source collection files.', default=False)
+def process(id, service_type, target, extracted, transformed, ingested, overwrite):
+    """Process all or a filtered selection of source collections.
+
+    Use options to filter source collections from the data store. If you're unsure about the filtering result, first use
+    the `collections` command to preview the list of source collections given your input filters.
+
+    Source collections will currently be processed sequentially, going through extraction, transformation and ingestion.
+    Note that all STAC collections are grouped into a single STAC catalog, with one catalog per target body. Ingestion
+    of all collections could be done at once when they all have been transformed.
+    """
+    Crawler().process_collections(collection_id=id, service_type=service_type, target=target, extracted=extracted,
+                                  transformed=transformed, ingested=ingested, overwrite=overwrite)
 
 @cli.command()
 @click.option('--id', type=click.STRING, help='Collection ID.', default='')

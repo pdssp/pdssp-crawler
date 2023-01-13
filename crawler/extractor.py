@@ -267,7 +267,7 @@ class PDSODE_Extractor(AbstractExtractor):
             collection_metadata = PDSODE_Collection(**metadata_dict)
         except Exception as e:
             print(e)
-            print(metadata_dict)
+            # print(metadata_dict) TODO: to be logged instead
             return None
 
         return collection_metadata
@@ -282,7 +282,6 @@ class PDSODE_Extractor(AbstractExtractor):
 
         Use ``self.reset_reader_iterator()`` to reset reader iterator.
         """
-
         if not self.products:
             if self.file_idx < self.n_extracted_files:
                 file_path = self.extracted_files[self.file_idx]
@@ -296,8 +295,9 @@ class PDSODE_Extractor(AbstractExtractor):
                         self.products.append(product_metadata)
                     except Exception as e:
                         print(e)
-                        print(metadata_dict)
-                        return None
+                        # print(metadata_dict) TODO: to be logged instead
+                        self.products.append(None)
+                        # return None
             else:
                 raise Exception('No more product metadata to read.')
 
@@ -319,8 +319,8 @@ class PDSODE_Extractor(AbstractExtractor):
             self.set_service(service)
 
         # set `query_limit` parameters
-        query_limit = 100
-        extract_limit = 300  # temporary for testing purpose
+        query_limit = 10  # 100
+        extract_limit = 10 # 300  # temporary for testing purpose
 
         # Extract and save collection meta.
         #
