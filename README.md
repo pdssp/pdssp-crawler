@@ -14,7 +14,7 @@ In both cases, metadata ingested into the PDSSP STAC Catalog are compliant to th
 
 In a next version installation via Docker will be possible, enabling deployment to the PDSSP server. For now, follow these steps:
 
-1. Set up conda environment
+1. **Set up conda environment**
 
 Create environment:
 
@@ -28,14 +28,14 @@ Activate environment:
 conda activate pdssp-env
 ```
 
-2. Create and go to your working directory
+2. **Create and go to your working directory**
 
 ```
 mkdir -p </path/to/pdssp/crawler>
 cd </path/to/pdssp/crawler>
 ```
 
-3. Download and install package
+3. **Download and install package**
 
 ```
 git clone https://github.com/pdssp/pdssp-crawler.git
