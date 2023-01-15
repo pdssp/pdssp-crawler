@@ -16,8 +16,16 @@ In a next version installation via Docker will be possible, enabling deployment 
 
 1. Set up conda environment
 
+Create environment:
+
 ```
 conda create --name pdssp-env python=3.9
+```
+
+Activate environment:
+
+```
+conda activate pdssp-env
 ```
 
 2. Create and go to your working directory
@@ -41,8 +49,14 @@ pip install -r pdssp-crawler/docs/requirements.txt
 
 The configuration mechanism will be improved in the next versions. For now:
 
-1. Create the _incoming source_ and the _outgoing STAC_ directories in your working directories.
-2. Edit the [crawler/config.py](pdssp-crawler/crawler/config.py) file to change the following variables accordingly. In the following example, `/Users/nmanaud/workspace/pdssp` is the working directory and the source and STAC data directories are respectively named `crawler-data` and `pdssp-stac-repo`. 
+1. Create the _incoming source_ and the _outgoing STAC_ directories in your working directories. For example:
+
+```shell
+mkdir crawler-data
+mkdir pdssp-stac-repo
+```
+
+3. Edit the [crawler/config.py](crawler/config.py) file to change the following variables accordingly. In the following example, `/Users/nmanaud/workspace/pdssp` is the working directory and the source and STAC data directories are respectively named `crawler-data` and `pdssp-stac-repo`. 
 
 ```python
 SOURCE_DATA_DIR = '/Users/nmanaud/workspace/pdssp/crawler-data'
